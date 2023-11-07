@@ -95,3 +95,5 @@ export const FieldInput = forwardRef(({
     </Box>
   )
 })
+
+FieldInput.displayName = 'FieldInput'
