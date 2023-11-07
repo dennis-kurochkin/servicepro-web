@@ -1,6 +1,6 @@
 'use client'
 
-import {Box, Button, Typography} from "@mui/material";
+import {Box, Button, Link, Typography} from "@mui/material";
 import {useTheme} from "@mui/system";
 import Image from "next/image";
 import React from "react";
@@ -39,11 +39,10 @@ export default function Page() {
         <Box
           sx={{
             display: 'grid',
-            gap: '16px',
             width: '400px',
-            borderRadius: 2,
+            borderRadius: 3,
             border: '1px solid',
-            padding: '32px 24px 36px',
+            padding: '28px 28px 28px',
             mt: '32px',
             borderColor: theme.palette.grey['200'],
             background: theme.palette.common.white,
@@ -61,11 +60,12 @@ export default function Page() {
             name={'username'}
             label={'Пароль'}
             placeholder={'Введите пароль'}
+            sx={{ mt: '16px', }}
           />
           <Button
             size={'large'}
             sx={{
-              mt: '8px',
+              mt: '28px',
               width: '100%',
             }}
             variant={'contained'}
@@ -73,6 +73,14 @@ export default function Page() {
           >
             Войти в аккаунт
           </Button>
+          <Link
+            component={'button'}
+            underline="hover"
+            sx={{ mt: '16px', fontSize: '15px' }}
+            onClick={() => router.push('/auth/recover')}
+          >
+            Восстановить пароль
+          </Link>
         </Box>
       </Box>
     </Box>
