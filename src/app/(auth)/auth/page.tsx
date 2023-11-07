@@ -52,7 +52,7 @@ export default function Page() {
             value={''}
             name={'username'}
             label={'Логин'}
-            placeholder={'Логин'}
+            placeholder={'Введите логин'}
           />
           <FieldInput
             value={''}

@@ -1,5 +1,4 @@
-import { FieldLabelProps } from 'components/Field/components/FieldLabel'
-import { FieldMessageProps } from 'components/Field/components/FieldMessage'
+import {FieldLabelProps, FieldMessageProps} from "~/features/common/components/Field";
 
 export interface FieldCommonProps {
   name: string
