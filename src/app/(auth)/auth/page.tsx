@@ -23,8 +23,9 @@ export default function Page() {
       <Box
         sx={{
           display: 'flex',
+          mt: '-150px',
           flexDirection: 'column',
-          alignItems: 'c\enter',
+          alignItems: 'center',
         }}
       >
         <Image
@@ -39,7 +40,7 @@ export default function Page() {
           sx={{
             display: 'grid',
             gap: '16px',
-            width: '450px',
+            width: '400px',
             borderRadius: 2,
             border: '1px solid',
             padding: '32px 24px 36px',
