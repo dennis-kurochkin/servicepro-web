@@ -5,8 +5,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import './globals.css'
-import {Header} from "~/features/common/components/Header";
-import {Box, Container, createTheme, ThemeProvider} from "@mui/material";
+import {Box} from "@mui/material";
 import ThemeRegistry from "~/features/common/components/ThemeRegistry/ThemeRegistry";
 import {grey} from "@mui/material/colors";
 
@@ -32,16 +31,7 @@ export default function RootLayout({
               backgroundColor: grey['100'],
             }}
           >
-            <Header />
-            <Container
-              sx={{
-                paddingTop: '24px',
-                paddingBottom: '36px',
-              }}
-              maxWidth="xl"
-            >
-              {children}
-            </Container>
+            {children}
           </Box>
         </ThemeRegistry>
       </body>
