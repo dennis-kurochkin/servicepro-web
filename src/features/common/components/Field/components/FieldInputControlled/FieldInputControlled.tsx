@@ -6,7 +6,7 @@ interface FieldInputControlledProps<F extends FieldValues> extends Omit<
   FieldInputProps, 'value' | 'error' | 'required' | 'onChange' | 'onBlur'
 > {
   name: Path<F>
-  control: Control<F>
+  control: Control<FieldValues, F>
   rules: ControllerProps['rules']
 }
 
