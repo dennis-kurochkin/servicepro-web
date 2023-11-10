@@ -1,0 +1,7 @@
+.popup :global .leaflet-popup-content {
+    margin: 16px 28px 16px 16px;
+}
+
+.popup :global .leaflet-popup-content-wrapper {
+    border-radius: 8px;
+}

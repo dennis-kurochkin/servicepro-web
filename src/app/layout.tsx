@@ -5,6 +5,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import './globals.css'
+import 'leaflet/dist/leaflet.css'
 import {Box} from "@mui/material";
 import ThemeRegistry from "~/features/common/components/ThemeRegistry/ThemeRegistry";
 import {grey} from "@mui/material/colors";
