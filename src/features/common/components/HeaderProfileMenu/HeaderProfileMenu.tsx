@@ -1,13 +1,11 @@
-import React, {useState} from 'react'
-import {Logout, Person, Settings} from '@mui/icons-material'
-import {Avatar, Badge, Box, Button, Divider, ListItemIcon, MenuItem, Typography} from '@mui/material'
-import ContextMenu from "~/features/common/components/ContextMenu";
-import Link from 'next/link'
-import {useRouter} from "next/navigation";
-import {theme} from "~/features/common/components/ThemeRegistry/ThemeRegistry";
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Logout, Person, Settings } from '@mui/icons-material'
+import { Avatar, Badge, Box, Button, Divider, ListItemIcon, MenuItem, Typography } from '@mui/material'
+import ContextMenu from '~/features/common/components/ContextMenu'
 
-const HeaderProfileMenu = () => {
-  const router = useRouter()
+export const HeaderProfileMenu = () => {
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const isUserMenuOpen = Boolean(anchorEl)
 
@@ -20,45 +18,45 @@ const HeaderProfileMenu = () => {
   }
 
   const handleSignOutClick = async () => {
-    router.push('/auth')
+    navigate('/auth')
   }
 
   return (
     <>
-    <Badge
-      badgeContent={'Координатор'}
-      color="info"
-      anchorOrigin={{ horizontal: 'left', vertical: 'top', }}
-      overlap="circular"
-      sx={{
-        '& > [class*="badge"]': {
-          left: '-52px',
-          top: '16px',
-        }
-      }}
-    >
-      <Button
-        size={'small'}
-        aria-controls={isUserMenuOpen ? 'account-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={isUserMenuOpen ? 'true' : undefined}
-        sx={{ padding: 0, minWidth: 0 }}
-        disableRipple
-        onClick={handleUserMenuClick}
+      <Badge
+        badgeContent={'Координатор'}
+        color="info"
+        anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+        overlap="circular"
+        sx={{
+          '& > [class*="badge"]': {
+            left: '-52px',
+            top: '16px',
+          },
+        }}
       >
-        <Avatar
-          id={'account-menu-avatar'}
-          sx={{
-            width: '32px',
-            height: '32px',
-            // backgroundColor: theme.palette.primary.light,
-            boxShadow: 1,
-          }}
+        <Button
+          size={'small'}
+          aria-controls={isUserMenuOpen ? 'account-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={isUserMenuOpen ? 'true' : undefined}
+          sx={{ padding: 0, minWidth: 0 }}
+          disableRipple
+          onClick={handleUserMenuClick}
         >
-          <Person sx={{ fontSize: '20px' }} />
-        </Avatar>
-      </Button>
-    </Badge>
+          <Avatar
+            id={'account-menu-avatar'}
+            sx={{
+              width: '32px',
+              height: '32px',
+              // backgroundColor: theme.palette.primary.light,
+              boxShadow: 1,
+            }}
+          >
+            <Person sx={{ fontSize: '20px' }} />
+          </Avatar>
+        </Button>
+      </Badge>
       <ContextMenu
         id={'account-menu'}
         anchorEl={anchorEl}
@@ -92,7 +90,7 @@ const HeaderProfileMenu = () => {
             <Divider sx={{ marginBottom: '8px' }} />
           </Box>
           <MenuItem
-            href={'/settings'}
+            to={'/settings'}
             component={Link}
           >
             <ListItemIcon>
@@ -112,5 +110,3 @@ const HeaderProfileMenu = () => {
     </>
   )
 }
-
-export default HeaderProfileMenu

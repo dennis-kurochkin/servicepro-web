@@ -1,6 +1,5 @@
-import React from 'react'
 import { Control, Controller, ControllerProps, FieldValues, Path } from 'react-hook-form'
-import {FieldInput, FieldInputProps} from "~/features/common/components/Field";
+import { FieldInput, FieldInputProps } from '~/features/common/components/Field'
 
 interface FieldInputControlledProps<F extends FieldValues> extends Omit<
   FieldInputProps, 'value' | 'error' | 'required' | 'onChange' | 'onBlur'

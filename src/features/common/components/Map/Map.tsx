@@ -1,22 +1,13 @@
-'use client'
-
-import React, { ReactElement } from 'react'
+import { ReactElement } from 'react'
 import { MapContainer } from 'react-leaflet'
+import { MapInner, MapInnerProps } from '@components/Map/components/MapInner'
+import { MapMarkerProps } from '@components/Map/components/MapMarker'
+import { MAP_ZOOM_DEFAULT } from '@components/Map/constants'
+import { LAT_LNG_INITIAL, MAP_OVERLAY_Z_INDEX } from '@constants/index'
+import { theme } from '@data/theme'
 import { Box, SxProps, Typography } from '@mui/material'
-import {MapInnerProps} from "~/features/common/components/Map/components/MapInner";
-import {MapMarkerProps} from "~/features/common/components/Map/components/MapMarker";
-import {LatLng} from "leaflet";
-import {MAP_ZOOM_DEFAULT} from "~/features/common/components/Map/constants";
-import {omit} from "ramda";
-import {theme} from "~/features/common/components/ThemeRegistry/ThemeRegistry";
-import {LAT_LNG_INITIAL, MAP_OVERLAY_Z_INDEX} from "~/features/common/constants";
-import dynamic from "next/dynamic";
-
-const MapInner = dynamic(() => {
-  return import('~/features/common/components/Map/components/MapInner/MapInner')
-}, {
-  ssr: false
-})
+import { LatLng } from 'leaflet'
+import { omit } from 'ramda'
 
 export interface MarkerData {
   coords: LatLng
@@ -27,11 +18,12 @@ export interface MarkerData {
 
 export interface MapProps extends MapInnerProps {
   height?: string
+  minHeight?: string
   sx?: SxProps
 }
 
 export const Map = (props: MapProps) => {
-  const { coords, markers, height = '400px', sx } = props
+  const { coords, markers, height = '400px', minHeight, sx } = props
 
   return (
     <Box
@@ -69,12 +61,12 @@ export const Map = (props: MapProps) => {
       <MapContainer
         center={coords ?? markers?.[0]?.coords ?? LAT_LNG_INITIAL}
         zoom={MAP_ZOOM_DEFAULT}
-        style={{ height }}
+        style={{ height, minHeight }}
         minZoom={2}
         bounceAtZoomLimits
         scrollWheelZoom
       >
-        <MapInner {...omit(['height, sx'], props)} />
+        <MapInner {...omit(['height, minHeight, sx'], props)} />
       </MapContainer>
     </Box>
   )

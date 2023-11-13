@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { Menu, MenuListProps, MenuProps } from '@mui/material'
 
 type PickedMenuListProps = Pick<MenuListProps, 'dense'>

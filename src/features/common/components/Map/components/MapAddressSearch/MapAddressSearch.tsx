@@ -1,20 +1,18 @@
-import React from 'react'
-import { useQuery } from 'react-query'
+import { theme } from '@data/theme'
 import { Paper } from '@mui/material'
-import { useDebounce } from '@react-hook/debounce'
-import {theme} from "~/features/common/components/ThemeRegistry/ThemeRegistry";
-import {MAP_ACTIONS_Z_INDEX} from "~/features/common/constants";
+import { MAP_ACTIONS_Z_INDEX } from '~/features/common/constants'
 
 interface MapAddressSearchProps {
-  onSelect: (address: any | null) => void
+  onSelect: (address: never | null) => void
 }
 
+// @ts-expect-error dsfsdf
 export const MapAddressSearch = ({ onSelect }: MapAddressSearchProps) => {
-  const [debouncedSearch, setDebouncedSearch] = useDebounce('', 300)
-  const query = useQuery(
-    ['map', 'address-search', debouncedSearch],
-    () => {}
-  )
+  // const [debouncedSearch, setDebouncedSearch] = useDebounce('', 300)
+  // const query = useQuery(
+  //   ['map', 'address-search', debouncedSearch],
+  //   () => {}
+  // )
 
   return (
     <Paper
