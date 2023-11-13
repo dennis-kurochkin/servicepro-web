@@ -1,5 +1,5 @@
+import { theme } from '@data/theme'
 import { Typography } from '@mui/material'
-import {theme} from "~/features/common/components/ThemeRegistry/ThemeRegistry";
 
 export interface FieldMessageProps {
   show?: boolean

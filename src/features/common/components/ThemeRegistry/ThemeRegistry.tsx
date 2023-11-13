@@ -1,27 +1,13 @@
-'use client';
-import * as React from 'react';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import {createTheme} from "@mui/material";
+import { PropsWithChildren } from 'react'
+import { theme } from '@data/theme'
+import CssBaseline from '@mui/material/CssBaseline'
+import { ThemeProvider } from '@mui/material/styles'
 
-export const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#ED1C24',
-      dark: '#da181f',
-    },
-    secondary: {
-      main: '#A0A0A0'
-    },
-  },
-});
-
-
-export default function ThemeRegistry({ children }: { children: React.ReactNode }) {
+export const ThemeRegistry = ({ children }: PropsWithChildren) => {
   return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
-  );
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {children}
+    </ThemeProvider>
+  )
 }

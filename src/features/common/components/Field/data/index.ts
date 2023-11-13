@@ -1,5 +1,5 @@
+import { theme } from '@data/theme'
 import { SxProps } from '@mui/material'
-import {theme} from "~/features/common/components/ThemeRegistry/ThemeRegistry";
 
 export const getSxOutlinedInputDefault = (): SxProps => ({
   '&.MuiOutlinedInput-root:hover': {

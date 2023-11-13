@@ -1,8 +1,7 @@
-import React from 'react'
 import { useMap } from 'react-leaflet'
 import { latLngBounds } from 'leaflet'
-import {MapProps} from "~/features/common/components/Map";
-import {MapMarker} from "~/features/common/components/Map/components/MapMarker";
+import { MapProps } from '~/features/common/components/Map'
+import { MapMarker } from '~/features/common/components/Map/components/MapMarker'
 
 interface MapMarkersProps extends Pick<MapProps, 'markers'> {}
 

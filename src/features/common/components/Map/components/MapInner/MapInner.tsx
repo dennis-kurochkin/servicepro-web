@@ -1,19 +1,16 @@
-'use client'
-
-import React from 'react'
-import {useGeolocated} from 'react-geolocated'
-import {LayersControl, TileLayer, useMapEvent} from 'react-leaflet'
-import {MyLocation} from '@mui/icons-material'
-import {Button, Typography} from '@mui/material'
-import {LatLng, LeafletMouseEvent} from 'leaflet'
-import {MarkerData} from "~/features/common/components/Map";
-import {MapMarker, MapMarkerProps} from "~/features/common/components/Map/components/MapMarker";
-import {useToast} from "~/features/common/hooks/useToast";
-import {MapLayer} from "~/features/common/components/Map/data";
-import {MapMarkers} from "~/features/common/components/Map/components/MapMarkers";
-import {MapAddressSearch} from "~/features/common/components/Map/components/MapAddressSearch";
-import {Tooltip} from "~/features/common/components/Tooltip";
-import {MAP_ACTIONS_Z_INDEX} from "~/features/common/constants";
+import { useGeolocated } from 'react-geolocated'
+import { LayersControl, TileLayer, useMapEvent } from 'react-leaflet'
+import { MyLocation } from '@mui/icons-material'
+import { Button, Typography } from '@mui/material'
+import { LatLng, LeafletMouseEvent } from 'leaflet'
+import { MarkerData } from '~/features/common/components/Map'
+import { MapAddressSearch } from '~/features/common/components/Map/components/MapAddressSearch'
+import { MapMarker, MapMarkerProps } from '~/features/common/components/Map/components/MapMarker'
+import { MapMarkers } from '~/features/common/components/Map/components/MapMarkers'
+import { MapLayer } from '~/features/common/components/Map/data'
+import { Tooltip } from '~/features/common/components/Tooltip'
+import { MAP_ACTIONS_Z_INDEX } from '~/features/common/constants'
+import { useToast } from '~/features/common/hooks/useToast'
 
 export interface MapInnerProps extends Pick<MapMarkerProps, 'initiallyOpen'> {
   coords?: LatLng

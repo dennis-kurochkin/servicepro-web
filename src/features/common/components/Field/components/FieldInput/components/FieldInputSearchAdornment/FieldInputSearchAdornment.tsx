@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Search } from '@mui/icons-material'
 import { InputAdornment } from '@mui/material'
 

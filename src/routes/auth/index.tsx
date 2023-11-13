@@ -1,15 +1,11 @@
-'use client'
+import { useNavigate } from 'react-router-dom'
+import logoVertical from '@assets/logo-vertical.png'
+import { FieldInput } from '@components/Field'
+import { theme } from '@data/theme'
+import { Box, Button, Link } from '@mui/material'
 
-import {Box, Button, Link, Typography} from "@mui/material";
-import {useTheme} from "@mui/system";
-import Image from "next/image";
-import React from "react";
-import {FieldInput} from "~/features/common/components/Field";
-import {useRouter} from "next/navigation";
-
-export default function Page() {
-  const theme = useTheme()
-  const router = useRouter()
+export const AuthRoute = () => {
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -28,13 +24,12 @@ export default function Page() {
           alignItems: 'center',
         }}
       >
-        <Image
-          src="/logo-vertical.png"
+        <img
+          src={logoVertical}
           alt="СЕРВИСПРО"
-          style={{ display: 'block', }}
+          style={{ display: 'block' }}
           width={165}
           height={192}
-          priority
         />
         <Box
           sx={{
@@ -60,7 +55,7 @@ export default function Page() {
             name={'username'}
             label={'Пароль'}
             placeholder={'Введите пароль'}
-            sx={{ mt: '16px', }}
+            sx={{ mt: '16px' }}
           />
           <Button
             size={'large'}
@@ -69,7 +64,7 @@ export default function Page() {
               width: '100%',
             }}
             variant={'contained'}
-            onClick={() => router.push('/tickets')}
+            onClick={() => navigate('/tickets')}
           >
             Войти в аккаунт
           </Button>
@@ -77,7 +72,7 @@ export default function Page() {
             component={'button'}
             underline="hover"
             sx={{ mt: '16px', fontSize: '15px' }}
-            onClick={() => router.push('/auth/recover')}
+            onClick={() => navigate('/auth/recover')}
           >
             Восстановить пароль
           </Link>

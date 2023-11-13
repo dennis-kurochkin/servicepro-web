@@ -1,24 +1,7 @@
-'use client'
-
-import {
-  AppBar,
-  Avatar,
-  Box,
-  Button,
-  Container,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-  Tooltip,
-  Typography
-} from "@mui/material";
-import React from "react";
-import Image from "next/image";
-import {usePathname, useRouter} from "next/navigation";
-import {theme} from "~/features/common/components/ThemeRegistry/ThemeRegistry";
-import HeaderProfileMenu from "~/features/common/components/HeaderProfileMeny/HeaderProfileMenu";
-
+import { useLocation, useNavigate } from 'react-router-dom'
+import logo from '@assets/logo.png'
+import { HeaderProfileMenu } from '@components/HeaderProfileMenu'
+import { AppBar, Box, Button, Toolbar } from '@mui/material'
 
 const pages = [
   {
@@ -43,37 +26,30 @@ const pages = [
   },
 ]
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
 export const Header = () => {
-  const router = useRouter()
-  const pathname = usePathname()
-
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
 
   const handleClickNavButton = (url: string) => {
-    router.push(url)
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+    navigate(url)
+  }
 
   return (
     <AppBar
       position="static"
       elevation={0}
       sx={{
+        position: 'relative',
+        zIndex: 1000,
         background: '#fff',
-        borderBottom: '1px solid',
-        borderColor: theme.palette.grey['200'],
+        boxShadow: '0 0 8px 0 rgba(0,0,0,.1) !important',
       }}
     >
-      <Container maxWidth="xl">
+      <Box
+        sx={{
+          paddingX: '24px',
+        }}
+      >
         <Toolbar
           variant={'dense'}
           sx={{
@@ -84,13 +60,12 @@ export const Header = () => {
           disableGutters
         >
           <Box>
-            <Image
-              src="/logo.png"
+            <img
+              src={logo}
               alt="СЕРВИСПРО"
-              style={{ display: 'block', }}
+              style={{ display: 'block' }}
               width={200}
               height={32}
-              priority
             />
           </Box>
           <Box
@@ -122,36 +97,9 @@ export const Header = () => {
             }}
           >
             <HeaderProfileMenu />
-          {/*  <Tooltip title="Open settings">*/}
-          {/*    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>*/}
-          {/*      <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />*/}
-          {/*    </IconButton>*/}
-          {/*  </Tooltip>*/}
-          {/*  <Menu*/}
-          {/*    sx={{ mt: '45px' }}*/}
-          {/*    id="menu-appbar"*/}
-          {/*    anchorEl={anchorElUser}*/}
-          {/*    anchorOrigin={{*/}
-          {/*      vertical: 'top',*/}
-          {/*      horizontal: 'right',*/}
-          {/*    }}*/}
-          {/*    keepMounted*/}
-          {/*    transformOrigin={{*/}
-          {/*      vertical: 'top',*/}
-          {/*      horizontal: 'right',*/}
-          {/*    }}*/}
-          {/*    open={Boolean(anchorElUser)}*/}
-          {/*    onClose={handleCloseUserMenu}*/}
-          {/*  >*/}
-          {/*    {settings.map((setting) => (*/}
-          {/*      <MenuItem key={setting} onClick={handleCloseUserMenu}>*/}
-          {/*        <Typography textAlign="center">{setting}</Typography>*/}
-          {/*      </MenuItem>*/}
-          {/*    ))}*/}
-          {/*  </Menu>*/}
           </Box>
         </Toolbar>
-      </Container>
+      </Box>
     </AppBar>
   )
 }
