@@ -11,8 +11,9 @@ export const getSxOutlinedInputDefault = (): SxProps => ({
 
 export const getSxTextFieldDefault = (disabled?: boolean): SxProps => disabled ? {} : {
   '& .MuiOutlinedInput-root': {
+    background: theme.palette.common.white,
     '& > fieldset': {
-      borderColor: theme.palette.grey['500'],
+      borderColor: theme.palette.grey['300'],
     },
   },
   '& .MuiOutlinedInput-root:hover': {
