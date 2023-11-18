@@ -1,90 +1,205 @@
+import { useState } from 'react'
 import { FieldInput } from '@components/Field'
 import { Map } from '@components/Map'
-import { TicketCard } from '@features/tickets/components/TicketCard'
+import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
+import { theme } from '@data/theme'
+import { TicketRow } from '@features/tickets/components/TicketRow'
 import {
   Search,
 } from '@mui/icons-material'
-import { Box, InputAdornment, Typography } from '@mui/material'
+import {
+  Box, Button,
+  Container,
+  InputAdornment, Link,
+  Paper,
+  Table, TableBody, TableCell,
+  TableContainer,
+  TableHead, TablePagination,
+  TableRow,
+  Typography,
+} from '@mui/material'
+
+enum TicketsTab {
+  Active = 'active',
+  History = 'history'
+}
 
 export const TicketsRoute = () => {
+  const [activeTab, setActiveTab] = useState(TicketsTab.Active)
+
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: '500px 1fr',
-        height: 'calc(100vh - 60px)',
-        paddingX: '24px',
-      }}
-    >
-      <Box
-        sx={{
-          position: 'relative',
-          zIndex: 900,
-          height: '100%',
-          overflow: 'hidden',
-          paddingTop: '24px',
-          paddingBottom: '36px',
-          paddingRight: '28px',
-          boxShadow: '10px 0px 6px -8px rgba(0,0,0,.1)',
-        }}
-      >
-        <Typography
-          variant={'h5'}
-        >
-          Заявки
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: '16px',
-          }}
-        >
-          <FieldInput
-            value={''}
-            name={'search'}
-            placeholder={'Поиск по названию'}
-            sx={{ width: '260px' }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            marginRight: '-28px',
-            paddingRight: '20px',
-            gap: '6px',
-            marginTop: '24px',
-            overflowY: 'auto',
-            height: '90%',
-          }}
-        >
-          <TicketCard />
-          <TicketCard />
-          <TicketCard />
-          <TicketCard />
-          <TicketCard />
-          <TicketCard />
-          <TicketCard />
-          <TicketCard />
-          <TicketCard />
-        </Box>
-      </Box>
+    <>
       <Map
-        height={'100%'}
-        minHeight={'100%'}
         sx={{
-          marginRight: '-24px',
+          height: '45vh',
+          minHeight: '328px',
+          maxHeight: '500px',
         }}
       />
-    </Box>
+      <Container
+        maxWidth={'xl'}
+      >
+        <Box
+          sx={{
+            paddingTop: '24px',
+          }}
+        >
+          <Typography
+            variant={'h5'}
+          >
+            Заявки{' '}
+            <Link
+              component={Button}
+              sx={{
+                padding: 0,
+                textTransform: 'none',
+                verticalAlign: 'baseline',
+                '&:hover': {
+                  textDecoration: activeTab === TicketsTab.History ? 'underline' : undefined,
+                  background: 'none',
+                },
+              }}
+              color={activeTab === TicketsTab.Active ? theme.palette.primary.main : theme.palette.text.primary}
+              disableRipple
+              onClick={() => setActiveTab(TicketsTab.Active)}
+            >
+              активные
+            </Link>
+            {' / '}
+            <Link
+              component={Button}
+              sx={{
+                padding: 0,
+                textTransform: 'none',
+                verticalAlign: 'baseline',
+                '&:hover': {
+                  textDecoration: activeTab === TicketsTab.Active ? 'underline' : undefined,
+                  background: 'none',
+                },
+              }}
+              color={activeTab === TicketsTab.History ? theme.palette.primary.main : theme.palette.text.primary}
+              disableRipple
+              onClick={() => setActiveTab(TicketsTab.History)}
+            >
+              история
+            </Link>
+            <Box
+              component={'span'}
+            >
+              {' (3)'}
+            </Box>
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginTop: '16px',
+            }}
+          >
+            <FieldInput
+              value={''}
+              name={'search'}
+              placeholder={'Поиск по названию'}
+              sx={{ width: '260px' }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            sx={{
+              marginTop: '24px',
+              border: `1px solid ${theme.palette.grey['300']}`,
+            }}
+          >
+            <TablePagination
+              component="div"
+              count={50}
+              rowsPerPage={20}
+              rowsPerPageOptions={[{ value: 20, label: '20' }]}
+              page={2}
+              sx={{
+                borderBottom: `1px solid ${theme.palette.grey['300']}`,
+              }}
+              onPageChange={() => {}}
+            />
+            <Table
+              sx={{ minHeight: 200 }}
+              size={'small'}
+              aria-label="simple table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    size={'small'}
+                  >
+                    ID
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Клиент
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Адрес
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Техника
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Дата и время
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Статус
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Исполнитель
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                    sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}
+                  />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Array.from({ length: 20 }).map((_, index) => (
+                  <TicketRow
+                    key={index}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+            <TablePagination
+              component="div"
+              count={50}
+              rowsPerPage={20}
+              rowsPerPageOptions={[{ value: 20, label: '20' }]}
+              page={2}
+              sx={{
+                borderTop: `1px solid ${theme.palette.grey['300']}`,
+              }}
+              onPageChange={() => {}}
+            />
+          </TableContainer>
+        </Box>
+      </Container>
+    </>
   )
 }

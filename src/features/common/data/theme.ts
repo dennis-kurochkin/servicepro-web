@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material'
+import { ruRU } from '@mui/material/locale'
 
 export const theme = createTheme({
   palette: {
@@ -10,4 +11,4 @@ export const theme = createTheme({
       main: '#A0A0A0',
     },
   },
-})
+}, ruRU)

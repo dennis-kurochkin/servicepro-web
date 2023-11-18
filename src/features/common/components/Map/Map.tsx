@@ -17,13 +17,11 @@ export interface MarkerData {
 }
 
 export interface MapProps extends MapInnerProps {
-  height?: string
-  minHeight?: string
   sx?: SxProps
 }
 
 export const Map = (props: MapProps) => {
-  const { coords, markers, height = '400px', minHeight, sx } = props
+  const { coords, markers, sx } = props
 
   return (
     <Box
@@ -61,7 +59,7 @@ export const Map = (props: MapProps) => {
       <MapContainer
         center={coords ?? markers?.[0]?.coords ?? LAT_LNG_INITIAL}
         zoom={MAP_ZOOM_DEFAULT}
-        style={{ height, minHeight }}
+        style={{ height: '100%' }}
         minZoom={2}
         bounceAtZoomLimits
         scrollWheelZoom

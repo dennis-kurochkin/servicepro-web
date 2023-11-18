@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import logo from '@assets/logo.png'
 import { HeaderProfileMenu } from '@components/HeaderProfileMenu'
-import { AppBar, Box, Button, Toolbar } from '@mui/material'
+import { AppBar, Box, Button, Container, Toolbar } from '@mui/material'
 
 const pages = [
   {
@@ -36,19 +36,16 @@ export const Header = () => {
 
   return (
     <AppBar
-      position="static"
+      position="fixed"
       elevation={0}
       sx={{
-        position: 'relative',
-        zIndex: 1000,
+        zIndex: 1100,
         background: '#fff',
-        boxShadow: '0 0 8px 0 rgba(0,0,0,.1) !important',
+        boxShadow: '0 0 6px 0 rgba(0,0,0,.25) !important',
       }}
     >
-      <Box
-        sx={{
-          paddingX: '24px',
-        }}
+      <Container
+        maxWidth={'xl'}
       >
         <Toolbar
           variant={'dense'}
@@ -99,7 +96,7 @@ export const Header = () => {
             <HeaderProfileMenu />
           </Box>
         </Toolbar>
-      </Box>
+      </Container>
     </AppBar>
   )
 }
