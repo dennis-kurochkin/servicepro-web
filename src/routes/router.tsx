@@ -3,7 +3,7 @@ import { LayoutAuth } from '@components/LayoutAuth'
 import { LayoutHeader } from '@components/LayoutHeader'
 import { AuthRoute } from '@routes/auth'
 import { Root } from '@routes/root'
-import { TicketsRoute } from '@routes/tickets'
+import { TicketsRoute } from '@routes/tickets/tickets'
 export const router = createBrowserRouter([
   {
     path: '/',

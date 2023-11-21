@@ -1,9 +1,7 @@
 import { FieldInput } from '@components/Field'
 import { Map } from '@components/Map'
 import { TicketCard } from '@features/tickets/components/TicketCard'
-import {
-  Search,
-} from '@mui/icons-material'
+import { Search } from '@mui/icons-material'
 import { Box, InputAdornment, Typography } from '@mui/material'
 
 export const TicketsRoute = () => {
@@ -79,9 +77,8 @@ export const TicketsRoute = () => {
         </Box>
       </Box>
       <Map
-        height={'100%'}
-        minHeight={'100%'}
         sx={{
+          height: '100%',
           marginRight: '-24px',
         }}
       />
