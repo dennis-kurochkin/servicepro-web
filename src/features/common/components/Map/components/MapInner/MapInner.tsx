@@ -87,7 +87,7 @@ export const MapInner = ({ coords, markers, addressSearch = false, initiallyOpen
       <MapMarkers markers={markers} />
       {!coords && (
         <Tooltip
-          placement={'bottom-start'}
+          placement={'left'}
           content={(
             <Typography
               variant={'body2'}

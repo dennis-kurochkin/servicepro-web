@@ -1,28 +1,26 @@
 import { useState } from 'react'
 import { FieldAutocompleteMultiple, FieldInput } from '@components/Field'
 import { Map } from '@components/Map'
+import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { theme } from '@data/theme'
 import { TicketRow } from '@features/tickets/components/TicketRow'
+import { TicketsTabLink } from '@features/tickets/components/TicketsTabLink/TicketsTabLink'
+import { TicketsTab } from '@features/tickets/data'
+import { Search } from '@mui/icons-material'
 import {
-  Search,
-} from '@mui/icons-material'
-import {
-  Box, Button,
+  Box,
   Container,
-  InputAdornment, Link,
+  InputAdornment,
   Paper,
-  Table, TableBody, TableCell,
+  Table,
+  TableBody,
+  TableCell,
   TableContainer,
-  TableHead, TablePagination,
+  TableHead,
   TableRow,
   Typography,
 } from '@mui/material'
-
-enum TicketsTab {
-  Active = 'active',
-  History = 'history'
-}
 
 export const TicketsRoute = () => {
   const [activeTab, setActiveTab] = useState(TicketsTab.Active)
@@ -45,42 +43,18 @@ export const TicketsRoute = () => {
         <Typography
           variant={'h5'}
         >
-            Заявки{' '}
-          <Link
-            component={Button}
-            sx={{
-              padding: 0,
-              textTransform: 'none',
-              verticalAlign: 'baseline',
-              '&:hover': {
-                textDecoration: activeTab === TicketsTab.History ? 'underline' : undefined,
-                background: 'none',
-              },
-            }}
-            color={activeTab === TicketsTab.Active ? theme.palette.primary.main : theme.palette.text.primary}
-            disableRipple
-            onClick={() => setActiveTab(TicketsTab.Active)}
-          >
-            активные
-          </Link>
+          Заявки{' '}
+          <TicketsTabLink
+            tab={TicketsTab.Active}
+            activeTab={activeTab}
+            onClick={setActiveTab}
+          />
           {' / '}
-          <Link
-            component={Button}
-            sx={{
-              padding: 0,
-              textTransform: 'none',
-              verticalAlign: 'baseline',
-              '&:hover': {
-                textDecoration: activeTab === TicketsTab.Active ? 'underline' : undefined,
-                background: 'none',
-              },
-            }}
-            color={activeTab === TicketsTab.History ? theme.palette.primary.main : theme.palette.text.primary}
-            disableRipple
-            onClick={() => setActiveTab(TicketsTab.History)}
-          >
-            история
-          </Link>
+          <TicketsTabLink
+            tab={TicketsTab.History}
+            activeTab={activeTab}
+            onClick={setActiveTab}
+          />
           <Box
             component={'span'}
           >
@@ -154,84 +128,63 @@ export const TicketsRoute = () => {
             border: `1px solid ${theme.palette.grey['300']}`,
           }}
         >
-          <TablePagination
-            component="div"
-            count={50}
-            rowsPerPage={20}
-            rowsPerPageOptions={[{ value: 20, label: '20' }]}
-            page={2}
-            sx={{
-              borderBottom: `1px solid ${theme.palette.grey['300']}`,
-            }}
-            onPageChange={() => {}}
-          />
-          <Table
-            sx={{ minHeight: 200 }}
-            size={'small'}
-            aria-label="simple table"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  size={'small'}
-                >
-                  ID
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Клиент
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Адрес
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Техника
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Дата и время
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Статус
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Исполнитель
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                  sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}
-                />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Array.from({ length: 20 }).map((_, index) => (
-                <TicketRow
-                  key={index}
-                />
-              ))}
-            </TableBody>
-          </Table>
-          <TablePagination
-            component="div"
-            count={50}
-            rowsPerPage={20}
-            rowsPerPageOptions={[{ value: 20, label: '20' }]}
-            page={2}
-            sx={{
-              borderTop: `1px solid ${theme.palette.grey['300']}`,
-            }}
-            onPageChange={() => {}}
-          />
+          <TableWrapper>
+            <Table
+              sx={{ minHeight: 200 }}
+              size={'small'}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    size={'small'}
+                  >
+                    ID
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Клиент
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Адрес
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Техника
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Дата и время
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Статус
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                  >
+                    Исполнитель
+                  </TableCell>
+                  <TableCell
+                    size={'small'}
+                    sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}
+                  />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Array.from({ length: 20 }).map((_, index) => (
+                  <TicketRow
+                    key={index}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+          </TableWrapper>
         </TableContainer>
       </Container>
     </>
