@@ -17,6 +17,8 @@ createRoot(document.getElementById('root')!).render(
     <ThemeRegistry>
       <Box
         sx={{
+          display: 'flex',
+          flexDirection: 'column',
           minHeight: '100vh',
           backgroundColor: theme.palette.grey['100'],
         }}

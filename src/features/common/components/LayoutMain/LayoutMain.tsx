@@ -10,6 +10,7 @@ export const LayoutMain = () => {
       <Box
         sx={{
           padding: '56px 0 24px',
+          marginTop: 'auto',
         }}
       >
         <Typography
