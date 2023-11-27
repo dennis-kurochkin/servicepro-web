@@ -2,7 +2,7 @@ import { FieldAutocompleteMultiple, FieldInput } from '@components/Field'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { theme } from '@data/theme'
-import { VehicleRow } from '@features/vehicles/components/VehicleRow'
+import { EngineerRow } from '@features/engineers/components/EngineerRow'
 import { Search } from '@mui/icons-material'
 import {
   Badge,
@@ -18,12 +18,12 @@ import {
   Typography,
 } from '@mui/material'
 
-export const VehiclesRoute = () => {
+export const EngineersRoute = () => {
   return (
     <>
       <Badge
         color={'primary'}
-        badgeContent={20}
+        badgeContent={10}
         overlap={'rectangular'}
         sx={{
           '& > .MuiBadge-badge': {
@@ -35,7 +35,7 @@ export const VehiclesRoute = () => {
         <Typography
           variant={'h5'}
         >
-          Техника
+          Инженеры
         </Typography>
       </Badge>
       <Box
@@ -62,16 +62,7 @@ export const VehiclesRoute = () => {
         />
         <FieldAutocompleteMultiple
           name={'client'}
-          label={'Техника'}
-          value={[]}
-          options={[]}
-          sx={{ width: '250px' }}
-          labelInside
-          onChange={() => {}}
-        />
-        <FieldAutocompleteMultiple
-          name={'client'}
-          label={'Тип'}
+          label={'Рейтинг'}
           value={[]}
           options={[]}
           sx={{ width: '200px' }}
@@ -80,16 +71,7 @@ export const VehiclesRoute = () => {
         />
         <FieldAutocompleteMultiple
           name={'client'}
-          label={'Клиент'}
-          value={[]}
-          options={[]}
-          sx={{ width: '200px' }}
-          labelInside
-          onChange={() => {}}
-        />
-        <FieldAutocompleteMultiple
-          name={'client'}
-          label={'Исполнитель'}
+          label={'Статус'}
           value={[]}
           options={[]}
           sx={{ width: '250px' }}
@@ -120,33 +102,14 @@ export const VehiclesRoute = () => {
                 <TableCell
                   size={'small'}
                 >
-                  Техника
+                  Инженер
                 </TableCell>
                 <TableCell
                   size={'small'}
                 >
-                  Тип
+                  Статус
                 </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Заводской номер
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Наработка
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Клиент
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Исполнитель
-                </TableCell>
+                <TableCell />
                 <TableCell
                   size={'small'}
                   sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}
@@ -155,7 +118,7 @@ export const VehiclesRoute = () => {
             </TableHead>
             <TableBody>
               {Array.from({ length: 20 }).map((_, index) => (
-                <VehicleRow
+                <EngineerRow
                   key={index}
                 />
               ))}
