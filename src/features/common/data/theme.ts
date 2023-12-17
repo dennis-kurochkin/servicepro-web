@@ -11,6 +11,15 @@ export const theme = createTheme({
       main: '#A0A0A0',
     },
   },
+  components: {
+    MuiTableCell: {
+      styleOverrides: {
+        head: {
+          fontSize: '0.95rem',
+        },
+      },
+    },
+  },
   typography: {
     fontFamily: [
       'TTLakesNeue',

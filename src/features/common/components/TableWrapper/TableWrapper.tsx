@@ -1,10 +1,18 @@
 import { PropsWithChildren } from 'react'
 import { theme } from '@data/theme'
-import { TablePagination } from '@mui/material'
+import { Paper, TableContainer, TablePagination } from '@mui/material'
 
 export const TableWrapper = ({ children }: PropsWithChildren) => {
   return (
-    <>
+    <TableContainer
+      component={Paper}
+      elevation={0}
+      sx={{
+        marginTop: '20px',
+        background: 'none',
+        border: `1px solid ${theme.palette.grey['300']}`,
+      }}
+    >
       <TablePagination
         component="div"
         count={50}
@@ -28,6 +36,6 @@ export const TableWrapper = ({ children }: PropsWithChildren) => {
         }}
         onPageChange={() => {}}
       />
-    </>
+    </TableContainer>
   )
 }
