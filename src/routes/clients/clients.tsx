@@ -7,7 +7,7 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
+  TableRow, TableSortLabel,
 } from '@mui/material'
 
 export const ClientsRoute = () => {
@@ -37,24 +37,35 @@ export const ClientsRoute = () => {
             <TableRow>
               <TableCell
                 size={'small'}
-              >
-                ID
-              </TableCell>
+              />
               <TableCell
                 size={'small'}
               >
                 Клиент
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
               </TableCell>
               <TableCell
                 size={'small'}
               >
                 Адрес
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
               </TableCell>
               <TableCell
                 align={'center'}
                 size={'small'}
               >
                 Рекомендации
+                <TableSortLabel
+                  direction={'desc'}
+                  sx={{ marginRight: '-20px' }}
+                  active
+                />
               </TableCell>
               <TableCell />
               <TableCell

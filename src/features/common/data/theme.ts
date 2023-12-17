@@ -1,3 +1,4 @@
+import { ArrowDropDown } from '@mui/icons-material'
 import { createTheme } from '@mui/material'
 import { ruRU } from '@mui/material/locale'
 
@@ -16,6 +17,19 @@ export const theme = createTheme({
       styleOverrides: {
         head: {
           fontSize: '0.95rem',
+        },
+      },
+    },
+    MuiTableSortLabel: {
+      defaultProps: {
+        IconComponent: ArrowDropDown,
+      },
+      styleOverrides: {
+        root: {
+          marginTop: '-2px',
+        },
+        icon: {
+          fontSize: '24px',
         },
       },
     },

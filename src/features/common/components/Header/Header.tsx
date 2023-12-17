@@ -3,6 +3,8 @@ import logo from '@assets/logo.png'
 import { HeaderProfileMenu } from '@components/HeaderProfileMenu'
 import { AppBar, Box, Button, Container, Toolbar } from '@mui/material'
 
+export const headerHeight = 54
+
 const pages = [
   {
     title: 'Заявки',
@@ -52,7 +54,7 @@ export const Header = () => {
           sx={{
             display: 'grid',
             gridTemplateColumns: '1fr max-content 1fr',
-            height: '60px',
+            height: `${headerHeight}px`,
           }}
           disableGutters
         >

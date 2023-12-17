@@ -7,7 +7,7 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
+  TableRow, TableSortLabel,
 } from '@mui/material'
 
 export const VehiclesRoute = () => {
@@ -64,38 +64,60 @@ export const VehiclesRoute = () => {
             <TableRow>
               <TableCell
                 size={'small'}
-              >
-                ID
-              </TableCell>
+              />
               <TableCell
                 size={'small'}
               >
                 Техника
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
               </TableCell>
               <TableCell
                 size={'small'}
               >
                 Тип
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
               </TableCell>
               <TableCell
                 size={'small'}
               >
                 Заводской номер
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
               </TableCell>
               <TableCell
                 size={'small'}
               >
                 Наработка
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
               </TableCell>
               <TableCell
                 size={'small'}
               >
                 Клиент
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
               </TableCell>
               <TableCell
                 size={'small'}
               >
                 Исполнитель
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
               </TableCell>
               <TableCell
                 size={'small'}

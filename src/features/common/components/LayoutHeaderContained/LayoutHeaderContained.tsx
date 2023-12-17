@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom'
+import { headerHeight } from '@components/Header'
 import { Container } from '@mui/material'
 
 export const LayoutHeaderContained = () => {
@@ -6,7 +7,7 @@ export const LayoutHeaderContained = () => {
     <>
       <Container
         sx={{
-          paddingTop: '84px',
+          paddingTop: `${headerHeight + 24}px`,
         }}
         maxWidth="xl"
       >
