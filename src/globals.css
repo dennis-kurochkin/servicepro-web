@@ -1,3 +1,39 @@
+@font-face {
+    font-family: "TTLakesNeue";
+    font-weight: 400;
+    ascent-override: 95%;
+    src:
+        local("TTLakesNeue-Regular"),
+        url("@assets/fonts/TTLakesNeue-Regular.eot") format("embedded-opentype"),
+        url("@assets/fonts/TTLakesNeue-Regular.ttf") format("truetype"),
+        url("@assets/fonts/TTLakesNeue-Regular.woff2") format("woff"),
+        url("@assets/fonts/TTLakesNeue-Regular.woff") format("woff");
+}
+
+@font-face {
+    font-family: "TTLakesNeue";
+    font-weight: 500;
+    ascent-override: 95%;
+    src:
+            local("TTLakesNeue-Medium"),
+            url("@assets/fonts/TTLakesNeue-DBold.eot") format("embedded-opentype"),
+            url("@assets/fonts/TTLakesNeue-DBold.ttf") format("truetype"),
+            url("@assets/fonts/TTLakesNeue-DBold.woff2") format("woff"),
+            url("@assets/fonts/TTLakesNeue-DBold.woff") format("woff");
+}
+
+@font-face {
+    font-family: "TTLakesNeue";
+    font-weight: 700;
+    ascent-override: 95%;
+    src:
+            local("TTLakesNeue-Bold"),
+            url("@assets/fonts/TTLakesNeue-Bold.eot") format("embedded-opentype"),
+            url("@assets/fonts/TTLakesNeue-Bold.ttf") format("truetype"),
+            url("@assets/fonts/TTLakesNeue-Bold.woff2") format("woff"),
+            url("@assets/fonts/TTLakesNeue-Bold.woff") format("woff");
+}
+
 body {
     min-height: 100vh;
 }

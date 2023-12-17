@@ -11,4 +11,13 @@ export const theme = createTheme({
       main: '#A0A0A0',
     },
   },
+  typography: {
+    fontFamily: [
+      'TTLakesNeue',
+      'Roboto',
+      'Helvetica',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+  },
 }, ruRU)
