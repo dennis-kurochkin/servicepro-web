@@ -1,8 +1,8 @@
 import { ButtonContextActions } from '@components/ButtonContextActions'
 import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
-import { theme } from '@data/theme'
+import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { AgricultureOutlined } from '@mui/icons-material'
-import { TableCell, TableRow, Typography } from '@mui/material'
+import { TableCell, TableRow } from '@mui/material'
 
 export const VehicleRow = () => {
   return (
@@ -30,19 +30,7 @@ export const VehicleRow = () => {
         Агротехник
       </TableCell>
       <TableCell>
-        <Typography
-          variant={'body2'}
-        >
-          Петров И.А.{' '}
-          <Typography
-            component={'span'}
-            variant={'body2'}
-            fontWeight={700}
-            color={theme.palette.success.main}
-          >
-            (4.3)
-          </Typography>
-        </Typography>
+        <EngineerAvatar />
       </TableCell>
       <TableCell
         sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}

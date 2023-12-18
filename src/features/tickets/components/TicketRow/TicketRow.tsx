@@ -1,7 +1,7 @@
 import { ButtonContextActions } from '@components/ButtonContextActions'
 import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
-import { theme } from '@data/theme'
-import { Chip, TableCell, TableRow, Typography } from '@mui/material'
+import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
+import { Chip, TableCell, TableRow } from '@mui/material'
 
 export const TicketRow = () => {
   return (
@@ -34,19 +34,20 @@ export const TicketRow = () => {
         />
       </TableCell>
       <TableCell>
-        <Typography
-          variant={'body2'}
-        >
-          Петров И.А.{' '}
-          <Typography
-            component={'span'}
-            variant={'body2'}
-            fontWeight={700}
-            color={theme.palette.success.main}
-          >
-            (4.3)
-          </Typography>
-        </Typography>
+        <EngineerAvatar />
+        {/*<Typography*/}
+        {/*  variant={'body2'}*/}
+        {/*>*/}
+        {/*  Петров И.А.{' '}*/}
+        {/*  <Typography*/}
+        {/*    component={'span'}*/}
+        {/*    variant={'body2'}*/}
+        {/*    fontWeight={700}*/}
+        {/*    color={theme.palette.success.main}*/}
+        {/*  >*/}
+        {/*    (4.3)*/}
+        {/*  </Typography>*/}
+        {/*</Typography>*/}
       </TableCell>
       <TableCell
         sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}

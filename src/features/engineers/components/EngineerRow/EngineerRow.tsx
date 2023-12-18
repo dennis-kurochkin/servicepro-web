@@ -1,8 +1,8 @@
 import { ButtonContextActions } from '@components/ButtonContextActions'
 import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
-import { theme } from '@data/theme'
+import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { LibraryAddOutlined, NearMeOutlined } from '@mui/icons-material'
-import { Box, Button, ButtonGroup, Chip, TableCell, TableRow, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, Chip, TableCell, TableRow } from '@mui/material'
 
 export const EngineerRow = () => {
   return (
@@ -15,19 +15,7 @@ export const EngineerRow = () => {
         351
       </TableCell>
       <TableCell>
-        <Typography
-          variant={'body2'}
-        >
-          Петров И.А.{' '}
-          <Typography
-            component={'span'}
-            variant={'body2'}
-            fontWeight={700}
-            color={theme.palette.success.main}
-          >
-            (4.3)
-          </Typography>
-        </Typography>
+        <EngineerAvatar />
       </TableCell>
       <TableCell>
         <Chip
