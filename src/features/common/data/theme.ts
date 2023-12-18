@@ -11,10 +11,16 @@ export const theme = createTheme({
     secondary: {
       main: '#A0A0A0',
     },
+    grey: {
+      '300': '#cccccc',
+    },
   },
   components: {
     MuiTableCell: {
       styleOverrides: {
+        root: {
+          borderColor: '#cccccc',
+        },
         head: {
           fontSize: '0.95rem',
         },

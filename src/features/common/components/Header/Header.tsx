@@ -43,7 +43,6 @@ export const Header = () => {
       sx={{
         zIndex: 1200,
         background: '#fff',
-        boxShadow: '0 0 6px 0 rgba(0,0,0,.25) !important',
       }}
     >
       <Container
