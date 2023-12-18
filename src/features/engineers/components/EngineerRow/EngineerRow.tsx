@@ -1,8 +1,9 @@
 import { ButtonContextActions } from '@components/ButtonContextActions'
+import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { LibraryAddOutlined, NearMeOutlined } from '@mui/icons-material'
-import { Box, Button, ButtonGroup, Chip, TableCell, TableRow } from '@mui/material'
+import { Box, Button, ButtonGroup, TableCell, TableRow } from '@mui/material'
 
 export const EngineerRow = () => {
   return (
@@ -18,12 +19,7 @@ export const EngineerRow = () => {
         <EngineerAvatar />
       </TableCell>
       <TableCell>
-        <Chip
-          size={'small'}
-          label="ИСО приступил"
-          color="warning"
-          variant="filled"
-        />
+        <ChipStatus />
       </TableCell>
       <TableCell
         align={'right'}

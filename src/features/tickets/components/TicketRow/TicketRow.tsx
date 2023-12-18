@@ -1,7 +1,8 @@
 import { ButtonContextActions } from '@components/ButtonContextActions'
+import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
-import { Chip, TableCell, TableRow } from '@mui/material'
+import { TableCell, TableRow } from '@mui/material'
 
 export const TicketRow = () => {
   return (
@@ -26,12 +27,7 @@ export const TicketRow = () => {
         13.11.2023 15:30 / 15.11.2023 16:00
       </TableCell>
       <TableCell>
-        <Chip
-          size={'small'}
-          label="Выполнена"
-          color="success"
-          variant="filled"
-        />
+        <ChipStatus />
       </TableCell>
       <TableCell>
         <EngineerAvatar />
