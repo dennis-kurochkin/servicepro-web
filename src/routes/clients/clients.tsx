@@ -50,7 +50,25 @@ export const ClientsRoute = () => {
               <TableCell
                 size={'small'}
               >
-                Адрес
+                Регион
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
+              </TableCell>
+              <TableCell
+                size={'small'}
+              >
+                Район
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
+              </TableCell>
+              <TableCell
+                size={'small'}
+              >
+                Заявки
                 <TableSortLabel
                   direction={'desc'}
                   active
@@ -67,7 +85,6 @@ export const ClientsRoute = () => {
                   active
                 />
               </TableCell>
-              <TableCell />
               <TableCell
                 size={'small'}
                 sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}

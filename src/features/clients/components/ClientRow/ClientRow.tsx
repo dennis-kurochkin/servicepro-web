@@ -1,7 +1,15 @@
 import { ButtonContextActions } from '@components/ButtonContextActions'
 import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
-import { LibraryAddOutlined } from '@mui/icons-material'
-import { Box, Button, ButtonGroup, Chip, Stack, TableCell, TableRow, Typography } from '@mui/material'
+import { Add } from '@mui/icons-material'
+import {
+  Chip,
+  IconButton,
+  Stack,
+  TableCell,
+  TableRow,
+  TableSortLabel,
+  Typography,
+} from '@mui/material'
 
 export const ClientRow = () => {
   return (
@@ -21,7 +29,25 @@ export const ClientRow = () => {
         </Typography>
       </TableCell>
       <TableCell>
-        г. Краснодар, ул. Тестовская, с. 311
+        г. Краснодар
+      </TableCell>
+      <TableCell>
+        ул. Тестовская, с. 311
+      </TableCell>
+      <TableCell>
+        Агротехник 13:00 05.06.2023
+        <TableSortLabel
+          direction={'desc'}
+          sx={{ marginLeft: '4px' }}
+          active
+        />
+        <IconButton
+          size={'small'}
+          color={'info'}
+          sx={{ marginLeft: '4px' }}
+        >
+          <Add fontSize={'small'} />
+        </IconButton>
       </TableCell>
       <TableCell align={'center'}>
         <Stack
@@ -45,38 +71,6 @@ export const ClientRow = () => {
             color="info"
           />
         </Stack>
-      </TableCell>
-      <TableCell
-        align={'right'}
-        sx={{
-          paddingRight: 0,
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: '8px',
-          }}
-        >
-          <ButtonGroup
-            variant="outlined"
-            color={'info'}
-            disableElevation
-          >
-            <Button
-              size={'small'}
-              startIcon={<LibraryAddOutlined />}
-            >
-              Назначить заявку
-            </Button>
-            <Button
-              size={'small'}
-            >
-              Все заявки
-            </Button>
-          </ButtonGroup>
-        </Box>
       </TableCell>
       <TableCell
         sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}

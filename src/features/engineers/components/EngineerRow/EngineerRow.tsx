@@ -2,8 +2,8 @@ import { ButtonContextActions } from '@components/ButtonContextActions'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
-import { LibraryAddOutlined, NearMeOutlined } from '@mui/icons-material'
-import { Box, Button, ButtonGroup, TableCell, TableRow } from '@mui/material'
+import { Add, NearMeOutlined } from '@mui/icons-material'
+import { Box, Button, IconButton, TableCell, TableRow, TableSortLabel } from '@mui/material'
 
 export const EngineerRow = () => {
   return (
@@ -17,6 +17,21 @@ export const EngineerRow = () => {
       </TableCell>
       <TableCell>
         <EngineerAvatar />
+      </TableCell>
+      <TableCell>
+        Агротехник 13:00 05.06.2023
+        <TableSortLabel
+          direction={'desc'}
+          sx={{ marginLeft: '4px' }}
+          active
+        />
+        <IconButton
+          size={'small'}
+          color={'info'}
+          sx={{ marginLeft: '4px' }}
+        >
+          <Add fontSize={'small'} />
+        </IconButton>
       </TableCell>
       <TableCell>
         <ChipStatus />
@@ -38,27 +53,15 @@ export const EngineerRow = () => {
             size={'small'}
             variant="outlined"
             color={'info'}
+            sx={{
+              width: 'auto',
+              minWidth: '0',
+              '& .MuiButton-startIcon': {
+                marginRight: 0,
+              },
+            }}
             startIcon={<NearMeOutlined />}
-          >
-            На карте
-          </Button>
-          <ButtonGroup
-            variant="outlined"
-            color={'info'}
-            disableElevation
-          >
-            <Button
-              size={'small'}
-              startIcon={<LibraryAddOutlined />}
-            >
-              Назначить заявку
-            </Button>
-            <Button
-              size={'small'}
-            >
-              Все заявки
-            </Button>
-          </ButtonGroup>
+          />
         </Box>
       </TableCell>
       <TableCell

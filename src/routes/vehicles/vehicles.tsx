@@ -68,7 +68,16 @@ export const VehiclesRoute = () => {
               <TableCell
                 size={'small'}
               >
-                Техника
+                Бренд
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
+              </TableCell>
+              <TableCell
+                size={'small'}
+              >
+                Модель
                 <TableSortLabel
                   direction={'desc'}
                   active
@@ -113,7 +122,16 @@ export const VehiclesRoute = () => {
               <TableCell
                 size={'small'}
               >
-                Исполнитель
+                Заявки
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
+              </TableCell>
+              <TableCell
+                size={'small'}
+              >
+                Инженер
                 <TableSortLabel
                   direction={'desc'}
                   active

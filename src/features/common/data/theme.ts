@@ -22,7 +22,7 @@ export const theme = createTheme({
           borderColor: '#cccccc',
         },
         head: {
-          fontSize: '0.95rem',
+          paddingRight: '4px',
         },
       },
     },
@@ -36,6 +36,7 @@ export const theme = createTheme({
         },
         icon: {
           fontSize: '24px',
+          margin: 0,
         },
       },
     },

@@ -106,7 +106,7 @@ export const TicketsRoute = () => {
                 <TableCell
                   size={'small'}
                 >
-                  Адрес
+                  Регион
                   <TableSortLabel
                     direction={'desc'}
                     active
@@ -115,7 +115,7 @@ export const TicketsRoute = () => {
                 <TableCell
                   size={'small'}
                 >
-                  Техника
+                  Район
                   <TableSortLabel
                     direction={'desc'}
                     active
@@ -124,7 +124,34 @@ export const TicketsRoute = () => {
                 <TableCell
                   size={'small'}
                 >
-                  Дата и время
+                  Бренд
+                  <TableSortLabel
+                    direction={'desc'}
+                    active
+                  />
+                </TableCell>
+                <TableCell
+                  size={'small'}
+                >
+                  Модель
+                  <TableSortLabel
+                    direction={'desc'}
+                    active
+                  />
+                </TableCell>
+                <TableCell
+                  size={'small'}
+                >
+                  Желаемое время
+                  <TableSortLabel
+                    direction={'desc'}
+                    active
+                  />
+                </TableCell>
+                <TableCell
+                  size={'small'}
+                >
+                  Согласованное
                   <TableSortLabel
                     direction={'desc'}
                     active
@@ -142,7 +169,7 @@ export const TicketsRoute = () => {
                 <TableCell
                   size={'small'}
                 >
-                  Исполнитель
+                  Инженер
                   <TableSortLabel
                     direction={'desc'}
                     active

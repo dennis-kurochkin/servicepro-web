@@ -50,7 +50,16 @@ export const EngineersRoute = () => {
               <TableCell
                 size={'small'}
               >
-                Инженер
+                Инженеры СО
+                <TableSortLabel
+                  direction={'desc'}
+                  active
+                />
+              </TableCell>
+              <TableCell
+                size={'small'}
+              >
+                Заявки
                 <TableSortLabel
                   direction={'desc'}
                   active

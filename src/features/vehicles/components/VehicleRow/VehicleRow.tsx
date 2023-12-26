@@ -15,7 +15,10 @@ export const VehicleRow = () => {
         351
       </TableCell>
       <TableCell>
-        John Deere 9630
+        John Deere
+      </TableCell>
+      <TableCell>
+        9630
       </TableCell>
       <TableCell>
         <AgricultureOutlined />
@@ -28,6 +31,9 @@ export const VehicleRow = () => {
       </TableCell>
       <TableCell>
         Агротехник
+      </TableCell>
+      <TableCell>
+        Агротехник 13:00 05.06.2023
       </TableCell>
       <TableCell>
         <EngineerAvatar />

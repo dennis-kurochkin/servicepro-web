@@ -18,13 +18,22 @@ export const TicketRow = () => {
         Агротехник
       </TableCell>
       <TableCell>
-        г. Краснодар, ул. Тестовская, с. 311
+        г. Краснодар
       </TableCell>
       <TableCell>
-        John Deere 9630
+        ул. Тестовская, с. 311
       </TableCell>
       <TableCell>
-        13.11.2023 15:30 / 15.11.2023 16:00
+        John Deere
+      </TableCell>
+      <TableCell>
+        9630
+      </TableCell>
+      <TableCell>
+        13.11.2023 15:30
+      </TableCell>
+      <TableCell>
+        15.11.2023 16:00
       </TableCell>
       <TableCell>
         <ChipStatus />

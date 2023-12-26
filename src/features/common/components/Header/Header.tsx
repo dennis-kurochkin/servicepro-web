@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import logo from '@assets/logo.png'
 import { HeaderProfileMenu } from '@components/HeaderProfileMenu'
+import { theme } from '@data/theme'
 import { AppBar, Box, Button, Container, Toolbar } from '@mui/material'
 
 export const headerHeight = 54
@@ -43,6 +44,8 @@ export const Header = () => {
       sx={{
         zIndex: 1200,
         background: '#fff',
+        borderBottom: '1px solid',
+        borderColor: theme.palette.grey['300'],
       }}
     >
       <Container
