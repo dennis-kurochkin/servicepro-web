@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import logo from '@assets/logo.png'
 import { HeaderProfileMenu } from '@components/HeaderProfileMenu'
 import { theme } from '@data/theme'
-import { AppBar, Box, Button, Container, Toolbar } from '@mui/material'
+import { AppBar, Box, Button, Toolbar } from '@mui/material'
 
 export const headerHeight = 54
 
@@ -48,8 +48,10 @@ export const Header = () => {
         borderColor: theme.palette.grey['300'],
       }}
     >
-      <Container
-        maxWidth={'xl'}
+      <Box
+        sx={{
+          paddingX: '20px',
+        }}
       >
         <Toolbar
           variant={'dense'}
@@ -100,7 +102,7 @@ export const Header = () => {
             <HeaderProfileMenu />
           </Box>
         </Toolbar>
-      </Container>
+      </Box>
     </AppBar>
   )
 }
