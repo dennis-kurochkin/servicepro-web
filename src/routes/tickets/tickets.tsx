@@ -4,7 +4,7 @@ import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { TicketRow } from '@features/tickets/components/TicketRow'
 import {
-  Container,
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -24,10 +24,10 @@ export const TicketsRoute = () => {
           maxHeight: '500px',
         }}
       />
-      <Container
-        maxWidth={'xl'}
+      <Box
         sx={{
           paddingTop: '24px',
+          paddingX: '20px',
         }}
       >
         <TableHeader
@@ -190,7 +190,7 @@ export const TicketsRoute = () => {
             </TableBody>
           </Table>
         </TableWrapper>
-      </Container>
+      </Box>
     </>
   )
 }
