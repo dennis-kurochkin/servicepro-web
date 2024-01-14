@@ -147,6 +147,7 @@ export const VehiclesRoute = () => {
             {Array.from({ length: 20 }).map((_, index) => (
               <VehicleRow
                 key={index}
+                id={index + 1}
               />
             ))}
           </TableBody>

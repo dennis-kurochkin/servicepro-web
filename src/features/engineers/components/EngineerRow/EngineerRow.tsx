@@ -5,7 +5,11 @@ import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { Add, NearMeOutlined } from '@mui/icons-material'
 import { Box, Button, IconButton, TableCell, TableRow, TableSortLabel } from '@mui/material'
 
-export const EngineerRow = () => {
+export interface EngineerRow {
+  id: number
+}
+
+export const EngineerRow = ({ id }: EngineerRow) => {
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -13,7 +17,7 @@ export const EngineerRow = () => {
       <TableCell
         size={'small'}
       >
-        351
+        {id}
       </TableCell>
       <TableCell>
         <EngineerAvatar />

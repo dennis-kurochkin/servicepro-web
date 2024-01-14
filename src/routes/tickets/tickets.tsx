@@ -185,6 +185,7 @@ export const TicketsRoute = () => {
               {Array.from({ length: 20 }).map((_, index) => (
                 <TicketRow
                   key={index}
+                  id={index + 1}
                 />
               ))}
             </TableBody>

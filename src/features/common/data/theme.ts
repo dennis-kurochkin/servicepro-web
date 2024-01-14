@@ -20,6 +20,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           borderColor: '#cccccc',
+          padding: '6px 0px 6px 16px',
         },
         head: {
           paddingRight: '4px',

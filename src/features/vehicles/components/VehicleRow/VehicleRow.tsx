@@ -4,7 +4,11 @@ import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { AgricultureOutlined } from '@mui/icons-material'
 import { TableCell, TableRow } from '@mui/material'
 
-export const VehicleRow = () => {
+export interface VehicleRow {
+  id: number
+}
+
+export const VehicleRow = ({ id }: VehicleRow) => {
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -12,7 +16,7 @@ export const VehicleRow = () => {
       <TableCell
         size={'small'}
       >
-        351
+        {id}
       </TableCell>
       <TableCell>
         John Deere

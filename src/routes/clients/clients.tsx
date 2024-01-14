@@ -95,6 +95,7 @@ export const ClientsRoute = () => {
             {Array.from({ length: 20 }).map((_, index) => (
               <ClientRow
                 key={index}
+                id={index + 1}
               />
             ))}
           </TableBody>

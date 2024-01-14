@@ -4,7 +4,11 @@ import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { TableCell, TableRow } from '@mui/material'
 
-export const TicketRow = () => {
+export interface TicketRowProps {
+  id: number
+}
+
+export const TicketRow = ({ id }: TicketRowProps) => {
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -12,10 +16,10 @@ export const TicketRow = () => {
       <TableCell
         size={'small'}
       >
-        351
+        {id}
       </TableCell>
       <TableCell>
-        Агротехник
+        «Путиловец» ООО
       </TableCell>
       <TableCell>
         г. Краснодар
