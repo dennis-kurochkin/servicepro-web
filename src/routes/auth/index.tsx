@@ -1,11 +1,40 @@
+import { useForm } from 'react-hook-form'
+import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import logoVertical from '@assets/logo-vertical.png'
-import { FieldInput } from '@components/Field'
+import { FieldInputControlled } from '@components/Field'
 import { theme } from '@data/theme'
-import { Box, Button, Link } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { Box, Link } from '@mui/material'
+import { client } from '~/api'
+
+export interface AuthFormData {
+  username: string
+  password: string
+}
 
 export const AuthRoute = () => {
   const navigate = useNavigate()
+
+  const mutation = useMutation(['auth'], async (input: AuthFormData) => {
+    try {
+      const { data } = await client.accountJwtCreateCreate(input)
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  })
+
+  const { handleSubmit, control } = useForm<AuthFormData>({
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+  })
+
+  const handleAuth = (data: AuthFormData) => {
+    mutation.mutate(data)
+  }
 
   return (
     <Box
@@ -32,6 +61,7 @@ export const AuthRoute = () => {
           height={192}
         />
         <Box
+          component={'form'}
           sx={{
             display: 'grid',
             width: '400px',
@@ -42,32 +72,36 @@ export const AuthRoute = () => {
             borderColor: theme.palette.grey['200'],
             background: theme.palette.common.white,
           }}
+          onSubmit={handleSubmit(handleAuth)}
         >
-          <FieldInput
-            value={''}
+          <FieldInputControlled
             name={'username'}
+            control={control}
             label={'Логин'}
+            rules={{ required: true }}
             placeholder={'Введите логин'}
           />
-          <FieldInput
-            value={''}
+          <FieldInputControlled
+            name={'password'}
+            control={control}
             type={'password'}
-            name={'username'}
             label={'Пароль'}
+            rules={{ required: true }}
             placeholder={'Введите пароль'}
             sx={{ mt: '16px' }}
           />
-          <Button
+          <LoadingButton
+            type={'submit'}
             size={'large'}
             sx={{
               mt: '28px',
               width: '100%',
             }}
             variant={'contained'}
-            onClick={() => navigate('/tickets')}
+            loading={mutation.isLoading}
           >
             Войти в аккаунт
-          </Button>
+          </LoadingButton>
           <Link
             component={'button'}
             underline="hover"

@@ -1,15 +1,21 @@
-import { Control, Controller, ControllerProps, FieldValues, Path } from 'react-hook-form'
+import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
 import { FieldInput, FieldInputProps } from '~/features/common/components/Field'
 
-interface FieldInputControlledProps<F extends FieldValues> extends Omit<
-  FieldInputProps, 'value' | 'error' | 'required' | 'onChange' | 'onBlur'
-> {
-  name: Path<F>
-  control: Control<FieldValues, F>
-  rules: ControllerProps['rules']
-}
+// interface FieldInputControlledProps<F extends FieldValues = FieldValues> extends UseControllerProps<F> {}
 
-export const FieldInputControlled = <F extends FieldValues>(props: FieldInputControlledProps<F>) => {
+type FieldInputControlledProps<F extends FieldValues = FieldValues> = UseControllerProps<F> & Omit<
+  FieldInputProps, 'value' | 'error' | 'required' | 'onChange' | 'onBlur'
+>
+
+// interface FieldInputControlledProps<F extends FieldValues = FieldValues> extends Omit<
+//   FieldInputProps, 'value' | 'error' | 'required' | 'onChange' | 'onBlur'
+// > {
+//   name: Path<F>
+//   control: Control<F>
+//   rules: ControllerProps['rules']
+// }
+
+export const FieldInputControlled = <F extends FieldValues = FieldValues>(props: FieldInputControlledProps<F>) => {
   return (
     <Controller
       name={props.name}
