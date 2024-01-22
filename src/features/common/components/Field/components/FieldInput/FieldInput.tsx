@@ -5,7 +5,7 @@ import { INPUT_MAX_WIDTH } from '~/features/common/components/Field/constants'
 import { getSxTextFieldDefault } from '~/features/common/components/Field/data'
 import { FieldCommonProps } from '~/features/common/components/Field/types'
 
-type PickedOutlinedInputProps = Pick<TextFieldProps, 'placeholder' | 'type' | 'autoFocus' | 'multiline' | 'disabled' | 'minRows' | 'maxRows' | 'InputProps' | 'onChange' | 'onBlur'>
+type PickedOutlinedInputProps = Pick<TextFieldProps, 'placeholder' | 'type' | 'autoFocus' | 'multiline' | 'disabled' | 'minRows' | 'maxRows' | 'autoComplete' | 'InputProps' | 'onChange' | 'onBlur'>
 
 export interface FieldInputProps extends PickedOutlinedInputProps, FieldCommonProps {
   value: string
@@ -35,6 +35,7 @@ export const FieldInput = forwardRef(({
   multiline,
   maxRows,
   minRows,
+  autoComplete,
   InputProps,
   InputContainerProps,
   onChange,
@@ -77,6 +78,7 @@ export const FieldInput = forwardRef(({
           multiline={multiline}
           minRows={minRows}
           maxRows={maxRows}
+          autoComplete={autoComplete}
           size={'small'}
           sx={{
             ...getSxTextFieldDefault(),

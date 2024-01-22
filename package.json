@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "api:generate": "sta -p src/api/schema.json -o src/api -n servicepro.generated.ts --axios --add-readonly"
+    "api:generate": "sta -p src/api/schema.json -o src/api -n servicepro.generated.ts --axios --add-readonly --extract-request-body --extract-request-params --extract-response-body"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

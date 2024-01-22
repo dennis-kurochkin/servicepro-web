@@ -37,19 +37,22 @@ export const TableHeader = ({ amount, sx = {}, children }: PropsWithChildren<Tab
           {children}
         </Typography>
       </Badge>
-      <FieldInput
-        value={''}
-        name={'search'}
-        placeholder={'Поиск'}
-        sx={{ width: '260px' }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          ),
-        }}
-      />
+      <form id={'table-header'}>
+        <FieldInput
+          value={''}
+          name={'search'}
+          placeholder={'Поиск'}
+          sx={{ width: '260px' }}
+          autoComplete={'off'}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </form>
       <Badge
         variant={'dot'}
         color={'info'}

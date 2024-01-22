@@ -2,6 +2,8 @@ import { ArrowDropDown } from '@mui/icons-material'
 import { createTheme } from '@mui/material'
 import { ruRU } from '@mui/material/locale'
 
+export const defaultTheme = createTheme()
+
 export const theme = createTheme({
   palette: {
     primary: {
@@ -16,6 +18,24 @@ export const theme = createTheme({
     },
   },
   components: {
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {
+            borderColor: `${defaultTheme.palette.grey['300']}`,
+          },
+          '&.Mui-disabled:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: `${defaultTheme.palette.grey['300']} !important`,
+          },
+          '&:hover > fieldset': {
+            borderColor: `${defaultTheme.palette.grey['500']} !important`,
+          },
+          '&.Mui-focused > fieldset': {
+            borderColor: `${defaultTheme.palette.info.main} !important`,
+          },
+        },
+      },
+    },
     MuiTableCell: {
       styleOverrides: {
         root: {

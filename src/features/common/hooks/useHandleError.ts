@@ -1,9 +1,12 @@
-import { useToast } from '@hooks/useToast'
+import { useNotify } from '@hooks/useNotify'
 
 export const useHandleError = () => {
-  const { enqueueSnackbar } = useToast()
+  const { notify } = useNotify()
 
   return (error: unknown, fallbackMessage: string = 'Произошла ошибка') => {
-    enqueueSnackbar(typeof error == 'string' ? error : fallbackMessage, { variant: 'error' })
+    notify({
+      message: typeof error == 'string' ? error : fallbackMessage,
+      variant: 'error',
+    })
   }
 }

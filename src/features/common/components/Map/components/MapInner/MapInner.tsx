@@ -1,5 +1,6 @@
 import { useGeolocated } from 'react-geolocated'
 import { LayersControl, TileLayer, useMapEvent } from 'react-leaflet'
+import { useNotify } from '@hooks/useNotify'
 import { MyLocation } from '@mui/icons-material'
 import { Button, Typography } from '@mui/material'
 import { LatLng, LeafletMouseEvent } from 'leaflet'
@@ -10,7 +11,6 @@ import { MapMarkers } from '~/features/common/components/Map/components/MapMarke
 import { MapLayer } from '~/features/common/components/Map/data'
 import { Tooltip } from '~/features/common/components/Tooltip'
 import { MAP_ACTIONS_Z_INDEX } from '~/features/common/constants'
-import { useToast } from '~/features/common/hooks/useToast'
 
 export interface MapInnerProps extends Pick<MapMarkerProps, 'initiallyOpen'> {
   coords?: LatLng
@@ -20,7 +20,7 @@ export interface MapInnerProps extends Pick<MapMarkerProps, 'initiallyOpen'> {
 }
 
 export const MapInner = ({ coords, markers, addressSearch = false, initiallyOpen, onChange }: MapInnerProps) => {
-  const { enqueueSnackbar } = useToast()
+  const { notify } = useNotify()
   const map = useMapEvent('click', (e: LeafletMouseEvent) => {
     if (onChange && (e.originalEvent.target as HTMLDivElement).classList.contains('leaflet-container')) {
       onChange(e.latlng)
@@ -35,7 +35,8 @@ export const MapInner = ({ coords, markers, addressSearch = false, initiallyOpen
     if (isGeolocationAvailable && isGeolocationEnabled && geolocation?.latitude) {
       map.flyTo(new LatLng(geolocation.latitude, geolocation.longitude), 15)
     } else {
-      enqueueSnackbar('Невозможно определить местоположение. Проверьте, предоставлен ли доступ', {
+      notify({
+        message: 'Невозможно определить местоположение. Проверьте, предоставлен ли доступ',
         variant: 'error',
       })
     }

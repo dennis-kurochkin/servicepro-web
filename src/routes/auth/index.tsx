@@ -1,12 +1,16 @@
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import logoVertical from '@assets/logo-vertical.png'
 import { FieldInputControlled } from '@components/Field'
 import { theme } from '@data/theme'
+import { AuthContext } from '@features/common/contexts/AuthProvider'
+import { rr } from '@features/common/types'
+import { useNotify } from '@hooks/useNotify'
 import { LoadingButton } from '@mui/lab'
 import { Box, Link } from '@mui/material'
-import { client } from '~/api'
+import { api, client } from '~/api'
 
 export interface AuthFormData {
   username: string
@@ -15,13 +19,26 @@ export interface AuthFormData {
 
 export const AuthRoute = () => {
   const navigate = useNavigate()
+  const { notify } = useNotify()
+  const { setAuth } = useContext(AuthContext)
 
-  const mutation = useMutation(['auth'], async (input: AuthFormData) => {
+  const authMutation = useMutation(['auth'], async (input: AuthFormData) => {
     try {
-      const { data } = await client.accountJwtCreateCreate(input)
-      console.log(data)
+      const { data: { access } } = await rr(api.accountJwtCreateCreate)(input)
+
+      setAuth({
+        user: input,
+        accessToken: access,
+      })
+
+      client.instance.defaults.headers.common['Authorization'] = 'Bearer ' + access
+      navigate('/tickets')
     } catch (error) {
-      console.log(error)
+      notify({
+        message: 'Неверные логин или пароль',
+        variant: 'error',
+        preventDuplicate: true,
+      })
     }
   })
 
@@ -33,7 +50,7 @@ export const AuthRoute = () => {
   })
 
   const handleAuth = (data: AuthFormData) => {
-    mutation.mutate(data)
+    authMutation.mutate(data)
   }
 
   return (
@@ -77,13 +94,16 @@ export const AuthRoute = () => {
           <FieldInputControlled
             name={'username'}
             control={control}
+            disabled={authMutation.isLoading}
             label={'Логин'}
             rules={{ required: true }}
             placeholder={'Введите логин'}
+            autoFocus
           />
           <FieldInputControlled
             name={'password'}
             control={control}
+            disabled={authMutation.isLoading}
             type={'password'}
             label={'Пароль'}
             rules={{ required: true }}
@@ -98,7 +118,7 @@ export const AuthRoute = () => {
               width: '100%',
             }}
             variant={'contained'}
-            loading={mutation.isLoading}
+            loading={authMutation.isLoading}
           >
             Войти в аккаунт
           </LoadingButton>

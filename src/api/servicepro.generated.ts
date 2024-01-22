@@ -820,6 +820,203 @@ export interface UserResetPasswordConfirm {
   new_password: string;
 }
 
+export type AccountActionsActivationCreateData = UserActivation;
+
+export type AccountActionsRegistrationCreateData = AccountRegistration;
+
+export type AccountActionsResendActivationCreateData = UserResendActivation;
+
+export type AccountActionsResetPasswordCreateData = UserResetPassword;
+
+export type AccountActionsResetPasswordConfirmCreateData = UserResetPasswordConfirm;
+
+export interface AccountDeviceListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /** The initial index from which to return the results. */
+  offset?: number;
+}
+
+export type AccountDeviceListData = PaginatedDeviceList;
+
+export type AccountDeviceCreateData = Device;
+
+export type AccountDeviceRetrieveData = Device;
+
+export type AccountDeviceDestroyData = any;
+
+export type AccountJwtCreateCreateData = TokenObtainPair;
+
+export type AccountJwtRefreshCreateData = TokenRefresh;
+
+export type AccountJwtVerifyCreateData = TokenVerify;
+
+export type AccountMeRetrieveData = UserPersonal;
+
+export type AccountMePartialUpdateData = UserPersonal;
+
+export type AccountMeDeleteAccountCreateData = UserDeleteAccount;
+
+export type AccountMeDeleteAccountConfirmCreateData = UserDeleteAccountConfirm;
+
+export interface AccountNotificationListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /** The initial index from which to return the results. */
+  offset?: number;
+  title?: string;
+  user?: number;
+}
+
+export type AccountNotificationListData = PaginatedNotificationList;
+
+export type AccountNotificationRetrieveData = Notification;
+
+export type OrgMyRetrieveData = MyUserAll;
+
+export type OrgMyEmploymentsRetrieveData = MyUserEmployment;
+
+export type OrgMyInvitesRetrieveData = MyUserInvite;
+
+export interface OrgOrgsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+}
+
+export type OrgOrgsListData = PaginatedOrganizationList;
+
+export interface OrgOrgsInvitesListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+}
+
+export type OrgOrgsInvitesListData = PaginatedOrganizationInviteList;
+
+export type OrgOrgsInvitesCreateData = OrganizationInviteDetailed;
+
+export type OrgOrgsInvitesRetrieveData = OrganizationInviteDetailed;
+
+export type OrgOrgsInvitesDestroyData = any;
+
+export type OrgOrgsInvitesInnCreateData = OrganizationInn;
+
+export interface OrgOrgsEmployeesListParams {
+  is_active?: boolean;
+  is_owner?: boolean;
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  profile?: number;
+  role?: string;
+  user?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type OrgOrgsEmployeesListData = PaginatedEmployeeList;
+
+export type OrgOrgsEmployeesCreateData = Employee;
+
+export type OrgOrgsEmployeesRetrieveData = EmployeeDetailed;
+
+export type OrgOrgsEmployeesPartialUpdateData = Employee;
+
+export type OrgOrgsEmployeesDestroyData = any;
+
+export type OrgOrgsMyProfileRetrieveData = Profile;
+
+export type OrgOrgsMyProfilePartialUpdateData = Profile;
+
+export interface OrgOrgsPointsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type OrgOrgsPointsListData = PaginatedControlPointList;
+
+export type OrgOrgsPointsCreateData = ControlPoint;
+
+export type OrgOrgsPointsRetrieveData = ControlPoint;
+
+export type OrgOrgsPointsPartialUpdateData = ControlPoint;
+
+export type OrgOrgsPointsDestroyData = any;
+
+export interface OrgOrgsUserInvitesListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type OrgOrgsUserInvitesListData = PaginatedUserInviteList;
+
+export type OrgOrgsUserInvitesCreateData = UserInviteDetailed;
+
+export type OrgOrgsUserInvitesRetrieveData = UserInviteDetailed;
+
+export type OrgOrgsUserInvitesDestroyData = any;
+
+export type OrgOrgsUserInvitesAcceptCreateData = UserAcceptInvite;
+
+export type OrgOrgsRetrieveData = OrganizationDetailed;
+
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 import axios from "axios";
 
@@ -968,13 +1165,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountActionsActivationCreate: (data: UserActivation, params: RequestParams = {}) =>
-      this.request<UserActivation, any>({
+      this.request<AccountActionsActivationCreateData, any>({
         path: `/api/v1/account/actions/activation/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -987,13 +1183,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountActionsRegistrationCreate: (data: AccountRegistration, params: RequestParams = {}) =>
-      this.request<AccountRegistration, any>({
+      this.request<AccountActionsRegistrationCreateData, any>({
         path: `/api/v1/account/actions/registration/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1006,13 +1201,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountActionsResendActivationCreate: (data: UserResendActivation, params: RequestParams = {}) =>
-      this.request<UserResendActivation, any>({
+      this.request<AccountActionsResendActivationCreateData, any>({
         path: `/api/v1/account/actions/resend-activation/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1025,13 +1219,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountActionsResetPasswordCreate: (data: UserResetPassword, params: RequestParams = {}) =>
-      this.request<UserResetPassword, any>({
+      this.request<AccountActionsResetPasswordCreateData, any>({
         path: `/api/v1/account/actions/reset-password/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1044,13 +1237,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountActionsResetPasswordConfirmCreate: (data: UserResetPasswordConfirm, params: RequestParams = {}) =>
-      this.request<UserResetPasswordConfirm, any>({
+      this.request<AccountActionsResetPasswordConfirmCreateData, any>({
         path: `/api/v1/account/actions/reset-password-confirm/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1062,21 +1254,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/v1/account/device/
      * @secure
      */
-    accountDeviceList: (
-      query?: {
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<PaginatedDeviceList, any>({
+    accountDeviceList: (query: AccountDeviceListParams, params: RequestParams = {}) =>
+      this.request<AccountDeviceListData, any>({
         path: `/api/v1/account/device/`,
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1089,13 +1272,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountDeviceCreate: (data: Device, params: RequestParams = {}) =>
-      this.request<Device, any>({
+      this.request<AccountDeviceCreateData, any>({
         path: `/api/v1/account/device/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1108,11 +1290,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountDeviceRetrieve: (id: number, params: RequestParams = {}) =>
-      this.request<Device, any>({
+      this.request<AccountDeviceRetrieveData, any>({
         path: `/api/v1/account/device/${id}/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1125,7 +1306,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountDeviceDestroy: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<AccountDeviceDestroyData, any>({
         path: `/api/v1/account/device/${id}/`,
         method: "DELETE",
         secure: true,
@@ -1140,12 +1321,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/v1/account/jwt/create/
      */
     accountJwtCreateCreate: (data: TokenObtainPair, params: RequestParams = {}) =>
-      this.request<TokenObtainPair, any>({
+      this.request<AccountJwtCreateCreateData, any>({
         path: `/api/v1/account/jwt/create/`,
         method: "POST",
         body: data,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1157,12 +1337,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/v1/account/jwt/refresh/
      */
     accountJwtRefreshCreate: (data: TokenRefresh, params: RequestParams = {}) =>
-      this.request<TokenRefresh, any>({
+      this.request<AccountJwtRefreshCreateData, any>({
         path: `/api/v1/account/jwt/refresh/`,
         method: "POST",
         body: data,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1174,12 +1353,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/v1/account/jwt/verify/
      */
     accountJwtVerifyCreate: (data: TokenVerify, params: RequestParams = {}) =>
-      this.request<TokenVerify, any>({
+      this.request<AccountJwtVerifyCreateData, any>({
         path: `/api/v1/account/jwt/verify/`,
         method: "POST",
         body: data,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1192,11 +1370,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountMeRetrieve: (params: RequestParams = {}) =>
-      this.request<UserPersonal, any>({
+      this.request<AccountMeRetrieveData, any>({
         path: `/api/v1/account/me/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1209,13 +1386,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountMePartialUpdate: (data: PatchedUserPersonal, params: RequestParams = {}) =>
-      this.request<UserPersonal, any>({
+      this.request<AccountMePartialUpdateData, any>({
         path: `/api/v1/account/me/`,
         method: "PATCH",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1228,13 +1404,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountMeDeleteAccountCreate: (data: UserDeleteAccount, params: RequestParams = {}) =>
-      this.request<UserDeleteAccount, any>({
+      this.request<AccountMeDeleteAccountCreateData, any>({
         path: `/api/v1/account/me/delete-account/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1247,13 +1422,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountMeDeleteAccountConfirmCreate: (data: UserDeleteAccountConfirm, params: RequestParams = {}) =>
-      this.request<UserDeleteAccountConfirm, any>({
+      this.request<AccountMeDeleteAccountConfirmCreateData, any>({
         path: `/api/v1/account/me/delete-account-confirm/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1265,23 +1439,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/v1/account/notification/
      * @secure
      */
-    accountNotificationList: (
-      query?: {
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-        title?: string;
-        user?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<PaginatedNotificationList, any>({
+    accountNotificationList: (query: AccountNotificationListParams, params: RequestParams = {}) =>
+      this.request<AccountNotificationListData, any>({
         path: `/api/v1/account/notification/`,
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1294,11 +1457,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     accountNotificationRetrieve: (id: number, params: RequestParams = {}) =>
-      this.request<Notification, any>({
+      this.request<AccountNotificationRetrieveData, any>({
         path: `/api/v1/account/notification/${id}/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1311,11 +1473,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgMyRetrieve: (params: RequestParams = {}) =>
-      this.request<MyUserAll, any>({
+      this.request<OrgMyRetrieveData, any>({
         path: `/api/v1/org/my/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1328,11 +1489,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgMyEmploymentsRetrieve: (params: RequestParams = {}) =>
-      this.request<MyUserEmployment, any>({
+      this.request<OrgMyEmploymentsRetrieveData, any>({
         path: `/api/v1/org/my-employments/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1345,11 +1505,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgMyInvitesRetrieve: (params: RequestParams = {}) =>
-      this.request<MyUserInvite, any>({
+      this.request<OrgMyInvitesRetrieveData, any>({
         path: `/api/v1/org/my-invites/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1361,30 +1520,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/v1/org/orgs/
      * @secure
      */
-    orgOrgsList: (
-      query?: {
-        /** Number of results to return per page. */
-        limit?: number;
-        /**
-         * Ordering
-         *
-         * * `created_at` - Created at
-         * * `-created_at` - Created at (descending)
-         * * `updated_at` - Updated at
-         * * `-updated_at` - Updated at (descending)
-         */
-        o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<PaginatedOrganizationList, any>({
+    orgOrgsList: (query: OrgOrgsListParams, params: RequestParams = {}) =>
+      this.request<OrgOrgsListData, any>({
         path: `/api/v1/org/orgs/`,
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1396,30 +1537,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/v1/org/orgs-invites/
      * @secure
      */
-    orgOrgsInvitesList: (
-      query?: {
-        /** Number of results to return per page. */
-        limit?: number;
-        /**
-         * Ordering
-         *
-         * * `created_at` - Created at
-         * * `-created_at` - Created at (descending)
-         * * `updated_at` - Updated at
-         * * `-updated_at` - Updated at (descending)
-         */
-        o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<PaginatedOrganizationInviteList, any>({
+    orgOrgsInvitesList: (query: OrgOrgsInvitesListParams, params: RequestParams = {}) =>
+      this.request<OrgOrgsInvitesListData, any>({
         path: `/api/v1/org/orgs-invites/`,
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1432,13 +1555,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsInvitesCreate: (data: OrganizationInviteDetailed, params: RequestParams = {}) =>
-      this.request<OrganizationInviteDetailed, any>({
+      this.request<OrgOrgsInvitesCreateData, any>({
         path: `/api/v1/org/orgs-invites/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1451,11 +1573,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsInvitesRetrieve: (id: number, params: RequestParams = {}) =>
-      this.request<OrganizationInviteDetailed, any>({
+      this.request<OrgOrgsInvitesRetrieveData, any>({
         path: `/api/v1/org/orgs-invites/${id}/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1468,7 +1589,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsInvitesDestroy: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<OrgOrgsInvitesDestroyData, any>({
         path: `/api/v1/org/orgs-invites/${id}/`,
         method: "DELETE",
         secure: true,
@@ -1484,13 +1605,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsInvitesInnCreate: (data: OrganizationInn, params: RequestParams = {}) =>
-      this.request<OrganizationInn, any>({
+      this.request<OrgOrgsInvitesInnCreateData, any>({
         path: `/api/v1/org/orgs-invites/inn/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1502,36 +1622,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/v1/org/orgs/{org_id}/employees/
      * @secure
      */
-    orgOrgsEmployeesList: (
-      orgId: string,
-      query?: {
-        is_active?: boolean;
-        is_owner?: boolean;
-        /** Number of results to return per page. */
-        limit?: number;
-        /**
-         * Ordering
-         *
-         * * `created_at` - Created at
-         * * `-created_at` - Created at (descending)
-         * * `updated_at` - Updated at
-         * * `-updated_at` - Updated at (descending)
-         */
-        o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
-        /** The initial index from which to return the results. */
-        offset?: number;
-        profile?: number;
-        role?: string;
-        user?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<PaginatedEmployeeList, any>({
+    orgOrgsEmployeesList: ({ orgId, ...query }: OrgOrgsEmployeesListParams, params: RequestParams = {}) =>
+      this.request<OrgOrgsEmployeesListData, any>({
         path: `/api/v1/org/orgs/${orgId}/employees/`,
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1544,13 +1640,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsEmployeesCreate: (orgId: string, data: Employee, params: RequestParams = {}) =>
-      this.request<Employee, any>({
+      this.request<OrgOrgsEmployeesCreateData, any>({
         path: `/api/v1/org/orgs/${orgId}/employees/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1563,11 +1658,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsEmployeesRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
-      this.request<EmployeeDetailed, any>({
+      this.request<OrgOrgsEmployeesRetrieveData, any>({
         path: `/api/v1/org/orgs/${orgId}/employees/${id}/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1580,13 +1674,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsEmployeesPartialUpdate: (id: number, orgId: string, data: PatchedEmployee, params: RequestParams = {}) =>
-      this.request<Employee, any>({
+      this.request<OrgOrgsEmployeesPartialUpdateData, any>({
         path: `/api/v1/org/orgs/${orgId}/employees/${id}/`,
         method: "PATCH",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1599,7 +1692,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsEmployeesDestroy: (id: number, orgId: string, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<OrgOrgsEmployeesDestroyData, any>({
         path: `/api/v1/org/orgs/${orgId}/employees/${id}/`,
         method: "DELETE",
         secure: true,
@@ -1615,11 +1708,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsMyProfileRetrieve: (orgId: string, params: RequestParams = {}) =>
-      this.request<Profile, any>({
+      this.request<OrgOrgsMyProfileRetrieveData, any>({
         path: `/api/v1/org/orgs/${orgId}/my-profile/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1632,13 +1724,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsMyProfilePartialUpdate: (orgId: string, data: PatchedProfile, params: RequestParams = {}) =>
-      this.request<Profile, any>({
+      this.request<OrgOrgsMyProfilePartialUpdateData, any>({
         path: `/api/v1/org/orgs/${orgId}/my-profile/`,
         method: "PATCH",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1650,31 +1741,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/v1/org/orgs/{org_id}/points/
      * @secure
      */
-    orgOrgsPointsList: (
-      orgId: string,
-      query?: {
-        /** Number of results to return per page. */
-        limit?: number;
-        /**
-         * Ordering
-         *
-         * * `created_at` - Created at
-         * * `-created_at` - Created at (descending)
-         * * `updated_at` - Updated at
-         * * `-updated_at` - Updated at (descending)
-         */
-        o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<PaginatedControlPointList, any>({
+    orgOrgsPointsList: ({ orgId, ...query }: OrgOrgsPointsListParams, params: RequestParams = {}) =>
+      this.request<OrgOrgsPointsListData, any>({
         path: `/api/v1/org/orgs/${orgId}/points/`,
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1687,13 +1759,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsPointsCreate: (orgId: string, data: ControlPoint, params: RequestParams = {}) =>
-      this.request<ControlPoint, any>({
+      this.request<OrgOrgsPointsCreateData, any>({
         path: `/api/v1/org/orgs/${orgId}/points/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1706,11 +1777,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsPointsRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
-      this.request<ControlPoint, any>({
+      this.request<OrgOrgsPointsRetrieveData, any>({
         path: `/api/v1/org/orgs/${orgId}/points/${id}/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1723,13 +1793,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsPointsPartialUpdate: (id: number, orgId: string, data: PatchedControlPoint, params: RequestParams = {}) =>
-      this.request<ControlPoint, any>({
+      this.request<OrgOrgsPointsPartialUpdateData, any>({
         path: `/api/v1/org/orgs/${orgId}/points/${id}/`,
         method: "PATCH",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1742,7 +1811,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsPointsDestroy: (id: number, orgId: string, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<OrgOrgsPointsDestroyData, any>({
         path: `/api/v1/org/orgs/${orgId}/points/${id}/`,
         method: "DELETE",
         secure: true,
@@ -1757,31 +1826,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/v1/org/orgs/{org_id}/user-invites/
      * @secure
      */
-    orgOrgsUserInvitesList: (
-      orgId: string,
-      query?: {
-        /** Number of results to return per page. */
-        limit?: number;
-        /**
-         * Ordering
-         *
-         * * `created_at` - Created at
-         * * `-created_at` - Created at (descending)
-         * * `updated_at` - Updated at
-         * * `-updated_at` - Updated at (descending)
-         */
-        o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<PaginatedUserInviteList, any>({
+    orgOrgsUserInvitesList: ({ orgId, ...query }: OrgOrgsUserInvitesListParams, params: RequestParams = {}) =>
+      this.request<OrgOrgsUserInvitesListData, any>({
         path: `/api/v1/org/orgs/${orgId}/user-invites/`,
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1794,13 +1844,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsUserInvitesCreate: (orgId: string, data: UserInviteDetailed, params: RequestParams = {}) =>
-      this.request<UserInviteDetailed, any>({
+      this.request<OrgOrgsUserInvitesCreateData, any>({
         path: `/api/v1/org/orgs/${orgId}/user-invites/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1813,11 +1862,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsUserInvitesRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
-      this.request<UserInviteDetailed, any>({
+      this.request<OrgOrgsUserInvitesRetrieveData, any>({
         path: `/api/v1/org/orgs/${orgId}/user-invites/${id}/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -1830,7 +1878,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsUserInvitesDestroy: (id: number, orgId: string, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<OrgOrgsUserInvitesDestroyData, any>({
         path: `/api/v1/org/orgs/${orgId}/user-invites/${id}/`,
         method: "DELETE",
         secure: true,
@@ -1846,13 +1894,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsUserInvitesAcceptCreate: (id: number, orgId: string, data: UserAcceptInvite, params: RequestParams = {}) =>
-      this.request<UserAcceptInvite, any>({
+      this.request<OrgOrgsUserInvitesAcceptCreateData, any>({
         path: `/api/v1/org/orgs/${orgId}/user-invites/${id}/accept/`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
         ...params,
       }),
 
@@ -1865,11 +1912,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     orgOrgsRetrieve: (id: number, params: RequestParams = {}) =>
-      this.request<OrganizationDetailed, any>({
+      this.request<OrgOrgsRetrieveData, any>({
         path: `/api/v1/org/orgs/${id}/`,
         method: "GET",
         secure: true,
-        format: "json",
         ...params,
       }),
   };
