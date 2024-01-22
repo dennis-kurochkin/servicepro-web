@@ -1,12 +1,11 @@
-import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import logoVertical from '@assets/logo-vertical.png'
 import { FieldInputControlled } from '@components/Field'
 import { theme } from '@data/theme'
-import { AuthContext } from '@features/common/contexts/AuthProvider'
 import { rr } from '@features/common/types'
+import { useAuth } from '@hooks/useAuth'
 import { useNotify } from '@hooks/useNotify'
 import { LoadingButton } from '@mui/lab'
 import { Box, Link } from '@mui/material'
@@ -19,8 +18,10 @@ export interface AuthFormData {
 
 export const AuthRoute = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/tickets'
   const { notify } = useNotify()
-  const { setAuth } = useContext(AuthContext)
+  const { setAuth } = useAuth()
 
   const authMutation = useMutation(['auth'], async (input: AuthFormData) => {
     try {
@@ -32,7 +33,7 @@ export const AuthRoute = () => {
       })
 
       client.instance.defaults.headers.common['Authorization'] = 'Bearer ' + access
-      navigate('/tickets')
+      navigate(from, { replace: true })
     } catch (error) {
       notify({
         message: 'Неверные логин или пароль',
