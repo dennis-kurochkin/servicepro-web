@@ -1,11 +1,16 @@
 import { QueryClient } from 'react-query'
-import { Api } from '~/api/servicepro.generated'
+import { Api, ApiConfig } from '~/api/servicepro.generated'
 
-export const client = new Api({
+const settings: ApiConfig = {
   baseURL: 'https://servicepro-api.humanagro.ru/',
   timeout: 3000,
-})
+}
 
-export const api = client.api
+export const publicClient = new Api(settings)
+
+export const privateClient = new Api({
+  ...settings,
+  withCredentials: true,
+})
 
 export const queryClient = new QueryClient()

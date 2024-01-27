@@ -9,7 +9,7 @@ import { useAuth } from '@hooks/useAuth'
 import { useNotify } from '@hooks/useNotify'
 import { LoadingButton } from '@mui/lab'
 import { Box, Link } from '@mui/material'
-import { api, client } from '~/api'
+import { publicClient } from '~/api'
 
 export interface AuthFormData {
   username: string
@@ -25,14 +25,13 @@ export const AuthRoute = () => {
 
   const authMutation = useMutation(['auth'], async (input: AuthFormData) => {
     try {
-      const { data: { access } } = await rr(api.accountJwtCreateCreate)(input)
+      const { data: { access } } = await rr(publicClient.api.accountJwtCreateCookieCreate)(input, { withCredentials: true })
 
       setAuth({
         user: input,
         accessToken: access,
       })
 
-      client.instance.defaults.headers.common['Authorization'] = 'Bearer ' + access
       navigate(from, { replace: true })
     } catch (error) {
       notify({

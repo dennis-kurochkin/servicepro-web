@@ -23,6 +23,26 @@ export interface AccountRegistration {
   /** @format email */
   email?: string;
   readonly uid: string;
+  readonly refresh: string;
+  readonly access: string;
+}
+
+export interface AccountRegistrationRetry {
+  readonly ok: string;
+  /** @maxLength 128 */
+  password: string;
+  /**
+   * @minLength 10
+   * @maxLength 80
+   * @pattern ^[\w.@+-]+$
+   */
+  username: string;
+  profile?: DefaultProfile | null;
+  /** @format email */
+  email?: string;
+  readonly uid: string;
+  readonly refresh: string;
+  readonly access: string;
 }
 
 export interface ControlPoint {
@@ -41,6 +61,10 @@ export interface ControlPoint {
   is_permanent?: boolean;
   physical_address?: number | null;
   organization: number;
+}
+
+export interface CookieTokenRefresh {
+  readonly access: string;
 }
 
 export interface DaDataOrganization {
@@ -671,11 +695,15 @@ export interface ServiceCenter {
   readonly updated_at: string;
 }
 
-export interface TokenObtainPair {
-  username: string;
-  password: string;
+export interface TokenBlacklist {
+  refresh: string;
+}
+
+export interface TokenObtainPairSerializerV2 {
   readonly access: string;
   readonly refresh: string;
+  username: string;
+  password: string;
 }
 
 export interface TokenRefresh {
@@ -697,6 +725,8 @@ export interface UserActivation {
   readonly ok: string;
   uid: string;
   token: string;
+  readonly refresh: string;
+  readonly access: string;
 }
 
 export interface UserDeleteAccount {
@@ -845,15 +875,25 @@ export type AccountDeviceRetrieveData = Device;
 
 export type AccountDeviceDestroyData = any;
 
-export type AccountJwtCreateCreateData = TokenObtainPair;
+export type AccountJwtBlacklistCreateData = TokenBlacklist;
+
+export type AccountJwtBlacklistCookieCreateData = any;
+
+export type AccountJwtCreateCreateData = TokenObtainPairSerializerV2;
+
+export type AccountJwtCreateCookieCreateData = TokenObtainPairSerializerV2;
 
 export type AccountJwtRefreshCreateData = TokenRefresh;
+
+export type AccountJwtRefreshCookieCreateData = CookieTokenRefresh;
 
 export type AccountJwtVerifyCreateData = TokenVerify;
 
 export type AccountMeRetrieveData = UserPersonal;
 
 export type AccountMePartialUpdateData = UserPersonal;
+
+export type AccountMeAccountRegistrationRetryCreateData = AccountRegistrationRetry;
 
 export type AccountMeDeleteAccountCreateData = UserDeleteAccount;
 
@@ -1314,15 +1354,61 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Takes a token and blacklists it. Must be used with the `rest_framework_simplejwt.token_blacklist` app installed.
+     *
+     * @tags account
+     * @name AccountJwtBlacklistCreate
+     * @request POST:/api/v1/account/jwt/blacklist/
+     */
+    accountJwtBlacklistCreate: (data: TokenBlacklist, params: RequestParams = {}) =>
+      this.request<AccountJwtBlacklistCreateData, any>({
+        path: `/api/v1/account/jwt/blacklist/`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Takes a token and blacklists it. Must be used with the `rest_framework_simplejwt.token_blacklist` app installed.
+     *
+     * @tags account
+     * @name AccountJwtBlacklistCookieCreate
+     * @request POST:/api/v1/account/jwt/blacklist-cookie/
+     */
+    accountJwtBlacklistCookieCreate: (params: RequestParams = {}) =>
+      this.request<AccountJwtBlacklistCookieCreateData, any>({
+        path: `/api/v1/account/jwt/blacklist-cookie/`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
      * @description Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
      *
      * @tags account
      * @name AccountJwtCreateCreate
      * @request POST:/api/v1/account/jwt/create/
      */
-    accountJwtCreateCreate: (data: TokenObtainPair, params: RequestParams = {}) =>
+    accountJwtCreateCreate: (data: TokenObtainPairSerializerV2, params: RequestParams = {}) =>
       this.request<AccountJwtCreateCreateData, any>({
         path: `/api/v1/account/jwt/create/`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
+     *
+     * @tags account
+     * @name AccountJwtCreateCookieCreate
+     * @request POST:/api/v1/account/jwt/create-cookie/
+     */
+    accountJwtCreateCookieCreate: (data: TokenObtainPairSerializerV2, params: RequestParams = {}) =>
+      this.request<AccountJwtCreateCookieCreateData, any>({
+        path: `/api/v1/account/jwt/create-cookie/`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -1339,6 +1425,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     accountJwtRefreshCreate: (data: TokenRefresh, params: RequestParams = {}) =>
       this.request<AccountJwtRefreshCreateData, any>({
         path: `/api/v1/account/jwt/refresh/`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
+     *
+     * @tags account
+     * @name AccountJwtRefreshCookieCreate
+     * @request POST:/api/v1/account/jwt/refresh-cookie/
+     */
+    accountJwtRefreshCookieCreate: (data: CookieTokenRefresh, params: RequestParams = {}) =>
+      this.request<AccountJwtRefreshCookieCreateData, any>({
+        path: `/api/v1/account/jwt/refresh-cookie/`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -1389,6 +1491,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<AccountMePartialUpdateData, any>({
         path: `/api/v1/account/me/`,
         method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags account
+     * @name AccountMeAccountRegistrationRetryCreate
+     * @request POST:/api/v1/account/me/account-registration-retry/
+     * @secure
+     */
+    accountMeAccountRegistrationRetryCreate: (data: AccountRegistrationRetry, params: RequestParams = {}) =>
+      this.request<AccountMeAccountRegistrationRetryCreateData, any>({
+        path: `/api/v1/account/me/account-registration-retry/`,
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,

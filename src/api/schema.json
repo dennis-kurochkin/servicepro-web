@@ -414,6 +414,61 @@
                 }
             }
         },
+        "/api/v1/account/jwt/blacklist/": {
+            "post": {
+                "operationId": "account_jwt_blacklist_create",
+                "description": "Takes a token and blacklists it. Must be used with the\n`rest_framework_simplejwt.token_blacklist` app installed.",
+                "tags": [
+                    "account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenBlacklist"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenBlacklist"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenBlacklist"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenBlacklist"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/account/jwt/blacklist-cookie/": {
+            "post": {
+                "operationId": "account_jwt_blacklist_cookie_create",
+                "description": "Takes a token and blacklists it. Must be used with the\n`rest_framework_simplejwt.token_blacklist` app installed.",
+                "tags": [
+                    "account"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
         "/api/v1/account/jwt/create/": {
             "post": {
                 "operationId": "account_jwt_create_create",
@@ -425,17 +480,17 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/TokenObtainPair"
+                                "$ref": "#/components/schemas/TokenObtainPairSerializerV2"
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/TokenObtainPair"
+                                "$ref": "#/components/schemas/TokenObtainPairSerializerV2"
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/TokenObtainPair"
+                                "$ref": "#/components/schemas/TokenObtainPairSerializerV2"
                             }
                         }
                     },
@@ -446,7 +501,48 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TokenObtainPair"
+                                    "$ref": "#/components/schemas/TokenObtainPairSerializerV2"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/account/jwt/create-cookie/": {
+            "post": {
+                "operationId": "account_jwt_create_cookie_create",
+                "description": "Takes a set of user credentials and returns an access and refresh JSON web\ntoken pair to prove the authentication of those credentials.",
+                "tags": [
+                    "account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenObtainPairSerializerV2"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenObtainPairSerializerV2"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenObtainPairSerializerV2"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenObtainPairSerializerV2"
                                 }
                             }
                         },
@@ -488,6 +584,46 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/TokenRefresh"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/account/jwt/refresh-cookie/": {
+            "post": {
+                "operationId": "account_jwt_refresh_cookie_create",
+                "description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.",
+                "tags": [
+                    "account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CookieTokenRefresh"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CookieTokenRefresh"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CookieTokenRefresh"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CookieTokenRefresh"
                                 }
                             }
                         },
@@ -602,6 +738,54 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserPersonal"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/account/me/account-registration-retry/": {
+            "post": {
+                "operationId": "account_me_account_registration_retry_create",
+                "tags": [
+                    "account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountRegistrationRetry"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountRegistrationRetry"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountRegistrationRetry"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountRegistrationRetry"
                                 }
                             }
                         },
@@ -2247,11 +2431,76 @@
                     "uid": {
                         "type": "string",
                         "readOnly": true
+                    },
+                    "refresh": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "access": {
+                        "type": "string",
+                        "readOnly": true
                     }
                 },
                 "required": [
+                    "access",
                     "ok",
                     "password",
+                    "refresh",
+                    "uid",
+                    "username"
+                ]
+            },
+            "AccountRegistrationRetry": {
+                "type": "object",
+                "properties": {
+                    "ok": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true,
+                        "maxLength": 128
+                    },
+                    "username": {
+                        "type": "string",
+                        "writeOnly": true,
+                        "pattern": "^[\\w.@+-]+$",
+                        "minLength": 10,
+                        "maxLength": 80
+                    },
+                    "profile": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/DefaultProfile"
+                            }
+                        ],
+                        "writeOnly": true,
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "writeOnly": true
+                    },
+                    "uid": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "refresh": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "access": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "access",
+                    "ok",
+                    "password",
+                    "refresh",
                     "uid",
                     "username"
                 ]
@@ -2302,6 +2551,18 @@
                     "id",
                     "organization",
                     "updated_at"
+                ]
+            },
+            "CookieTokenRefresh": {
+                "type": "object",
+                "properties": {
+                    "access": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "access"
                 ]
             },
             "DaDataOrganization": {
@@ -3841,17 +4102,21 @@
                     "updated_at"
                 ]
             },
-            "TokenObtainPair": {
+            "TokenBlacklist": {
                 "type": "object",
                 "properties": {
-                    "username": {
+                    "refresh": {
                         "type": "string",
                         "writeOnly": true
-                    },
-                    "password": {
-                        "type": "string",
-                        "writeOnly": true
-                    },
+                    }
+                },
+                "required": [
+                    "refresh"
+                ]
+            },
+            "TokenObtainPairSerializerV2": {
+                "type": "object",
+                "properties": {
                     "access": {
                         "type": "string",
                         "readOnly": true
@@ -3859,6 +4124,14 @@
                     "refresh": {
                         "type": "string",
                         "readOnly": true
+                    },
+                    "username": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
                     }
                 },
                 "required": [
@@ -3876,8 +4149,7 @@
                         "readOnly": true
                     },
                     "refresh": {
-                        "type": "string",
-                        "writeOnly": true
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -3933,10 +4205,20 @@
                     "token": {
                         "type": "string",
                         "writeOnly": true
+                    },
+                    "refresh": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "access": {
+                        "type": "string",
+                        "readOnly": true
                     }
                 },
                 "required": [
+                    "access",
                     "ok",
+                    "refresh",
                     "token",
                     "uid"
                 ]

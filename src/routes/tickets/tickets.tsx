@@ -1,19 +1,42 @@
+import { useMutation } from 'react-query'
 import { Map } from '@components/Map'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { TicketRow } from '@features/tickets/components/TicketRow'
-import {
-  Container,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow, TableSortLabel,
-} from '@mui/material'
+import { useApi } from '@hooks/useApi'
+import { useAuth } from '@hooks/useAuth'
+import { useErrorAlert } from '@hooks/useErrorAlert'
+import { Button, Container, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
 
 export const TicketsRoute = () => {
-  // const [activeTab, setActiveTab] = useState(TicketsTab.Active)
+  const { api } = useApi()
+  const { auth, setAuth } = useAuth()
+  const { alert } = useErrorAlert()
+
+  const authMutation = useMutation(['test'], async () => {
+    try {
+      const { data } = await api.accountMeRetrieve()
+      console.log(data)
+    } catch (error) {
+      alert(error, 'Не удалось получить профиль')
+    }
+  })
+
+  const handleClick = async () => {
+    await authMutation.mutateAsync()
+  }
+
+  const handleClick2 = async () => {
+    setAuth({
+      ...auth,
+      accessToken: 'trash',
+    })
+  }
+
+  const handleClick3 = async () => {
+    await api.accountJwtBlacklistCookieCreate()
+  }
 
   return (
     <>
@@ -191,6 +214,21 @@ export const TicketsRoute = () => {
             </TableBody>
           </Table>
         </TableWrapper>
+        <Button
+          onClick={handleClick}
+        >
+          Test
+        </Button>
+        <Button
+          onClick={handleClick2}
+        >
+          Abandon token
+        </Button>
+        <Button
+          onClick={handleClick3}
+        >
+          Abandon refresh token
+        </Button>
       </Container>
     </>
   )

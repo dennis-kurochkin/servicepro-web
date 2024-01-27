@@ -5,7 +5,7 @@ export const RequireAuth = () => {
   const location = useLocation()
   const { auth } = useAuth()
 
-  return auth?.user ? (
+  return auth?.accessToken ? (
     <Outlet />
   ) : (
     <Navigate

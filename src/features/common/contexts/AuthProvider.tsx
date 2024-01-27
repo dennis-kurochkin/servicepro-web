@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useState } from 'react'
+import { createContext, Dispatch, PropsWithChildren, SetStateAction, useState } from 'react'
 
 export type AuthContextData = {
   user?: {
@@ -8,7 +8,7 @@ export type AuthContextData = {
   accessToken?: string
 }
 
-export const AuthContext = createContext<{ auth?: AuthContextData, setAuth: (data: AuthContextData) => void }>({ setAuth: () => {} })
+export const AuthContext = createContext<{ auth?: AuthContextData, setAuth: Dispatch<SetStateAction<AuthContextData>> }>({ setAuth: () => {} })
 
 export interface AuthProviderProps {}
 
