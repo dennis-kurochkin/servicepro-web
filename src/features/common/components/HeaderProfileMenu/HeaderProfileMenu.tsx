@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '@hooks/useAuth'
 import { Logout, Person, Settings } from '@mui/icons-material'
 import { Avatar, Badge, Box, Button, Divider, ListItemIcon, MenuItem, Typography } from '@mui/material'
+import { publicClient } from '~/api'
 import ContextMenu from '~/features/common/components/ContextMenu'
 
 export const HeaderProfileMenu = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const { setAuth } = useAuth()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const isUserMenuOpen = Boolean(anchorEl)
 
@@ -19,7 +22,14 @@ export const HeaderProfileMenu = () => {
   }
 
   const handleSignOutClick = async () => {
-    navigate('/auth', { state: { from: location } })
+    try {
+      await publicClient.api.accountJwtBlacklistCookieCreate({ withCredentials: true })
+    } catch (error) {
+      console.warn(error)
+    } finally {
+      setAuth({})
+      navigate('/auth', { state: { from: location } })
+    }
   }
 
   return (

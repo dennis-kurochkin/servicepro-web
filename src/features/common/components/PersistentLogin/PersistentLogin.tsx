@@ -13,7 +13,6 @@ export const PersistentLogin = () => {
     const verifyRefreshToken = async () => {
       try {
         await refreshToken()
-        await new Promise((resolve) => setTimeout(resolve, 5000))
       } catch (error) {
         console.warn(error)
       } finally {
