@@ -5,6 +5,7 @@ import { LayoutHeaderContained } from '@components/LayoutHeaderContained'
 import { LayoutMain } from '@components/LayoutMain'
 import { PersistentLogin } from '@components/PersistentLogin'
 import { RequireAuth } from '@components/RequireAuth/RequireAuth'
+import { NotFoundRoute } from '@routes/404'
 import { AuthRoute } from '@routes/auth'
 import { ClientsRoute } from '@routes/clients/clients'
 import { EngineersRoute } from '@routes/engineers/engineers'
@@ -36,7 +37,7 @@ export const getConfiguredRoutes = (routes: RouteObject[]): RouteObject[] => ([
   },
   {
     path: '*',
-    element: <p>404</p>,
+    element: <NotFoundRoute />,
   },
 ])
 
