@@ -18,17 +18,17 @@ export const getConfiguredRoutes = (routes: RouteObject[]): RouteObject[] => ([
     element: <Navigate to={'/tickets'} />,
   },
   {
-    element: <LayoutAuth />,
-    children: [
-      {
-        path: '/auth',
-        element: <AuthRoute />,
-      },
-    ],
-  },
-  {
     element: <PersistentLogin />,
     children: [
+      {
+        element: <LayoutAuth />,
+        children: [
+          {
+            path: '/auth',
+            element: <AuthRoute />,
+          },
+        ],
+      },
       {
         element: <RequireAuth />,
         children: routes,

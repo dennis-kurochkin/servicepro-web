@@ -25,7 +25,7 @@ export const HeaderProfileMenu = () => {
     try {
       await publicClient.api.accountJwtBlacklistCookieCreate({ withCredentials: true })
     } catch (error) {
-      console.warn(error)
+      //
     } finally {
       setAuth({})
       navigate('/auth', { state: { from: location } })

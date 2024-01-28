@@ -15,7 +15,7 @@ export const PersistentLogin = () => {
       try {
         await refreshToken()
       } catch (error) {
-        console.warn(error)
+        //
       } finally {
         if (isMounted) {
           setIsLoading(false)

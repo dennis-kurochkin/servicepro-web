@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -21,7 +22,13 @@ export const AuthRoute = () => {
   const location = useLocation()
   const from = location.state?.from?.pathname || '/tickets'
   const { notify } = useNotify()
-  const { setAuth, persist, setPersist } = useAuth()
+  const { auth, setAuth, persist, setPersist } = useAuth()
+
+  useEffect(() => {
+    if (auth?.accessToken) {
+      navigate('/tickets', { replace: true })
+    }
+  }, [])
 
   const authMutation = useMutation(['auth'], async (input: AuthFormData) => {
     try {
