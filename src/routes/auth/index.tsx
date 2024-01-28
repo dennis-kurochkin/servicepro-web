@@ -8,7 +8,7 @@ import { rr } from '@features/common/types'
 import { useAuth } from '@hooks/useAuth'
 import { useNotify } from '@hooks/useNotify'
 import { LoadingButton } from '@mui/lab'
-import { Box, Link } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, Link } from '@mui/material'
 import { publicClient } from '~/api'
 
 export interface AuthFormData {
@@ -21,7 +21,7 @@ export const AuthRoute = () => {
   const location = useLocation()
   const from = location.state?.from?.pathname || '/tickets'
   const { notify } = useNotify()
-  const { setAuth } = useAuth()
+  const { setAuth, persist, setPersist } = useAuth()
 
   const authMutation = useMutation(['auth'], async (input: AuthFormData) => {
     try {
@@ -32,6 +32,7 @@ export const AuthRoute = () => {
         accessToken: access,
       })
 
+      localStorage.setItem('persist', JSON.stringify(persist))
       navigate(from, { replace: true })
     } catch (error) {
       notify({
@@ -110,11 +111,42 @@ export const AuthRoute = () => {
             placeholder={'Введите пароль'}
             sx={{ mt: '16px' }}
           />
+          <Box
+            sx={{
+              display: 'flex',
+            }}
+          >
+            <FormControlLabel
+              checked={persist}
+              disabled={authMutation.isLoading}
+              label="Запомнить меня"
+              sx={{
+                mt: '8px',
+                mb: '-8px',
+                marginLeft: '-7px',
+              }}
+              componentsProps={{
+                typography: {
+                  fontSize: '14px',
+                  paddingTop: '1px',
+                },
+              }}
+              control={(
+                <Checkbox
+                  size={'small'}
+                  sx={{
+                    padding: '6px',
+                  }}
+                />
+              )}
+              onChange={() => setPersist(!persist)}
+            />
+          </Box>
           <LoadingButton
             type={'submit'}
             size={'large'}
             sx={{
-              mt: '28px',
+              mt: '24px',
               width: '100%',
             }}
             variant={'contained'}
