@@ -20,7 +20,7 @@ export interface AuthFormData {
 export const AuthRoute = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const from = location.state?.from?.pathname || '/tickets'
+  const from = location.state?.from?.pathname || '/organization'
   const { notify } = useNotify()
   const { auth, setAuth, persist, setPersist } = useAuth()
 

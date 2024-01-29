@@ -9,6 +9,7 @@ import { NotFoundRoute } from '@routes/404'
 import { AuthRoute } from '@routes/auth'
 import { ClientsRoute } from '@routes/clients/clients'
 import { EngineersRoute } from '@routes/engineers/engineers'
+import { OrganizationRoute } from '@routes/organization'
 import { TicketsRoute } from '@routes/tickets/tickets'
 import { VehiclesRoute } from '@routes/vehicles/vehicles'
 
@@ -42,6 +43,10 @@ export const getConfiguredRoutes = (routes: RouteObject[]): RouteObject[] => ([
 ])
 
 export const router = createBrowserRouter(getConfiguredRoutes([
+  {
+    element: <OrganizationRoute />,
+    path: '/organization',
+  },
   {
     element: <LayoutMain />,
     children: [
