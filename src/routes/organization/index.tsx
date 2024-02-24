@@ -24,7 +24,14 @@ export const OrganizationRoute = () => {
   const navigate = useNavigate()
   const query = useQuery(['my'], async () => {
     const { data } = await api.orgMyRetrieve()
-    return data
+    return {
+      ...data,
+      employments: [
+        ...data.employments,
+        ...data.employments,
+        ...data.employments,
+      ],
+    }
   }, {
     onSuccess: (data) => {
       if (data.employments.length === 1) {
@@ -42,7 +49,7 @@ export const OrganizationRoute = () => {
         flexDirection: 'column',
         alignItems: 'center',
         minHeight: '100vh',
-        paddingTop: '100px',
+        paddingTop: '60px',
       }}
     >
       <img
@@ -112,7 +119,7 @@ export const OrganizationRoute = () => {
                   sx={{
                     padding: '12px 28px',
                   }}
-                  onClick={() => {}}
+                  onClick={() => navigate('/tickets')}
                 >
                   <ListItemAvatar
                     sx={{

@@ -27,8 +27,11 @@ export const theme = createTheme({
           '&.Mui-disabled:hover .MuiOutlinedInput-notchedOutline': {
             borderColor: `${defaultTheme.palette.grey['300']} !important`,
           },
+          '& > fieldset': {
+            borderColor: `${defaultTheme.palette.grey['200']}`,
+          },
           '&:hover > fieldset': {
-            borderColor: `${defaultTheme.palette.grey['500']} !important`,
+            borderColor: `${defaultTheme.palette.grey['300']} !important`,
           },
           '&.Mui-focused > fieldset': {
             borderColor: `${defaultTheme.palette.info.main} !important`,

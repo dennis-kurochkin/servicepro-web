@@ -16,7 +16,7 @@ import { VehiclesRoute } from '@routes/vehicles/vehicles'
 export const getConfiguredRoutes = (routes: RouteObject[]): RouteObject[] => ([
   {
     path: '/',
-    element: <Navigate to={'/tickets'} />,
+    element: <Navigate to={'/organization'} />,
   },
   {
     element: <PersistentLogin />,

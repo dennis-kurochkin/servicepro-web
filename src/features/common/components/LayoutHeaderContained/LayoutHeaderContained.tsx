@@ -7,7 +7,10 @@ export const LayoutHeaderContained = () => {
     <>
       <Container
         sx={{
+          display: 'flex',
+          flexDirection: 'column',
           paddingTop: `${headerHeight + 24}px`,
+          flexGrow: 1,
         }}
         maxWidth="xl"
       >
