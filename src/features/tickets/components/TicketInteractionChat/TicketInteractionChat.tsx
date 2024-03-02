@@ -1,9 +1,9 @@
 import { useLayoutEffect, useRef } from 'react'
-import { FieldInput } from '@components/Field'
+import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { theme } from '@data/theme'
 import { TicketChatMessage } from '@features/tickets/components/TicketChatMessage'
-import { Close, Send } from '@mui/icons-material'
-import { Box, Button, IconButton, Typography } from '@mui/material'
+import { Close, DriveFileRenameOutline, Send } from '@mui/icons-material'
+import { Box, Button, IconButton, InputAdornment, Link, Typography } from '@mui/material'
 
 interface TicketInteractionChatProps {
   onClose: () => void
@@ -33,26 +33,109 @@ export const TicketInteractionChat = ({ onClose }: TicketInteractionChatProps) =
     >
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '16px 20px',
-          borderBottom: '1px solid',
-          borderColor: (theme) => theme.palette.grey['300'],
+          padding: '16px 20px 12px',
+          boxShadow: 1,
+          zIndex: 10,
+          position: 'relative',
         }}
       >
-        <Typography
-          variant={'h5'}
-          fontWeight={500}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
         >
-          Заявка "Путиловец" ООО
-        </Typography>
-        <IconButton
-          aria-label="close"
-          onClick={onClose}
+          <Typography
+            variant={'h6'}
+            fontWeight={500}
+          >
+            Заявка "Путиловец" ООО
+          </Typography>
+          <IconButton
+            size={'small'}
+            aria-label="close"
+            onClick={onClose}
+          >
+            <Close />
+          </IconButton>
+        </Box>
+        <Box
+          sx={{
+            display: 'grid',
+            gap: '8px',
+            marginTop: '4px',
+          }}
         >
-          <Close />
-        </IconButton>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '120px 1fr',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <Typography
+              variant={'body2'}
+              color={(theme) => theme.palette.grey['600']}
+            >
+              Инженер
+            </Typography>
+            <Typography
+              variant={'body2'}
+            >
+              <Link
+                href={'//'}
+              >
+                Назначить инженера
+              </Link>
+              {/*<Button*/}
+              {/*  size={'small'}*/}
+              {/*  variant={'text'}*/}
+              {/*  color={'warning'}*/}
+              {/*  disableElevation*/}
+              {/*>*/}
+              {/*  Назначить инженера*/}
+              {/*</Button>*/}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '4px',
+              marginTop: '4px',
+            }}
+          >
+            <Button
+              size={'small'}
+              variant={'outlined'}
+              color={'info'}
+              endIcon={<DriveFileRenameOutline fontSize={'small'} />}
+              disableElevation
+            >
+              Условия для выполнения заявки
+            </Button>
+            <Button
+              size={'small'}
+              variant={'outlined'}
+              color={'info'}
+              endIcon={<DriveFileRenameOutline fontSize={'small'} />}
+              disableElevation
+            >
+              Рекомендации
+            </Button>
+            <Button
+              size={'small'}
+              variant={'outlined'}
+              color={'info'}
+              endIcon={<DriveFileRenameOutline fontSize={'small'} />}
+              disableElevation
+            >
+              Итоговое согласование
+            </Button>
+          </Box>
+        </Box>
       </Box>
       <Box
         ref={containerRef}
@@ -60,13 +143,13 @@ export const TicketInteractionChat = ({ onClose }: TicketInteractionChatProps) =
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          borderRadius: '6px',
           overflowY: 'scroll',
           backgroundColor: theme.palette.grey['200'],
         }}
       >
         <Box
           sx={{
+            position: 'relative',
             display: 'flex',
             gap: '16px',
             flexDirection: 'column-reverse',
@@ -74,95 +157,107 @@ export const TicketInteractionChat = ({ onClose }: TicketInteractionChatProps) =
             marginTop: 'auto',
           }}
         >
+          <Box
+            sx={{
+              position: 'absolute',
+              left: '140px',
+              top: '0px',
+              width: '1px',
+              height: 'calc(100% - 20px)',
+              background: (theme) => theme.palette.grey['300'],
+            }}
+          />
           <TicketChatMessage
-            type={'from'}
             author={'system'}
           />
           <TicketChatMessage
-            type={'to'}
             author={'test'}
           />
           <TicketChatMessage
-            type={'to'}
             author={'test'}
           />
           <TicketChatMessage
-            type={'from'}
             author={'test'}
           />
           <TicketChatMessage
-            type={'to'}
             author={'test'}
           />
           <TicketChatMessage
-            type={'from'}
             author={'test'}
           />
           <TicketChatMessage
-            type={'from'}
             author={'test'}
           />
           <TicketChatMessage
-            type={'from'}
             author={'test'}
           />
           <TicketChatMessage
-            type={'from'}
             author={'test'}
           />
           <TicketChatMessage
-            type={'to'}
             author={'test'}
           />
         </Box>
       </Box>
       <Box
         sx={{
+          position: 'relative',
+          boxShadow: 2,
+          zIndex: 10,
           padding: '20px 20px 28px',
         }}
       >
         <Box
           sx={{
             display: 'flex',
-            flexWrap: 'wrap',
-            gap: '4px',
-            marginBottom: '12px',
-          }}
-        >
-          <Button
-            variant={'outlined'}
-            color={'primary'}
-            disableElevation
-          >
-              Назначить инженера
-          </Button>
-          <Button
-            variant={'outlined'}
-            color={'primary'}
-            disableElevation
-          >
-              Изменить условия для выполнения заявки
-          </Button>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
             gap: '8px',
           }}
         >
+          <FieldAutocomplete
+            name={'status'}
+            label={'Статус'}
+            sx={{
+              minWidth: '200px',
+            }}
+            value={{
+              name: 'Без изменений',
+              id: 0,
+            }}
+            options={[
+              {
+                name: 'Без изменений',
+                id: 0,
+              },
+              {
+                name: 'ИСО приступил',
+                id: 1,
+              },
+              {
+                name: 'Выполнена',
+                id: 2,
+              },
+              {
+                name: 'Ожидание ИСО',
+                id: 3,
+              },
+            ]}
+            disableClearable
+            labelInside
+            onChange={() => {}}
+          />
           <FieldInput
             value={''}
             name={'message'}
             placeholder={'Введите сообщение'}
             sx={{ width: '100%', maxWidth: '100%' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Send fontSize={'small'} />
+                </InputAdornment>
+              ),
+            }}
           />
-          <Button
-            variant={'contained'}
-            color={'info'}
-            disableElevation
-          >
-            <Send />
-          </Button>
         </Box>
       </Box>
     </Box>
