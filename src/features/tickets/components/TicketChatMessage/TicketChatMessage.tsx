@@ -1,5 +1,6 @@
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { theme } from '@data/theme'
+import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
 import { DisplaySettings, Person } from '@mui/icons-material'
 import { Avatar, Box, Card, Typography } from '@mui/material'
 
@@ -13,7 +14,7 @@ export const TicketChatMessage = ({ author = 'system' }: TicketChatMessageProps)
       sx={{
         position: 'relative',
         display: 'grid',
-        gridTemplateColumns: '140px 150px 1fr',
+        gridTemplateColumns: '130px 130px 1fr',
         alignItems: 'start',
       }}
     >
@@ -21,7 +22,7 @@ export const TicketChatMessage = ({ author = 'system' }: TicketChatMessageProps)
         sx={{
           position: 'absolute',
           top: '44px',
-          left: '116px',
+          left: `${TICKET_CHAT_OFFSET_LEFT - 4}px`,
           width: '9px',
           height: '9px',
           borderRadius: '50%',
@@ -33,6 +34,7 @@ export const TicketChatMessage = ({ author = 'system' }: TicketChatMessageProps)
         color={(theme) => theme.palette.grey['600']}
         sx={{
           marginTop: '32px',
+          fontSize: '12px',
           wordSpacing: '4px',
         }}
       >
@@ -51,7 +53,6 @@ export const TicketChatMessage = ({ author = 'system' }: TicketChatMessageProps)
         sx={{
           display: 'grid',
           gap: '8px',
-          paddingRight: '15%',
         }}
       >
         <Box

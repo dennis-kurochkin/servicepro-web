@@ -3,7 +3,7 @@ import { ButtonContextActions } from '@components/ButtonContextActions'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
-import { TicketInteractionChat } from '@features/tickets/components/TicketInteractionChat'
+import { TicketDrawerContent } from '@features/tickets/components/TicketDrawerContent'
 import { Drawer, TableCell, TableRow } from '@mui/material'
 
 export interface TicketRowProps {
@@ -85,7 +85,7 @@ export const TicketRow = ({ id }: TicketRowProps) => {
         anchor={'right'}
         onClose={() => setOpen(false)}
       >
-        <TicketInteractionChat onClose={() => setOpen(false)} />
+        <TicketDrawerContent onClose={() => setOpen(false)} />
       </Drawer>
     </>
   )
