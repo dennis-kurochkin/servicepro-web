@@ -45,8 +45,27 @@ export interface AccountRegistrationRetry {
   readonly access: string;
 }
 
+export interface Address {
+  /** @min 0 */
+  id?: number | null;
+  /** @maxLength 250 */
+  value?: string;
+  readonly region: Region | null;
+  /** @default "user" */
+  source?: SourceEnum;
+  /** @maxLength 15 */
+  postal_code?: string;
+  /** @format double */
+  longitude?: number;
+  /** @format double */
+  latitude?: number;
+  readonly is_clean: boolean;
+  readonly is_final: boolean;
+}
+
 export interface ControlPoint {
   readonly id: number;
+  address?: Address;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -59,7 +78,6 @@ export interface ControlPoint {
   latitude?: number;
   /** Permanent */
   is_permanent?: boolean;
-  physical_address?: number | null;
   organization: number;
 }
 
@@ -94,6 +112,8 @@ export interface DaDataSimpleAddress {
 
 export interface DefaultProfile {
   readonly id: number;
+  /** @format uri */
+  photo?: string | null;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -114,11 +134,6 @@ export interface DefaultProfile {
   phone_number?: string;
   /** @maxLength 120 */
   position?: string;
-  /**
-   * Фото
-   * @format uri
-   */
-  photo?: string;
   /** @maxLength 120 */
   telegram?: string;
   /** @maxLength 120 */
@@ -204,6 +219,59 @@ export interface EmployeeDetailed {
   /** Active */
   is_active?: boolean;
   readonly organization: number;
+}
+
+/** * `vehicle_catalog` - vehicle_catalog */
+export enum KeyEnum {
+  VehicleCatalog = "vehicle_catalog",
+}
+
+/**
+ * * `info` - info
+ * * `warning` - warning
+ * * `critical` - critical
+ */
+export enum LevelEnum {
+  Info = "info",
+  Warning = "warning",
+  Critical = "critical",
+}
+
+/**
+ * * `draft` - draft
+ * * `posted` - posted
+ * * `reject` - reject
+ * * `delete` - delete
+ */
+export enum MarkEnum {
+  Draft = "draft",
+  Posted = "posted",
+  Reject = "reject",
+  Delete = "delete",
+}
+
+/**
+ * * `0` - Черновик
+ * * `10` - Опубликована
+ * * `20` - Отклонена
+ * * `30` - Удалена
+ */
+export enum MarkEnumEnum {
+  Value0 = 0,
+  Value10 = 10,
+  Value20 = 20,
+  Value30 = 30,
+}
+
+/**
+ * * `info` - info
+ * * `problem` - problem
+ * * `recommendation` - recommendation
+ */
+export enum MeaningEnum {
+  Info = "info",
+  Problem = "problem",
+  Recommendation = "recommendation",
 }
 
 export interface MyEmployment {
@@ -389,8 +457,49 @@ export interface Notification {
   /** @maxLength 255 */
   title: string;
   text: string;
-  payload?: Record<string, any>;
+  payload?: any;
   readonly user: number;
+}
+
+export interface OrgWorkTask {
+  readonly id: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   */
+  mark: MarkEnum;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status: StatusEnum;
+  readonly service_center: OrganizationPublic;
+  readonly vehicle: Vehicle;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  number: number;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format date-time */
+  status_date?: string | null;
+  /** @format date-time */
+  mark_date?: string | null;
+  /** Mark */
+  mark_enum?: MarkEnumEnum;
+  organization: number;
+  customer?: number | null;
+  coordinator?: number | null;
+  readonly executor: number | null;
+  /** Parent task */
+  parent?: number | null;
 }
 
 export interface Organization {
@@ -415,6 +524,18 @@ export interface Organization {
   contact?: number | null;
 }
 
+export interface OrganizationCacheFile {
+  readonly id: number;
+  readonly is_personal: boolean;
+  /** * `vehicle_catalog` - vehicle_catalog */
+  key: KeyEnum;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @format uri */
+  file?: string;
+  format_version?: number;
+}
+
 export interface OrganizationDetailed {
   readonly id: number;
   readonly is_service_center: boolean;
@@ -422,6 +543,8 @@ export interface OrganizationDetailed {
   settings: OrganizationSettings;
   service_center: ServiceCenter;
   contact: Profile;
+  /** @format uri */
+  photo?: string | null;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -430,11 +553,6 @@ export interface OrganizationDetailed {
   name: string;
   /** Active */
   is_active?: boolean;
-  /**
-   * Фото
-   * @format uri
-   */
-  photo?: string;
 }
 
 export interface OrganizationInn {
@@ -461,7 +579,7 @@ export interface OrganizationInvite {
   readonly is_approved: boolean;
   /** @format date-time */
   readonly verdict_date: string | null;
-  reject_message?: string;
+  readonly reject_message: string;
   readonly creator: number | null;
   /** Organization requisites */
   requisites?: number | null;
@@ -503,14 +621,28 @@ export interface OrganizationInviteDetailed {
   readonly organization: number | null;
 }
 
+export interface OrganizationPublic {
+  readonly id: number;
+  readonly is_service_center: boolean;
+  requisites: OrganizationRequisites;
+  contact: Profile;
+  /** @format uri */
+  photo?: string | null;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 127 */
+  name: string;
+  /** Active */
+  is_active?: boolean;
+}
+
 export interface OrganizationRequisites {
   readonly id: number;
-  /** Индивидуальный Предприниматель */
-  readonly is_ip: boolean;
-  /** Юридическое Лицо */
-  readonly is_ul: boolean;
-  /** Физическое Лицо */
-  readonly is_fl: boolean;
+  physical_address?: Address;
+  legal_address?: Address;
+  postal_address?: Address;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -528,9 +660,6 @@ export interface OrganizationRequisites {
    * @format date
    */
   ogrn_date?: string | null;
-  physical_address?: number | null;
-  legal_address?: number | null;
-  postal_address?: number | null;
 }
 
 export interface OrganizationSettings {
@@ -550,14 +679,47 @@ export type PaginatedEmployeeList = Employee[];
 
 export type PaginatedNotificationList = Notification[];
 
+export type PaginatedOrgWorkTaskList = OrgWorkTask[];
+
 export type PaginatedOrganizationInviteList = OrganizationInvite[];
 
 export type PaginatedOrganizationList = Organization[];
 
+export type PaginatedSerWorkTaskList = SerWorkTask[];
+
 export type PaginatedUserInviteList = UserInvite[];
+
+export type PaginatedVehicleBrandList = VehicleBrand[];
+
+export type PaginatedVehicleDocumentationDetailedList = VehicleDocumentationDetailed[];
+
+export type PaginatedVehicleEquipmentList = VehicleEquipment[];
+
+export type PaginatedVehicleList = Vehicle[];
+
+export type PaginatedVehicleModelDetailedList = VehicleModelDetailed[];
+
+export type PaginatedVehicleNoteList = VehicleNote[];
+
+export type PaginatedVehiclePhotoDetailedList = VehiclePhotoDetailed[];
+
+export type PaginatedVehicleRecommendationDetailedList = VehicleRecommendationDetailed[];
+
+export type PaginatedVehicleRuntimeList = VehicleRuntime[];
+
+export type PaginatedWorkEmployeeList = WorkEmployee[];
+
+export type PaginatedWorkOrganizationList = WorkOrganization[];
+
+export type PaginatedWorkServiceCenterList = WorkServiceCenter[];
+
+export type PaginatedWorkTaskStatusChangeDetailedList = WorkTaskStatusChangeDetailed[];
+
+export type PaginatedWorkVehicleList = WorkVehicle[];
 
 export interface PatchedControlPoint {
   readonly id?: number;
+  address?: Address;
   /** @format date-time */
   readonly created_at?: string;
   /** @format date-time */
@@ -570,7 +732,6 @@ export interface PatchedControlPoint {
   latitude?: number;
   /** Permanent */
   is_permanent?: boolean;
-  physical_address?: number | null;
   organization?: number;
 }
 
@@ -594,10 +755,84 @@ export interface PatchedEmployee {
   profile?: number | null;
 }
 
+export interface PatchedOrgWorkTask {
+  readonly id?: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   */
+  mark?: MarkEnum;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status?: StatusEnum;
+  readonly service_center?: OrganizationPublic;
+  readonly vehicle?: Vehicle;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  number?: number;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format date-time */
+  status_date?: string | null;
+  /** @format date-time */
+  mark_date?: string | null;
+  /** Mark */
+  mark_enum?: MarkEnumEnum;
+  organization?: number;
+  customer?: number | null;
+  coordinator?: number | null;
+  readonly executor?: number | null;
+  /** Parent task */
+  parent?: number | null;
+}
+
+export interface PatchedOrganizationRequisites {
+  readonly id?: number;
+  physical_address?: Address;
+  legal_address?: Address;
+  postal_address?: Address;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /** @maxLength 255 */
+  full_name?: string;
+  /** @maxLength 9 */
+  kpp?: string;
+  /** @maxLength 12 */
+  inn?: string;
+  /** @maxLength 15 */
+  ogrn?: string;
+  /**
+   * Ogrn issue date
+   * @format date
+   */
+  ogrn_date?: string | null;
+}
+
+export interface PatchedOrganizationSettings {
+  readonly id?: number;
+  time_zone?: string;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+}
+
 export interface PatchedProfile {
   readonly id?: number;
   /** @format uri */
-  photo?: string;
+  photo?: string | null;
   /** @format date-time */
   readonly created_at?: string;
   /** @format date-time */
@@ -626,6 +861,15 @@ export interface PatchedProfile {
   viber?: string;
 }
 
+export interface PatchedServiceCenter {
+  readonly id?: number;
+  readonly coverage_regions?: Region[];
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+}
+
 export interface PatchedUserPersonal {
   readonly id?: number;
   /** Required. 120 characters or fewer. Letters, digits and @/./+/-/_ only. */
@@ -644,10 +888,204 @@ export interface PatchedUserPersonal {
   readonly is_activated?: boolean;
 }
 
+export interface PatchedVehicleBrand {
+  readonly id?: number;
+  /** @format uri */
+  icon?: string;
+  readonly is_public?: boolean;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /** @maxLength 126 */
+  name?: string;
+  /** @maxLength 510 */
+  info?: string;
+  /** @format double */
+  order?: number;
+  readonly organization?: number | null;
+}
+
+export interface PatchedVehicleEdit {
+  readonly id?: number;
+  readonly is_hidden?: boolean;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /**
+   * Serial number
+   * @maxLength 254
+   */
+  sn?: string;
+  /** @maxLength 510 */
+  info?: string;
+  manufacture_date?: number | null;
+  /** @maxLength 15 */
+  gos_number?: string;
+  /** @format double */
+  order?: number;
+  /** @format date-time */
+  readonly hide_date?: string | null;
+  /** Модель техники */
+  model?: number | null;
+  readonly organization?: number;
+}
+
+export interface PatchedVehicleModelDetailed {
+  readonly id?: number;
+  /** @format uri */
+  icon?: string;
+  readonly is_public?: boolean;
+  readonly brand?: VehicleBrand;
+  readonly equipment?: VehicleEquipment;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /** @maxLength 126 */
+  name_prefix?: string;
+  /** @maxLength 126 */
+  name?: string;
+  /** @maxLength 510 */
+  info?: string;
+  /** @format double */
+  order?: number;
+  readonly organization?: number | null;
+}
+
+export interface PatchedVehicleNote {
+  readonly id?: number;
+  readonly author?: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /** @maxLength 510 */
+  text?: string;
+  /** Personal */
+  is_personal?: boolean;
+  readonly vehicle?: number;
+  readonly service_center?: number | null;
+}
+
+export interface PatchedVehiclePhotoUpdate {
+  readonly id?: number;
+  /**
+   * * `info` - info
+   * * `problem` - problem
+   * * `recommendation` - recommendation
+   */
+  meaning?: MeaningEnum;
+  /**
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict?: VerdictEnum;
+  readonly author?: EmployeeDetailed;
+  readonly is_approved?: boolean;
+  readonly is_rejected?: boolean;
+  readonly auditor?: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format uri */
+  readonly file?: string;
+  /** @format date-time */
+  verdict_date?: string | null;
+  readonly vehicle?: number;
+  readonly recommendation?: number | null;
+}
+
+export interface PatchedVehicleRecommendationDetailed {
+  readonly id?: number;
+  /**
+   * * `info` - info
+   * * `warning` - warning
+   * * `critical` - critical
+   */
+  level?: LevelEnum;
+  /**
+   * * `no` - no
+   * * `complete` - complete
+   */
+  solution?: SolutionEnum;
+  /**
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict?: VerdictEnum;
+  readonly author?: EmployeeDetailed;
+  readonly is_approved?: boolean;
+  readonly is_rejected?: boolean;
+  readonly is_completed?: boolean;
+  /** @format date-time */
+  readonly complete_date?: string;
+  readonly auditor?: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /** @maxLength 120 */
+  title?: string;
+  /** @maxLength 510 */
+  text?: string;
+  /** @format date-time */
+  solution_date?: string | null;
+  /** @format date-time */
+  verdict_date?: string | null;
+  readonly vehicle?: number;
+  readonly service_center?: number | null;
+}
+
+export interface PatchedVehicleRuntime {
+  readonly id?: number;
+  /**
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict?: VerdictEnum;
+  readonly is_rejected?: boolean;
+  readonly is_completed?: boolean;
+  readonly author?: EmployeeDetailed;
+  readonly auditor?: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  value?: number;
+  /** @format date-time */
+  verdict_date?: string | null;
+  readonly vehicle?: number;
+  readonly service_center?: number | null;
+}
+
+export interface PatchedWorkTaskStatusChangeDetailed {
+  /** @format uuid */
+  readonly uuid?: string;
+  readonly initiator?: EmployeeDetailed;
+  /** @format date-time */
+  real_date?: string | null;
+  /** @maxLength 510 */
+  text?: string;
+  /** @format double */
+  longitude?: number;
+  /** @format double */
+  latitude?: number;
+  /** Approved */
+  readonly is_approved?: boolean;
+}
+
 export interface Profile {
   readonly id: number;
   /** @format uri */
-  photo: string;
+  photo?: string | null;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -676,6 +1114,24 @@ export interface Profile {
   viber?: string;
 }
 
+export interface Region {
+  /**
+   * Iso 3166
+   * @maxLength 15
+   */
+  iso_3166_code?: string;
+  /**
+   * Code
+   * @maxLength 15
+   */
+  local_code?: string;
+  /**
+   * Name
+   * @maxLength 120
+   */
+  local_name?: string;
+}
+
 /**
  * * `client` - client
  * * `engineer` - engineer
@@ -687,12 +1143,135 @@ export enum RoleEnum {
   Coordinator = "coordinator",
 }
 
-export interface ServiceCenter {
+export interface SerWorkTask {
   readonly id: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   */
+  mark: MarkEnum;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status: StatusEnum;
+  readonly organization: OrganizationPublic;
+  readonly vehicle: Vehicle;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
   readonly updated_at: string;
+  number: number;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format date-time */
+  status_date?: string | null;
+  /** @format date-time */
+  mark_date?: string | null;
+  /** Mark */
+  mark_enum?: MarkEnumEnum;
+  service_center?: number | null;
+  customer?: number | null;
+  coordinator?: number | null;
+  readonly executor: number | null;
+  /** Parent task */
+  parent?: number | null;
+}
+
+export interface SerWorkTaskVerbose {
+  readonly id: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   */
+  mark: MarkEnum;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status: StatusEnum;
+  readonly organization: OrganizationPublic;
+  readonly vehicle: Vehicle;
+  readonly approval: WorkTaskApproval;
+  readonly customer: EmployeeDetailed;
+  readonly executor: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  number: number;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format date-time */
+  status_date?: string | null;
+  /** @format date-time */
+  mark_date?: string | null;
+  /** Mark */
+  mark_enum?: MarkEnumEnum;
+  readonly service_center: number | null;
+  coordinator?: number | null;
+  /** Parent task */
+  parent?: number | null;
+}
+
+export interface ServiceCenter {
+  readonly id: number;
+  readonly coverage_regions: Region[];
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+}
+
+/**
+ * * `no` - no
+ * * `complete` - complete
+ */
+export enum SolutionEnum {
+  No = "no",
+  Complete = "complete",
+}
+
+/**
+ * * `user` - user
+ * * `osm` - osm
+ * * `dadata` - dadata
+ * * `fias` - fias
+ */
+export enum SourceEnum {
+  User = "user",
+  Osm = "osm",
+  Dadata = "dadata",
+  Fias = "fias",
+}
+
+/**
+ * * `search` - search
+ * * `approval` - approval
+ * * `wait` - wait
+ * * `pause` - pause
+ * * `work` - work
+ * * `done` - done
+ */
+export enum StatusEnum {
+  Search = "search",
+  Approval = "approval",
+  Wait = "wait",
+  Pause = "pause",
+  Work = "work",
+  Done = "done",
 }
 
 export interface TokenBlacklist {
@@ -715,10 +1294,22 @@ export interface TokenVerify {
   token: string;
 }
 
+export interface TotalVehicleSummaryPair {
+  /** Runtime summary */
+  runtime_sum?: number;
+  r_info_count?: number;
+  r_warning_count?: number;
+  r_critical_count?: number;
+  r_complete_count?: number;
+  r_incomplete_count?: number;
+  t_active_count?: number;
+  t_total_count?: number;
+}
+
 export interface UserAcceptInvite {
-  readonly id: string;
-  readonly is_expired: string;
-  readonly is_accepted: string;
+  readonly id: number;
+  readonly is_expired: boolean;
+  readonly is_accepted: boolean;
 }
 
 export interface UserActivation {
@@ -847,7 +1438,622 @@ export interface UserResetPasswordConfirm {
   readonly ok: string;
   uid: string;
   token: string;
+  /** @maxLength 128 */
   new_password: string;
+}
+
+export interface Vehicle {
+  readonly id: number;
+  readonly is_hidden: boolean;
+  readonly summary: VehicleSummary;
+  readonly model: VehicleModelDetailed;
+  readonly name: string;
+  readonly gost_number: string;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /**
+   * Serial number
+   * @maxLength 254
+   */
+  sn?: string;
+  /** @maxLength 510 */
+  info?: string;
+  manufacture_date?: number | null;
+  /** @maxLength 15 */
+  gos_number?: string;
+  /** @format double */
+  order?: number;
+  /** @format date-time */
+  readonly hide_date: string | null;
+  readonly organization: number;
+}
+
+export interface VehicleBrand {
+  readonly id: number;
+  /** @format uri */
+  icon: string;
+  readonly is_public: boolean;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 126 */
+  name: string;
+  /** @maxLength 510 */
+  info?: string;
+  /** @format double */
+  order?: number;
+  readonly organization: number | null;
+}
+
+export interface VehicleDetailed {
+  readonly id: number;
+  readonly is_hidden: boolean;
+  readonly summary: VehicleSummary;
+  readonly model: VehicleModelDetailed;
+  readonly name: string;
+  readonly gost_number: string;
+  readonly recommendations: VehicleRecommendationDetailed[];
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /**
+   * Serial number
+   * @maxLength 254
+   */
+  sn?: string;
+  /** @maxLength 510 */
+  info?: string;
+  manufacture_date?: number | null;
+  /** @maxLength 15 */
+  gos_number?: string;
+  /** @format double */
+  order?: number;
+  /** @format date-time */
+  hide_date?: string | null;
+  readonly organization: number;
+}
+
+export interface VehicleDocumentationDetailed {
+  readonly id: number;
+  /** @format uri */
+  file: string;
+  readonly is_public: boolean;
+  readonly author: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 126 */
+  title?: string;
+  readonly model: number;
+  readonly organization: number | null;
+}
+
+export interface VehicleEdit {
+  readonly id: number;
+  readonly is_hidden: boolean;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /**
+   * Serial number
+   * @maxLength 254
+   */
+  sn?: string;
+  /** @maxLength 510 */
+  info?: string;
+  manufacture_date?: number | null;
+  /** @maxLength 15 */
+  gos_number?: string;
+  /** @format double */
+  order?: number;
+  /** @format date-time */
+  readonly hide_date: string | null;
+  /** Модель техники */
+  model?: number | null;
+  readonly organization: number;
+}
+
+export interface VehicleEquipment {
+  readonly id: number;
+  /** @maxLength 126 */
+  name: string;
+  /** @format uri */
+  icon?: string;
+}
+
+export interface VehicleModel {
+  readonly id: number;
+  /** @format uri */
+  icon: string;
+  readonly is_public: boolean;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 126 */
+  name_prefix?: string;
+  /** @maxLength 126 */
+  name: string;
+  /** @maxLength 510 */
+  info?: string;
+  /** @format double */
+  order?: number;
+  brand: number;
+  readonly organization: number | null;
+  equipment?: number | null;
+}
+
+export interface VehicleModelDetailed {
+  readonly id: number;
+  /** @format uri */
+  icon: string;
+  readonly is_public: boolean;
+  readonly brand: VehicleBrand;
+  readonly equipment: VehicleEquipment;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 126 */
+  name_prefix?: string;
+  /** @maxLength 126 */
+  name: string;
+  /** @maxLength 510 */
+  info?: string;
+  /** @format double */
+  order?: number;
+  readonly organization: number | null;
+}
+
+export interface VehicleNote {
+  readonly id: number;
+  readonly author: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 510 */
+  text?: string;
+  /** Personal */
+  is_personal?: boolean;
+  readonly vehicle: number;
+  readonly service_center: number | null;
+}
+
+export interface VehiclePhotoDetailed {
+  readonly id: number;
+  /**
+   * * `info` - info
+   * * `problem` - problem
+   * * `recommendation` - recommendation
+   */
+  meaning: MeaningEnum;
+  /**
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict: VerdictEnum;
+  /** @format uri */
+  file: string;
+  readonly author: EmployeeDetailed;
+  readonly is_approved: boolean;
+  readonly is_rejected: boolean;
+  readonly auditor: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format date-time */
+  verdict_date?: string | null;
+  readonly vehicle: number;
+  readonly recommendation: number | null;
+}
+
+export interface VehiclePhotoUpdate {
+  readonly id: number;
+  /**
+   * * `info` - info
+   * * `problem` - problem
+   * * `recommendation` - recommendation
+   */
+  meaning: MeaningEnum;
+  /**
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict: VerdictEnum;
+  readonly author: EmployeeDetailed;
+  readonly is_approved: boolean;
+  readonly is_rejected: boolean;
+  readonly auditor: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format uri */
+  readonly file: string;
+  /** @format date-time */
+  verdict_date?: string | null;
+  readonly vehicle: number;
+  readonly recommendation: number | null;
+}
+
+export interface VehicleRecommendationDetailed {
+  readonly id: number;
+  /**
+   * * `info` - info
+   * * `warning` - warning
+   * * `critical` - critical
+   */
+  level: LevelEnum;
+  /**
+   * * `no` - no
+   * * `complete` - complete
+   */
+  solution: SolutionEnum;
+  /**
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict: VerdictEnum;
+  readonly author: EmployeeDetailed;
+  readonly is_approved: boolean;
+  readonly is_rejected: boolean;
+  readonly is_completed: boolean;
+  /** @format date-time */
+  readonly complete_date: string;
+  readonly auditor: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 120 */
+  title?: string;
+  /** @maxLength 510 */
+  text?: string;
+  /** @format date-time */
+  solution_date?: string | null;
+  /** @format date-time */
+  verdict_date?: string | null;
+  readonly vehicle: number;
+  readonly service_center: number | null;
+}
+
+export interface VehicleRuntime {
+  readonly id: number;
+  /**
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict: VerdictEnum;
+  readonly is_rejected: boolean;
+  readonly is_completed: boolean;
+  readonly author: EmployeeDetailed;
+  readonly auditor: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  value: number;
+  /** @format date-time */
+  verdict_date?: string | null;
+  readonly vehicle: number;
+  readonly service_center: number | null;
+}
+
+export interface VehicleSummary {
+  /** Runtime summary */
+  runtime_sum?: number;
+  r_info_count?: number;
+  r_warning_count?: number;
+  r_critical_count?: number;
+  r_complete_count?: number;
+  r_incomplete_count?: number;
+  t_active_count?: number;
+  t_total_count?: number;
+}
+
+/**
+ * * `no` - no
+ * * `posted` - posted
+ * * `rejected` - rejected
+ */
+export enum VerdictEnum {
+  No = "no",
+  Posted = "posted",
+  Rejected = "rejected",
+}
+
+export interface WorkEmployee {
+  readonly id: number;
+  /**
+   * * `client` - client
+   * * `engineer` - engineer
+   * * `coordinator` - coordinator
+   */
+  role: RoleEnum;
+  readonly profile: Profile;
+  readonly tasks: WorkTaskShort[];
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** Owner */
+  is_owner?: boolean;
+  /** Active */
+  is_active?: boolean;
+  readonly organization: number;
+}
+
+export interface WorkOrganization {
+  readonly id: number;
+  readonly is_service_center: boolean;
+  requisites: OrganizationRequisites;
+  contact: Profile;
+  /** @format uri */
+  photo?: string | null;
+  readonly tasks: WorkTaskShort[];
+  readonly summaries: TotalVehicleSummaryPair[];
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 127 */
+  name: string;
+  /** Active */
+  is_active?: boolean;
+}
+
+export interface WorkServiceCenter {
+  readonly id: number;
+  readonly is_service_center: boolean;
+  requisites: OrganizationRequisites;
+  contact: Profile;
+  /** @format uri */
+  photo?: string | null;
+  readonly summaries: TotalVehicleSummaryPair[];
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 127 */
+  name: string;
+  /** Active */
+  is_active?: boolean;
+}
+
+export interface WorkServiceCenterSearch {
+  readonly service_centers: WorkServiceCenter[];
+  region?: Region;
+}
+
+export interface WorkTaskApproval {
+  readonly id: number;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 510 */
+  customer_description?: string;
+  /** @maxLength 510 */
+  coordinator_description?: string;
+  /** @maxLength 510 */
+  executor_note?: string;
+  /** @maxLength 510 */
+  description?: string;
+  /** @format date-time */
+  customer_approve_date?: string | null;
+  /** @format date-time */
+  coordinator_approve_date?: string | null;
+  /** @format date-time */
+  executor_approve_date?: string | null;
+  /** @format date-time */
+  want_start_date?: string | null;
+  /** @format date-time */
+  plan_start_date?: string | null;
+  /** @format date-time */
+  fact_start_date?: string | null;
+  /** @format date-time */
+  want_complete_date?: string | null;
+  /** @format date-time */
+  plan_complete_date?: string | null;
+  /** @format date-time */
+  fact_complete_date?: string | null;
+  /** @format date-time */
+  reject_date?: string | null;
+  /** @maxLength 510 */
+  reject_text?: string;
+  readonly reject_initiator: number | null;
+}
+
+export interface WorkTaskCheck {
+  readonly id: number;
+  control_point: ControlPoint;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  readonly customer_mark: boolean;
+  readonly coordinator_mark: boolean;
+  readonly executor_mark: boolean;
+  /** @maxLength 510 */
+  text?: string;
+}
+
+export interface WorkTaskDetailed {
+  readonly id: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   */
+  mark: MarkEnum;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status: StatusEnum;
+  readonly service_center: OrganizationPublic;
+  readonly organization: OrganizationPublic;
+  readonly vehicle: Vehicle;
+  readonly approval: WorkTaskApproval;
+  readonly checklist: WorkTaskCheck[];
+  readonly customer: EmployeeDetailed;
+  readonly coordinator: EmployeeDetailed;
+  readonly executor: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  number: number;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format date-time */
+  status_date?: string | null;
+  /** @format date-time */
+  mark_date?: string | null;
+  /** Mark */
+  mark_enum?: MarkEnumEnum;
+  /** Parent task */
+  parent?: number | null;
+}
+
+export interface WorkTaskShort {
+  readonly id: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   */
+  mark: MarkEnum;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status: StatusEnum;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  number: number;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format date-time */
+  status_date?: string | null;
+  /** @format date-time */
+  mark_date?: string | null;
+  /** Mark */
+  mark_enum?: MarkEnumEnum;
+  organization: number;
+  customer?: number | null;
+  coordinator?: number | null;
+  readonly executor: number | null;
+}
+
+export interface WorkTaskShortWithExecutor {
+  readonly id: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   */
+  mark: MarkEnum;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status: StatusEnum;
+  readonly executor: EmployeeDetailed;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  number: number;
+  /** @maxLength 120 */
+  title?: string;
+  /** @format date-time */
+  status_date?: string | null;
+  /** @format date-time */
+  mark_date?: string | null;
+  /** Mark */
+  mark_enum?: MarkEnumEnum;
+  organization: number;
+  customer?: number | null;
+  coordinator?: number | null;
+}
+
+export interface WorkTaskStatusChangeDetailed {
+  /** @format uuid */
+  readonly uuid: string;
+  readonly initiator: EmployeeDetailed;
+  /** @format date-time */
+  real_date?: string | null;
+  /** @maxLength 510 */
+  text?: string;
+  /** @format double */
+  longitude?: number;
+  /** @format double */
+  latitude?: number;
+  /** Approved */
+  readonly is_approved: boolean;
+}
+
+export interface WorkVehicle {
+  readonly id: number;
+  readonly is_hidden: boolean;
+  readonly summary: VehicleSummary;
+  readonly model: VehicleModelDetailed;
+  readonly name: string;
+  readonly gost_number: string;
+  readonly tasks: WorkTaskShortWithExecutor[];
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /**
+   * Serial number
+   * @maxLength 254
+   */
+  sn?: string;
+  /** @maxLength 510 */
+  info?: string;
+  manufacture_date?: number | null;
+  /** @maxLength 15 */
+  gos_number?: string;
+  /** @format double */
+  order?: number;
+  /** @format date-time */
+  hide_date?: string | null;
+  readonly organization: number;
 }
 
 export type AccountActionsActivationCreateData = UserActivation;
@@ -962,6 +2168,8 @@ export type OrgOrgsInvitesDestroyData = any;
 
 export type OrgOrgsInvitesInnCreateData = OrganizationInn;
 
+export type OrgOrgsContactPartialUpdateData = Profile;
+
 export interface OrgOrgsEmployeesListParams {
   is_active?: boolean;
   is_owner?: boolean;
@@ -1027,6 +2235,12 @@ export type OrgOrgsPointsPartialUpdateData = ControlPoint;
 
 export type OrgOrgsPointsDestroyData = any;
 
+export type OrgOrgsRequisitesPartialUpdateData = OrganizationRequisites;
+
+export type OrgOrgsServiceCenterPartialUpdateData = ServiceCenter;
+
+export type OrgOrgsSettingsPartialUpdateData = OrganizationSettings;
+
 export interface OrgOrgsUserInvitesListParams {
   /** Number of results to return per page. */
   limit?: number;
@@ -1056,6 +2270,632 @@ export type OrgOrgsUserInvitesDestroyData = any;
 export type OrgOrgsUserInvitesAcceptCreateData = UserAcceptInvite;
 
 export type OrgOrgsRetrieveData = OrganizationDetailed;
+
+export interface VehicleOrgsBrandsListParams {
+  equipment?: string;
+  equipment_name?: string;
+  /** Number of results to return per page. */
+  limit?: number;
+  name?: string;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type VehicleOrgsBrandsListData = PaginatedVehicleBrandList;
+
+export type VehicleOrgsBrandsCreateData = VehicleBrand;
+
+export type VehicleOrgsBrandsRetrieveData = VehicleBrand;
+
+export type VehicleOrgsBrandsPartialUpdateData = VehicleBrand;
+
+export type VehicleOrgsBrandsDestroyData = any;
+
+export interface VehicleOrgsEquipmentListParams {
+  brand?: number;
+  brand_name?: string;
+  /** Number of results to return per page. */
+  limit?: number;
+  name?: string;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type VehicleOrgsEquipmentListData = PaginatedVehicleEquipmentList;
+
+export interface VehicleOrgsModelsListParams {
+  brand?: number;
+  /** Number of results to return per page. */
+  limit?: number;
+  name?: string;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type VehicleOrgsModelsListData = PaginatedVehicleModelDetailedList;
+
+export type VehicleOrgsModelsCreateData = VehicleModel;
+
+export type VehicleOrgsModelsRetrieveData = VehicleModelDetailed;
+
+export type VehicleOrgsModelsPartialUpdateData = VehicleModelDetailed;
+
+export type VehicleOrgsModelsDestroyData = any;
+
+export interface VehicleOrgsVehiclesListParams {
+  gos_number?: string;
+  /** Number of results to return per page. */
+  limit?: number;
+  name?: string;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `order` - Order
+   * * `-order` - Order (descending)
+   */
+  o?: ("-created_at" | "-order" | "-updated_at" | "created_at" | "order" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  sn?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type VehicleOrgsVehiclesListData = PaginatedVehicleList;
+
+export type VehicleOrgsVehiclesCreateData = VehicleEdit;
+
+export type VehicleOrgsVehiclesRetrieveData = VehicleDetailed;
+
+export type VehicleOrgsVehiclesPartialUpdateData = VehicleEdit;
+
+export type VehicleOrgsVehiclesDestroyData = any;
+
+export interface VehicleOrgsVehiclesDocsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  vehicleId: string;
+}
+
+export type VehicleOrgsVehiclesDocsListData = PaginatedVehicleDocumentationDetailedList;
+
+export type VehicleOrgsVehiclesDocsCreateData = VehicleDocumentationDetailed;
+
+export type VehicleOrgsVehiclesDocsRetrieveData = VehicleDocumentationDetailed;
+
+export type VehicleOrgsVehiclesDocsDestroyData = any;
+
+export interface VehicleOrgsVehiclesPhotosListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  vehicleId: string;
+}
+
+export type VehicleOrgsVehiclesPhotosListData = PaginatedVehiclePhotoDetailedList;
+
+export type VehicleOrgsVehiclesPhotosCreateData = VehiclePhotoDetailed;
+
+export type VehicleOrgsVehiclesPhotosRetrieveData = VehiclePhotoDetailed;
+
+export type VehicleOrgsVehiclesPhotosPartialUpdateData = VehiclePhotoUpdate;
+
+export type VehicleOrgsVehiclesPhotosDestroyData = any;
+
+export interface VehicleOrgsVehiclesRecsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  vehicleId: string;
+}
+
+export type VehicleOrgsVehiclesRecsListData = PaginatedVehicleRecommendationDetailedList;
+
+export type VehicleOrgsVehiclesRecsRetrieveData = VehicleRecommendationDetailed;
+
+export interface VehicleOrgsVehiclesRuntimeListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  service_center?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  vehicleId: string;
+}
+
+export type VehicleOrgsVehiclesRuntimeListData = PaginatedVehicleRuntimeList;
+
+export type VehicleOrgsVehiclesRuntimeRetrieveData = VehicleRuntime;
+
+export interface VehicleSersVehiclesListParams {
+  gos_number?: string;
+  /** Number of results to return per page. */
+  limit?: number;
+  name?: string;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `order` - Order
+   * * `-order` - Order (descending)
+   */
+  o?: ("-created_at" | "-order" | "-updated_at" | "created_at" | "order" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  sn?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type VehicleSersVehiclesListData = PaginatedVehicleList;
+
+export type VehicleSersVehiclesRetrieveData = VehicleDetailed;
+
+export interface VehicleSersVehiclesDocsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  vehicleId: string;
+}
+
+export type VehicleSersVehiclesDocsListData = PaginatedVehicleDocumentationDetailedList;
+
+export type VehicleSersVehiclesDocsCreateData = VehicleDocumentationDetailed;
+
+export type VehicleSersVehiclesDocsRetrieveData = VehicleDocumentationDetailed;
+
+export type VehicleSersVehiclesDocsDestroyData = any;
+
+export interface VehicleSersVehiclesNotesListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  vehicleId: string;
+}
+
+export type VehicleSersVehiclesNotesListData = PaginatedVehicleNoteList;
+
+export type VehicleSersVehiclesNotesCreateData = VehicleNote;
+
+export type VehicleSersVehiclesNotesRetrieveData = VehicleNote;
+
+export type VehicleSersVehiclesNotesPartialUpdateData = VehicleNote;
+
+export type VehicleSersVehiclesNotesDestroyData = any;
+
+export interface VehicleSersVehiclesPhotosListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  vehicleId: string;
+}
+
+export type VehicleSersVehiclesPhotosListData = PaginatedVehiclePhotoDetailedList;
+
+export type VehicleSersVehiclesPhotosCreateData = VehiclePhotoDetailed;
+
+export type VehicleSersVehiclesPhotosRetrieveData = VehiclePhotoDetailed;
+
+export type VehicleSersVehiclesPhotosPartialUpdateData = VehiclePhotoUpdate;
+
+export type VehicleSersVehiclesPhotosDestroyData = any;
+
+export interface VehicleSersVehiclesRecsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  vehicleId: string;
+}
+
+export type VehicleSersVehiclesRecsListData = PaginatedVehicleRecommendationDetailedList;
+
+export type VehicleSersVehiclesRecsCreateData = VehicleRecommendationDetailed;
+
+export type VehicleSersVehiclesRecsRetrieveData = VehicleRecommendationDetailed;
+
+export type VehicleSersVehiclesRecsPartialUpdateData = VehicleRecommendationDetailed;
+
+export type VehicleSersVehiclesRecsDestroyData = any;
+
+export interface VehicleSersVehiclesRuntimeListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  service_center?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  vehicleId: string;
+}
+
+export type VehicleSersVehiclesRuntimeListData = PaginatedVehicleRuntimeList;
+
+export type VehicleSersVehiclesRuntimeCreateData = VehicleRuntime;
+
+export type VehicleSersVehiclesRuntimeRetrieveData = VehicleRuntime;
+
+export type VehicleSersVehiclesRuntimePartialUpdateData = VehicleRuntime;
+
+export type VehicleSersVehiclesRuntimeDestroyData = any;
+
+export interface WorkOrgsSersListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type WorkOrgsSersListData = PaginatedWorkServiceCenterList;
+
+export type WorkOrgsSersRetrieveData = WorkServiceCenter;
+
+export type WorkOrgsSersSearchCreateData = WorkServiceCenterSearch;
+
+export interface WorkOrgsTaskListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  number?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `status_date` - Status date
+   * * `-status_date` - Status date (descending)
+   */
+  o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  title?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type WorkOrgsTaskListData = PaginatedOrgWorkTaskList;
+
+export type WorkOrgsTaskCreateData = OrgWorkTask;
+
+export type WorkOrgsTaskRetrieveData = WorkTaskDetailed;
+
+export type WorkOrgsTaskPartialUpdateData = OrgWorkTask;
+
+export type WorkOrgsTaskDestroyData = any;
+
+export interface WorkOrgsTasksTaskListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `verdict_date` - Verdict date
+   * * `-verdict_date` - Verdict date (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "-verdict_date" | "created_at" | "updated_at" | "verdict_date")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  text?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  taskId: string;
+}
+
+export type WorkOrgsTasksTaskListData = PaginatedWorkTaskStatusChangeDetailedList;
+
+export type WorkOrgsTasksTaskCreateData = WorkTaskStatusChangeDetailed;
+
+export type WorkOrgsTasksTaskRetrieveData = WorkTaskStatusChangeDetailed;
+
+export type WorkOrgsTasksTaskPartialUpdateData = WorkTaskStatusChangeDetailed;
+
+export type WorkOrgsTasksTaskDestroyData = any;
+
+export interface WorkSersEmployeesListParams {
+  is_active?: boolean;
+  is_owner?: boolean;
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  profile?: number;
+  role?: string;
+  user?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type WorkSersEmployeesListData = PaginatedWorkEmployeeList;
+
+export type WorkSersEmployeesRetrieveData = WorkEmployee;
+
+export interface WorkSersOrgsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type WorkSersOrgsListData = PaginatedWorkOrganizationList;
+
+export type WorkSersOrgsRetrieveData = WorkOrganization;
+
+export interface WorkSersTaskListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  number?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `status_date` - Status date
+   * * `-status_date` - Status date (descending)
+   */
+  o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  title?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type WorkSersTaskListData = PaginatedSerWorkTaskList;
+
+export type WorkSersTaskRetrieveData = WorkTaskDetailed;
+
+export type WorkSersTaskVerboseRetrieveData = SerWorkTaskVerbose;
+
+export interface WorkSersTasksTaskListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `verdict_date` - Verdict date
+   * * `-verdict_date` - Verdict date (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "-verdict_date" | "created_at" | "updated_at" | "verdict_date")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  text?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  taskId: string;
+}
+
+export type WorkSersTasksTaskListData = PaginatedWorkTaskStatusChangeDetailedList;
+
+export type WorkSersTasksTaskCreateData = WorkTaskStatusChangeDetailed;
+
+export type WorkSersTasksTaskRetrieveData = WorkTaskStatusChangeDetailed;
+
+export type WorkSersTasksTaskPartialUpdateData = WorkTaskStatusChangeDetailed;
+
+export type WorkSersTasksTaskDestroyData = any;
+
+export interface WorkSersVehiclesListParams {
+  gos_number?: string;
+  /** Number of results to return per page. */
+  limit?: number;
+  name?: string;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `order` - Order
+   * * `-order` - Order (descending)
+   */
+  o?: ("-created_at" | "-order" | "-updated_at" | "created_at" | "order" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  sn?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type WorkSersVehiclesListData = PaginatedWorkVehicleList;
+
+export type WorkSersVehiclesRetrieveData = WorkVehicle;
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 import axios from "axios";
@@ -1738,6 +3578,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags org
+     * @name OrgOrgsContactPartialUpdate
+     * @request PATCH:/api/v1/org/orgs/{org_id}/contact/
+     * @secure
+     */
+    orgOrgsContactPartialUpdate: (orgId: string, data: PatchedProfile, params: RequestParams = {}) =>
+      this.request<OrgOrgsContactPartialUpdateData, any>({
+        path: `/api/v1/org/orgs/${orgId}/contact/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
      * @name OrgOrgsEmployeesList
      * @request GET:/api/v1/org/orgs/{org_id}/employees/
      * @secure
@@ -1942,6 +3800,60 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags org
+     * @name OrgOrgsRequisitesPartialUpdate
+     * @request PATCH:/api/v1/org/orgs/{org_id}/requisites/
+     * @secure
+     */
+    orgOrgsRequisitesPartialUpdate: (orgId: string, data: PatchedOrganizationRequisites, params: RequestParams = {}) =>
+      this.request<OrgOrgsRequisitesPartialUpdateData, any>({
+        path: `/api/v1/org/orgs/${orgId}/requisites/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgOrgsServiceCenterPartialUpdate
+     * @request PATCH:/api/v1/org/orgs/{org_id}/service-center/
+     * @secure
+     */
+    orgOrgsServiceCenterPartialUpdate: (orgId: string, data: PatchedServiceCenter, params: RequestParams = {}) =>
+      this.request<OrgOrgsServiceCenterPartialUpdateData, any>({
+        path: `/api/v1/org/orgs/${orgId}/service-center/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgOrgsSettingsPartialUpdate
+     * @request PATCH:/api/v1/org/orgs/{org_id}/settings/
+     * @secure
+     */
+    orgOrgsSettingsPartialUpdate: (orgId: string, data: PatchedOrganizationSettings, params: RequestParams = {}) =>
+      this.request<OrgOrgsSettingsPartialUpdateData, any>({
+        path: `/api/v1/org/orgs/${orgId}/settings/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
      * @name OrgOrgsUserInvitesList
      * @request GET:/api/v1/org/orgs/{org_id}/user-invites/
      * @secure
@@ -2034,6 +3946,1514 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     orgOrgsRetrieve: (id: number, params: RequestParams = {}) =>
       this.request<OrgOrgsRetrieveData, any>({
         path: `/api/v1/org/orgs/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsBrandsList
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/brands/
+     * @secure
+     */
+    vehicleOrgsBrandsList: ({ orgId, ...query }: VehicleOrgsBrandsListParams, params: RequestParams = {}) =>
+      this.request<VehicleOrgsBrandsListData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/brands/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsBrandsCreate
+     * @request POST:/api/v1/vehicle/orgs/{org_id}/brands/
+     * @secure
+     */
+    vehicleOrgsBrandsCreate: (orgId: string, data: VehicleBrand, params: RequestParams = {}) =>
+      this.request<VehicleOrgsBrandsCreateData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/brands/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsBrandsRetrieve
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/brands/{id}/
+     * @secure
+     */
+    vehicleOrgsBrandsRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsBrandsRetrieveData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/brands/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsBrandsPartialUpdate
+     * @request PATCH:/api/v1/vehicle/orgs/{org_id}/brands/{id}/
+     * @secure
+     */
+    vehicleOrgsBrandsPartialUpdate: (
+      id: number,
+      orgId: string,
+      data: PatchedVehicleBrand,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsBrandsPartialUpdateData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/brands/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsBrandsDestroy
+     * @request DELETE:/api/v1/vehicle/orgs/{org_id}/brands/{id}/
+     * @secure
+     */
+    vehicleOrgsBrandsDestroy: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsBrandsDestroyData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/brands/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsEquipmentList
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/equipment/
+     * @secure
+     */
+    vehicleOrgsEquipmentList: ({ orgId, ...query }: VehicleOrgsEquipmentListParams, params: RequestParams = {}) =>
+      this.request<VehicleOrgsEquipmentListData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/equipment/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsModelsList
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/models/
+     * @secure
+     */
+    vehicleOrgsModelsList: ({ orgId, ...query }: VehicleOrgsModelsListParams, params: RequestParams = {}) =>
+      this.request<VehicleOrgsModelsListData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/models/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsModelsCreate
+     * @request POST:/api/v1/vehicle/orgs/{org_id}/models/
+     * @secure
+     */
+    vehicleOrgsModelsCreate: (orgId: string, data: VehicleModel, params: RequestParams = {}) =>
+      this.request<VehicleOrgsModelsCreateData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/models/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsModelsRetrieve
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/models/{id}/
+     * @secure
+     */
+    vehicleOrgsModelsRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsModelsRetrieveData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/models/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsModelsPartialUpdate
+     * @request PATCH:/api/v1/vehicle/orgs/{org_id}/models/{id}/
+     * @secure
+     */
+    vehicleOrgsModelsPartialUpdate: (
+      id: number,
+      orgId: string,
+      data: PatchedVehicleModelDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsModelsPartialUpdateData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/models/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsModelsDestroy
+     * @request DELETE:/api/v1/vehicle/orgs/{org_id}/models/{id}/
+     * @secure
+     */
+    vehicleOrgsModelsDestroy: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsModelsDestroyData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/models/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesList
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/
+     * @secure
+     */
+    vehicleOrgsVehiclesList: ({ orgId, ...query }: VehicleOrgsVehiclesListParams, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesListData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesCreate
+     * @request POST:/api/v1/vehicle/orgs/{org_id}/vehicles/
+     * @secure
+     */
+    vehicleOrgsVehiclesCreate: (orgId: string, data: VehicleEdit, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesCreateData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesRetrieve
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesRetrieveData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesPartialUpdate
+     * @request PATCH:/api/v1/vehicle/orgs/{org_id}/vehicles/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesPartialUpdate: (
+      id: number,
+      orgId: string,
+      data: PatchedVehicleEdit,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsVehiclesPartialUpdateData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesDestroy
+     * @request DELETE:/api/v1/vehicle/orgs/{org_id}/vehicles/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesDestroy: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesDestroyData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesDocsList
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/docs/
+     * @secure
+     */
+    vehicleOrgsVehiclesDocsList: (
+      { orgId, vehicleId, ...query }: VehicleOrgsVehiclesDocsListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsVehiclesDocsListData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/docs/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesDocsCreate
+     * @request POST:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/docs/
+     * @secure
+     */
+    vehicleOrgsVehiclesDocsCreate: (
+      orgId: string,
+      vehicleId: string,
+      data: VehicleDocumentationDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsVehiclesDocsCreateData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/docs/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesDocsRetrieve
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/docs/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesDocsRetrieve: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesDocsRetrieveData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/docs/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesDocsDestroy
+     * @request DELETE:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/docs/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesDocsDestroy: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesDocsDestroyData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/docs/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesPhotosList
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/photos/
+     * @secure
+     */
+    vehicleOrgsVehiclesPhotosList: (
+      { orgId, vehicleId, ...query }: VehicleOrgsVehiclesPhotosListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsVehiclesPhotosListData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/photos/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesPhotosCreate
+     * @request POST:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/photos/
+     * @secure
+     */
+    vehicleOrgsVehiclesPhotosCreate: (
+      orgId: string,
+      vehicleId: string,
+      data: VehiclePhotoDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsVehiclesPhotosCreateData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/photos/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesPhotosRetrieve
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/photos/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesPhotosRetrieve: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesPhotosRetrieveData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/photos/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesPhotosPartialUpdate
+     * @request PATCH:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/photos/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesPhotosPartialUpdate: (
+      id: number,
+      orgId: string,
+      vehicleId: string,
+      data: PatchedVehiclePhotoUpdate,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsVehiclesPhotosPartialUpdateData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/photos/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesPhotosDestroy
+     * @request DELETE:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/photos/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesPhotosDestroy: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesPhotosDestroyData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/photos/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesRecsList
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/recs/
+     * @secure
+     */
+    vehicleOrgsVehiclesRecsList: (
+      { orgId, vehicleId, ...query }: VehicleOrgsVehiclesRecsListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsVehiclesRecsListData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/recs/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesRecsRetrieve
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/recs/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesRecsRetrieve: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesRecsRetrieveData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/recs/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesRuntimeList
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/runtime/
+     * @secure
+     */
+    vehicleOrgsVehiclesRuntimeList: (
+      { orgId, vehicleId, ...query }: VehicleOrgsVehiclesRuntimeListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleOrgsVehiclesRuntimeListData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/runtime/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleOrgsVehiclesRuntimeRetrieve
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/vehicles/{vehicle_id}/runtime/{id}/
+     * @secure
+     */
+    vehicleOrgsVehiclesRuntimeRetrieve: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleOrgsVehiclesRuntimeRetrieveData, any>({
+        path: `/api/v1/vehicle/orgs/${orgId}/vehicles/${vehicleId}/runtime/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesList
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/
+     * @secure
+     */
+    vehicleSersVehiclesList: ({ orgId, ...query }: VehicleSersVehiclesListParams, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesListData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRetrieve
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesRetrieveData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesDocsList
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/docs/
+     * @secure
+     */
+    vehicleSersVehiclesDocsList: (
+      { orgId, vehicleId, ...query }: VehicleSersVehiclesDocsListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesDocsListData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/docs/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesDocsCreate
+     * @request POST:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/docs/
+     * @secure
+     */
+    vehicleSersVehiclesDocsCreate: (
+      orgId: string,
+      vehicleId: string,
+      data: VehicleDocumentationDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesDocsCreateData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/docs/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesDocsRetrieve
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/docs/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesDocsRetrieve: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesDocsRetrieveData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/docs/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesDocsDestroy
+     * @request DELETE:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/docs/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesDocsDestroy: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesDocsDestroyData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/docs/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesNotesList
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/notes/
+     * @secure
+     */
+    vehicleSersVehiclesNotesList: (
+      { orgId, vehicleId, ...query }: VehicleSersVehiclesNotesListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesNotesListData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/notes/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesNotesCreate
+     * @request POST:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/notes/
+     * @secure
+     */
+    vehicleSersVehiclesNotesCreate: (orgId: string, vehicleId: string, data: VehicleNote, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesNotesCreateData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/notes/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesNotesRetrieve
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/notes/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesNotesRetrieve: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesNotesRetrieveData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/notes/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesNotesPartialUpdate
+     * @request PATCH:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/notes/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesNotesPartialUpdate: (
+      id: number,
+      orgId: string,
+      vehicleId: string,
+      data: PatchedVehicleNote,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesNotesPartialUpdateData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/notes/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesNotesDestroy
+     * @request DELETE:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/notes/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesNotesDestroy: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesNotesDestroyData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/notes/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesPhotosList
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/photos/
+     * @secure
+     */
+    vehicleSersVehiclesPhotosList: (
+      { orgId, vehicleId, ...query }: VehicleSersVehiclesPhotosListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesPhotosListData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/photos/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesPhotosCreate
+     * @request POST:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/photos/
+     * @secure
+     */
+    vehicleSersVehiclesPhotosCreate: (
+      orgId: string,
+      vehicleId: string,
+      data: VehiclePhotoDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesPhotosCreateData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/photos/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesPhotosRetrieve
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/photos/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesPhotosRetrieve: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesPhotosRetrieveData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/photos/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesPhotosPartialUpdate
+     * @request PATCH:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/photos/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesPhotosPartialUpdate: (
+      id: number,
+      orgId: string,
+      vehicleId: string,
+      data: PatchedVehiclePhotoUpdate,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesPhotosPartialUpdateData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/photos/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesPhotosDestroy
+     * @request DELETE:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/photos/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesPhotosDestroy: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesPhotosDestroyData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/photos/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRecsList
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/recs/
+     * @secure
+     */
+    vehicleSersVehiclesRecsList: (
+      { orgId, vehicleId, ...query }: VehicleSersVehiclesRecsListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesRecsListData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/recs/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRecsCreate
+     * @request POST:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/recs/
+     * @secure
+     */
+    vehicleSersVehiclesRecsCreate: (
+      orgId: string,
+      vehicleId: string,
+      data: VehicleRecommendationDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesRecsCreateData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/recs/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRecsRetrieve
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/recs/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesRecsRetrieve: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesRecsRetrieveData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/recs/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRecsPartialUpdate
+     * @request PATCH:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/recs/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesRecsPartialUpdate: (
+      id: number,
+      orgId: string,
+      vehicleId: string,
+      data: PatchedVehicleRecommendationDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesRecsPartialUpdateData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/recs/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRecsDestroy
+     * @request DELETE:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/recs/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesRecsDestroy: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesRecsDestroyData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/recs/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRuntimeList
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/runtime/
+     * @secure
+     */
+    vehicleSersVehiclesRuntimeList: (
+      { orgId, vehicleId, ...query }: VehicleSersVehiclesRuntimeListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesRuntimeListData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/runtime/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRuntimeCreate
+     * @request POST:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/runtime/
+     * @secure
+     */
+    vehicleSersVehiclesRuntimeCreate: (
+      orgId: string,
+      vehicleId: string,
+      data: VehicleRuntime,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesRuntimeCreateData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/runtime/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRuntimeRetrieve
+     * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/runtime/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesRuntimeRetrieve: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesRuntimeRetrieveData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/runtime/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRuntimePartialUpdate
+     * @request PATCH:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/runtime/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesRuntimePartialUpdate: (
+      id: number,
+      orgId: string,
+      vehicleId: string,
+      data: PatchedVehicleRuntime,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersVehiclesRuntimePartialUpdateData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/runtime/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersVehiclesRuntimeDestroy
+     * @request DELETE:/api/v1/vehicle/sers/{org_id}/vehicles/{vehicle_id}/runtime/{id}/
+     * @secure
+     */
+    vehicleSersVehiclesRuntimeDestroy: (id: number, orgId: string, vehicleId: string, params: RequestParams = {}) =>
+      this.request<VehicleSersVehiclesRuntimeDestroyData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/vehicles/${vehicleId}/runtime/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsSersList
+     * @request GET:/api/v1/work/orgs/{org_id}/sers/
+     * @secure
+     */
+    workOrgsSersList: ({ orgId, ...query }: WorkOrgsSersListParams, params: RequestParams = {}) =>
+      this.request<WorkOrgsSersListData, any>({
+        path: `/api/v1/work/orgs/${orgId}/sers/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsSersRetrieve
+     * @request GET:/api/v1/work/orgs/{org_id}/sers/{id}/
+     * @secure
+     */
+    workOrgsSersRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsSersRetrieveData, any>({
+        path: `/api/v1/work/orgs/${orgId}/sers/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsSersSearchCreate
+     * @request POST:/api/v1/work/orgs/{org_id}/sers/search/
+     * @secure
+     */
+    workOrgsSersSearchCreate: (orgId: string, data: WorkServiceCenterSearch, params: RequestParams = {}) =>
+      this.request<WorkOrgsSersSearchCreateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/sers/search/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTaskList
+     * @request GET:/api/v1/work/orgs/{org_id}/task/
+     * @secure
+     */
+    workOrgsTaskList: ({ orgId, ...query }: WorkOrgsTaskListParams, params: RequestParams = {}) =>
+      this.request<WorkOrgsTaskListData, any>({
+        path: `/api/v1/work/orgs/${orgId}/task/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTaskCreate
+     * @request POST:/api/v1/work/orgs/{org_id}/task/
+     * @secure
+     */
+    workOrgsTaskCreate: (orgId: string, data: OrgWorkTask, params: RequestParams = {}) =>
+      this.request<WorkOrgsTaskCreateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/task/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTaskRetrieve
+     * @request GET:/api/v1/work/orgs/{org_id}/task/{id}/
+     * @secure
+     */
+    workOrgsTaskRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsTaskRetrieveData, any>({
+        path: `/api/v1/work/orgs/${orgId}/task/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTaskPartialUpdate
+     * @request PATCH:/api/v1/work/orgs/{org_id}/task/{id}/
+     * @secure
+     */
+    workOrgsTaskPartialUpdate: (id: number, orgId: string, data: PatchedOrgWorkTask, params: RequestParams = {}) =>
+      this.request<WorkOrgsTaskPartialUpdateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/task/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTaskDestroy
+     * @request DELETE:/api/v1/work/orgs/{org_id}/task/{id}/
+     * @secure
+     */
+    workOrgsTaskDestroy: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsTaskDestroyData, any>({
+        path: `/api/v1/work/orgs/${orgId}/task/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksTaskList
+     * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/task/
+     * @secure
+     */
+    workOrgsTasksTaskList: ({ orgId, taskId, ...query }: WorkOrgsTasksTaskListParams, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksTaskListData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/task/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksTaskCreate
+     * @request POST:/api/v1/work/orgs/{org_id}/tasks/{task_id}/task/
+     * @secure
+     */
+    workOrgsTasksTaskCreate: (
+      orgId: string,
+      taskId: string,
+      data: WorkTaskStatusChangeDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkOrgsTasksTaskCreateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/task/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksTaskRetrieve
+     * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/task/{uuid}/
+     * @secure
+     */
+    workOrgsTasksTaskRetrieve: (orgId: string, taskId: string, uuid: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksTaskRetrieveData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/task/${uuid}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksTaskPartialUpdate
+     * @request PATCH:/api/v1/work/orgs/{org_id}/tasks/{task_id}/task/{uuid}/
+     * @secure
+     */
+    workOrgsTasksTaskPartialUpdate: (
+      orgId: string,
+      taskId: string,
+      uuid: string,
+      data: PatchedWorkTaskStatusChangeDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkOrgsTasksTaskPartialUpdateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/task/${uuid}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksTaskDestroy
+     * @request DELETE:/api/v1/work/orgs/{org_id}/tasks/{task_id}/task/{uuid}/
+     * @secure
+     */
+    workOrgsTasksTaskDestroy: (orgId: string, taskId: string, uuid: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksTaskDestroyData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/task/${uuid}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersEmployeesList
+     * @request GET:/api/v1/work/sers/{org_id}/employees/
+     * @secure
+     */
+    workSersEmployeesList: ({ orgId, ...query }: WorkSersEmployeesListParams, params: RequestParams = {}) =>
+      this.request<WorkSersEmployeesListData, any>({
+        path: `/api/v1/work/sers/${orgId}/employees/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersEmployeesRetrieve
+     * @request GET:/api/v1/work/sers/{org_id}/employees/{id}/
+     * @secure
+     */
+    workSersEmployeesRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkSersEmployeesRetrieveData, any>({
+        path: `/api/v1/work/sers/${orgId}/employees/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersOrgsList
+     * @request GET:/api/v1/work/sers/{org_id}/orgs/
+     * @secure
+     */
+    workSersOrgsList: ({ orgId, ...query }: WorkSersOrgsListParams, params: RequestParams = {}) =>
+      this.request<WorkSersOrgsListData, any>({
+        path: `/api/v1/work/sers/${orgId}/orgs/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersOrgsRetrieve
+     * @request GET:/api/v1/work/sers/{org_id}/orgs/{id}/
+     * @secure
+     */
+    workSersOrgsRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkSersOrgsRetrieveData, any>({
+        path: `/api/v1/work/sers/${orgId}/orgs/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTaskList
+     * @request GET:/api/v1/work/sers/{org_id}/task/
+     * @secure
+     */
+    workSersTaskList: ({ orgId, ...query }: WorkSersTaskListParams, params: RequestParams = {}) =>
+      this.request<WorkSersTaskListData, any>({
+        path: `/api/v1/work/sers/${orgId}/task/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTaskRetrieve
+     * @request GET:/api/v1/work/sers/{org_id}/task/{id}/
+     * @secure
+     */
+    workSersTaskRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkSersTaskRetrieveData, any>({
+        path: `/api/v1/work/sers/${orgId}/task/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTaskVerboseRetrieve
+     * @request GET:/api/v1/work/sers/{org_id}/task/verbose/
+     * @secure
+     */
+    workSersTaskVerboseRetrieve: (orgId: string, params: RequestParams = {}) =>
+      this.request<WorkSersTaskVerboseRetrieveData, any>({
+        path: `/api/v1/work/sers/${orgId}/task/verbose/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksTaskList
+     * @request GET:/api/v1/work/sers/{org_id}/tasks/{task_id}/task/
+     * @secure
+     */
+    workSersTasksTaskList: ({ orgId, taskId, ...query }: WorkSersTasksTaskListParams, params: RequestParams = {}) =>
+      this.request<WorkSersTasksTaskListData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/task/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksTaskCreate
+     * @request POST:/api/v1/work/sers/{org_id}/tasks/{task_id}/task/
+     * @secure
+     */
+    workSersTasksTaskCreate: (
+      orgId: string,
+      taskId: string,
+      data: WorkTaskStatusChangeDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksTaskCreateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/task/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksTaskRetrieve
+     * @request GET:/api/v1/work/sers/{org_id}/tasks/{task_id}/task/{uuid}/
+     * @secure
+     */
+    workSersTasksTaskRetrieve: (orgId: string, taskId: string, uuid: string, params: RequestParams = {}) =>
+      this.request<WorkSersTasksTaskRetrieveData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/task/${uuid}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksTaskPartialUpdate
+     * @request PATCH:/api/v1/work/sers/{org_id}/tasks/{task_id}/task/{uuid}/
+     * @secure
+     */
+    workSersTasksTaskPartialUpdate: (
+      orgId: string,
+      taskId: string,
+      uuid: string,
+      data: PatchedWorkTaskStatusChangeDetailed,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksTaskPartialUpdateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/task/${uuid}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksTaskDestroy
+     * @request DELETE:/api/v1/work/sers/{org_id}/tasks/{task_id}/task/{uuid}/
+     * @secure
+     */
+    workSersTasksTaskDestroy: (orgId: string, taskId: string, uuid: string, params: RequestParams = {}) =>
+      this.request<WorkSersTasksTaskDestroyData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/task/${uuid}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersVehiclesList
+     * @request GET:/api/v1/work/sers/{org_id}/vehicles/
+     * @secure
+     */
+    workSersVehiclesList: ({ orgId, ...query }: WorkSersVehiclesListParams, params: RequestParams = {}) =>
+      this.request<WorkSersVehiclesListData, any>({
+        path: `/api/v1/work/sers/${orgId}/vehicles/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersVehiclesRetrieve
+     * @request GET:/api/v1/work/sers/{org_id}/vehicles/{id}/
+     * @secure
+     */
+    workSersVehiclesRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkSersVehiclesRetrieveData, any>({
+        path: `/api/v1/work/sers/${orgId}/vehicles/${id}/`,
         method: "GET",
         secure: true,
         ...params,

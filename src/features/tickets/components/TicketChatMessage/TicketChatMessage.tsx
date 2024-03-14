@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { theme } from '@data/theme'
 import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
@@ -5,16 +6,19 @@ import { DisplaySettings, Person } from '@mui/icons-material'
 import { Avatar, Box, Card, Typography } from '@mui/material'
 
 export interface TicketChatMessageProps {
-  author?: string
+  author: string
+  content: ReactNode | string
+  status?: ReactNode
+  date?: ReactNode
 }
 
-export const TicketChatMessage = ({ author = 'system' }: TicketChatMessageProps) => {
+export const TicketChatMessage = ({ author, content, status, date }: TicketChatMessageProps) => {
   return (
     <Box
       sx={{
         position: 'relative',
         display: 'grid',
-        gridTemplateColumns: '130px 130px 1fr',
+        gridTemplateColumns: '116px 130px 1fr',
         alignItems: 'start',
       }}
     >
@@ -38,16 +42,20 @@ export const TicketChatMessage = ({ author = 'system' }: TicketChatMessageProps)
           wordSpacing: '4px',
         }}
       >
-        26.02.2024
-        <br/>
-        14:00, вторник
+        {date ?? (
+          <>
+            26.02.2024
+            <br/>
+            14:00, вторник
+          </>
+        )}
       </Typography>
       <Box
         sx={{
           marginTop: '36px',
         }}
       >
-        <ChipStatus />
+        {status ?? <ChipStatus />}
       </Box>
       <Box
         sx={{
@@ -74,7 +82,7 @@ export const TicketChatMessage = ({ author = 'system' }: TicketChatMessageProps)
           <Typography
             variant={'body2'}
           >
-            {author === 'system' ? 'Система' : 'Иванов Иван'}
+            {author === 'system' ? 'Система' : author}
             {author !== 'system' && (
               <Box
                 component={'span'}
@@ -111,7 +119,7 @@ export const TicketChatMessage = ({ author = 'system' }: TicketChatMessageProps)
             }}
           />
           <Typography variant={'body2'}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto at deserunt dolore labore, modi nobis nulla numquam, omnis optio perspiciatis placeat qui sunt? Ab aliquam amet architecto atque consectetur cum dolorem eaque est id illum in molestias obcaecati, quaerat quam quis, quisquam repudiandae, sed sit voluptas voluptatibus. Ipsa, nesciunt, possimus!
+            {content}
           </Typography>
         </Card>
       </Box>

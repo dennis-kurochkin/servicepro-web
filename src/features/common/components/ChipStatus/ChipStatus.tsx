@@ -9,6 +9,10 @@ const getStatusColor = (status: string): ChipProps['color'] => {
     return 'error'
   }
 
+  if (status === 'processing') {
+    return 'info'
+  }
+
   return 'success'
 }
 
@@ -21,13 +25,21 @@ const getStatusTitle = (status: string): string => {
     return 'Ожидание ИСО'
   }
 
+  if (status === 'processing') {
+    return 'В обработке'
+  }
+
   return 'Выполнена'
 }
 
-export const ChipStatus = () => {
-  const status = Math.random() > 0.5 ? 'started' : Math.random() > 0.5 ? 'pending' : 'finished'
-  const statusColor = getStatusColor(status)
-  const statusTitle = getStatusTitle(status)
+export interface ChipStatusProps {
+  status?: 'started' | 'pending' | 'success' | 'processing'
+}
+
+export const ChipStatus = ({ status }: ChipStatusProps) => {
+  const statusRandom = Math.random() > 0.5 ? 'started' : Math.random() > 0.5 ? 'pending' : 'finished'
+  const statusColor = getStatusColor(status ?? statusRandom)
+  const statusTitle = getStatusTitle(status ?? statusRandom)
 
   return (
     <Chip

@@ -1,29 +1,47 @@
-import { useMutation } from 'react-query'
+import { useQuery } from 'react-query'
 import { Map } from '@components/Map'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
+import { rr } from '@features/common/types'
 import { TicketRow } from '@features/tickets/components/TicketRow'
 import { useApi } from '@hooks/useApi'
 import { useErrorAlert } from '@hooks/useErrorAlert'
-import { Button, Container, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
+import { Container, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
 
 export const TicketsRoute = () => {
   const { api } = useApi()
   const { alert } = useErrorAlert()
 
-  const authMutation = useMutation(['test'], async () => {
+  const query = useQuery(['tickets'], async () => {
     try {
-      const { data } = await api.orgMyRetrieve()
+      const orgResponse = await api.orgMyRetrieve()
+      const orgId = orgResponse.data.employments[0].organization.id?.toString() ?? ''
+
+      const { data } = await rr(api.workOrgsTaskList)({
+        orgId,
+      })
+
       console.log(data)
     } catch (error) {
       alert(error, 'Не удалось получить профиль')
+      throw error
     }
   })
 
-  const handleClick = async () => {
-    await authMutation.mutateAsync()
-  }
+  //
+  // const authMutation = useMutation(['test'], async () => {
+  //   try {
+  //     const { data } = await api.orgMyRetrieve()
+  //     console.log(data)
+  //   } catch (error) {
+  //     alert(error, 'Не удалось получить профиль')
+  //   }
+  // })
+  //
+  // const handleClick = async () => {
+  //   await authMutation.mutateAsync()
+  // }
 
   return (
     <>
@@ -44,55 +62,8 @@ export const TicketsRoute = () => {
           amount={32}
           sx={{ marginTop: '8px' }}
         >
-          Заявки{' '}
-          {/*<TicketsTabLink*/}
-          {/*  tab={TicketsTab.Active}*/}
-          {/*  activeTab={activeTab}*/}
-          {/*  onClick={setActiveTab}*/}
-          {/*/>*/}
-          {/*{' / '}*/}
-          {/*<TicketsTabLink*/}
-          {/*  tab={TicketsTab.History}*/}
-          {/*  activeTab={activeTab}*/}
-          {/*  onClick={setActiveTab}*/}
-          {/*/>*/}
+          Заявки
         </TableHeader>
-        {/*<FieldAutocompleteMultiple*/}
-        {/*  name={'client'}*/}
-        {/*  label={'Клиент'}*/}
-        {/*  value={[]}*/}
-        {/*  options={[]}*/}
-        {/*  sx={{ width: '200px' }}*/}
-        {/*  labelInside*/}
-        {/*  onChange={() => {}}*/}
-        {/*/>*/}
-        {/*<FieldAutocompleteMultiple*/}
-        {/*  name={'client'}*/}
-        {/*  label={'Техника'}*/}
-        {/*  value={[]}*/}
-        {/*  options={[]}*/}
-        {/*  sx={{ width: '250px' }}*/}
-        {/*  labelInside*/}
-        {/*  onChange={() => {}}*/}
-        {/*/>*/}
-        {/*<FieldAutocompleteMultiple*/}
-        {/*  name={'client'}*/}
-        {/*  label={'Статус'}*/}
-        {/*  value={[]}*/}
-        {/*  options={[]}*/}
-        {/*  sx={{ width: '200px' }}*/}
-        {/*  labelInside*/}
-        {/*  onChange={() => {}}*/}
-        {/*/>*/}
-        {/*<FieldAutocompleteMultiple*/}
-        {/*  name={'client'}*/}
-        {/*  label={'Исполнитель'}*/}
-        {/*  value={[]}*/}
-        {/*  options={[]}*/}
-        {/*  sx={{ width: '250px' }}*/}
-        {/*  labelInside*/}
-        {/*  onChange={() => {}}*/}
-        {/*/>*/}
         <TableWrapper>
           <Table
             sx={{ minHeight: 200 }}
@@ -201,11 +172,6 @@ export const TicketsRoute = () => {
             </TableBody>
           </Table>
         </TableWrapper>
-        <Button
-          onClick={handleClick}
-        >
-          Test
-        </Button>
       </Container>
     </>
   )

@@ -1,3 +1,4 @@
+import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
 import { TicketChatMessage } from '@features/tickets/components/TicketChatMessage'
@@ -63,34 +64,52 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
       >
         <TicketChatContainer>
           <TicketChatMessage
+            author={'Иванов Иван Иванович'}
+            content={'ТекстТекстТекст'}
+            status={<ChipStatus status={'started'} />}
+            date={(
+              <>
+                02.06.2024
+                <br/>
+                18:00, вт
+              </>
+            )}
+          />
+          <TicketChatMessage
             author={'system'}
+            content={'Инженер принял заявку'}
+            status={<ChipStatus status={'started'} />}
+            date={(
+              <>
+                02.06.2024
+                <br/>
+                14:00, вт
+              </>
+            )}
           />
           <TicketChatMessage
-            author={'test'}
+            author={'Сергей Сергеевич'}
+            content={'Можете приехать 02.08.23 в 6:00?'}
+            status={<ChipStatus status={'processing'} />}
+            date={(
+              <>
+                02.06.2024
+                <br/>
+                11:00, вт
+              </>
+            )}
           />
           <TicketChatMessage
-            author={'test'}
-          />
-          <TicketChatMessage
-            author={'test'}
-          />
-          <TicketChatMessage
-            author={'test'}
-          />
-          <TicketChatMessage
-            author={'test'}
-          />
-          <TicketChatMessage
-            author={'test'}
-          />
-          <TicketChatMessage
-            author={'test'}
-          />
-          <TicketChatMessage
-            author={'test'}
-          />
-          <TicketChatMessage
-            author={'test'}
+            author={'Иванов Иван Иванович'}
+            content={'Ближайшая возможная дата и время 01.09.2023 15-00'}
+            status={<ChipStatus status={'processing'} />}
+            date={(
+              <>
+                01.06.2024
+                <br/>
+                10:00, пн
+              </>
+            )}
           />
         </TicketChatContainer>
         <TicketDrawerFormsContainer>
