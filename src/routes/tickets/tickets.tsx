@@ -156,12 +156,66 @@ export const TicketsRoute = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from({ length: 20 }).map((_, index) => (
-                <TicketRow
-                  key={index}
-                  id={index + 1}
-                />
-              ))}
+              <TicketRow
+                id={1}
+                data={{
+                  client: '«Путиловец» ООО',
+                  region: 'г. Краснодар',
+                  district: 'ул. Тестовская, с. 311',
+                  brand: 'John Deere',
+                  model: '9630',
+                  desiredDate: '13.11.2023 15:30',
+                  approvedDate: '15.11.2023 16:00',
+                }}
+              />
+              <TicketRow
+                id={2}
+                data={{
+                  client: 'ООО СПК Колос',
+                  region: 'г. Краснодар',
+                  district: 'ул. Северная, д. 100',
+                  brand: 'John Deere',
+                  model: '9630',
+                  desiredDate: '15.06.2023 9:00',
+                  approvedDate: '15.06.2023 12:00',
+                }}
+              />
+              <TicketRow
+                id={3}
+                data={{
+                  client: 'ООО Рога и копыта',
+                  region: 'ст. Динская',
+                  district: 'ул. Красная, 23',
+                  brand: 'John Deere',
+                  model: '9630',
+                  desiredDate: '15.08.2023 9:00',
+                  approvedDate: '15.08.2023 12:00',
+                }}
+              />
+              <TicketRow
+                id={3}
+                data={{
+                  client: 'ЗАО АгроПлюс',
+                  region: 'ст. Динская',
+                  district: 'ул. Калинина, 154',
+                  brand: 'John Deere',
+                  model: '9630',
+                  desiredDate: '15.08.2023 9:00',
+                  approvedDate: '15.08.2023 12:00',
+                }}
+              />
+              <TicketRow
+                id={5}
+                data={{
+                  client: '«Путиловец» ООО',
+                  region: 'г. Краснодар',
+                  district: 'ул. Тестовская, с. 311',
+                  brand: 'Агромаш',
+                  model: '3000',
+                  desiredDate: '18.11.2023 15:30',
+                  approvedDate: '19.11.2023 16:00',
+                }}
+              />
             </TableBody>
           </Table>
         </TableWrapper>

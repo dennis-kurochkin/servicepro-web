@@ -8,9 +8,18 @@ import { Drawer, TableCell, TableRow } from '@mui/material'
 
 export interface TicketRowProps {
   id: number
+  data: {
+    client: string
+    region: string
+    district: string
+    brand: string
+    model: string
+    desiredDate: string
+    approvedDate: string
+  }
 }
 
-export const TicketRow = ({ id }: TicketRowProps) => {
+export const TicketRow = ({ id, data }: TicketRowProps) => {
   const [open, setOpen] = useState(false)
 
   return (
@@ -31,25 +40,25 @@ export const TicketRow = ({ id }: TicketRowProps) => {
           {id}
         </TableCell>
         <TableCell>
-        «Путиловец» ООО
+          {data.client}
         </TableCell>
         <TableCell>
-        г. Краснодар
+          {data.region}
         </TableCell>
         <TableCell>
-        ул. Тестовская, с. 311
+          {data.district}
         </TableCell>
         <TableCell>
-        John Deere
+          {data.brand}
         </TableCell>
         <TableCell>
-        9630
+          {data.model}
         </TableCell>
         <TableCell>
-        13.11.2023 15:30
+          {data.desiredDate}
         </TableCell>
         <TableCell>
-        15.11.2023 16:00
+          {data.approvedDate}
         </TableCell>
         <TableCell>
           <ChipStatus />

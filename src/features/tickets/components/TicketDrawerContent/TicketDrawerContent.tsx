@@ -1,3 +1,5 @@
+import Truck1 from '@assets/truck-1.png'
+import Truck2 from '@assets/truck-2.png'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
@@ -9,7 +11,7 @@ import { TicketDrawerFormsContainer } from '@features/tickets/components/TicketD
 import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHeader'
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
 import { Send } from '@mui/icons-material'
-import { Box, BoxProps, InputAdornment, styled } from '@mui/material'
+import { Box, BoxProps, Button, InputAdornment, styled } from '@mui/material'
 
 const ContentWrapper = styled(Box)<BoxProps>(() => ({
   flexGrow: 1,
@@ -64,50 +66,146 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
       >
         <TicketChatContainer>
           <TicketChatMessage
-            author={'Иванов Иван Иванович'}
-            content={'ТекстТекстТекст'}
-            status={<ChipStatus status={'started'} />}
+            author={{
+              name: 'Сергей Сергеевич',
+              role: 'Координатор',
+            }}
+            pictures={[
+              Truck1,
+              Truck2,
+            ]}
+            content={'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation'}
+            status={(
+              <ChipStatus
+                status={'success'}
+                filled
+              />
+            )}
             date={(
               <>
-                02.06.2024
+                15.06.2023
                 <br/>
-                18:00, вт
+                09:00, пн
+              </>
+            )}
+            actions={(
+              <>
+                <Button
+                  variant={'contained'}
+                  size={'small'}
+                  color={'success'}
+                  disableElevation
+                >
+                  Принять
+                </Button>
+                <Button
+                  variant={'contained'}
+                  size={'small'}
+                  color={'error'}
+                  disableElevation
+                >
+                  Отклонить
+                </Button>
               </>
             )}
           />
           <TicketChatMessage
-            author={'system'}
-            content={'Инженер принял заявку'}
-            status={<ChipStatus status={'started'} />}
+            author={{
+              name: 'Евгений Евгеньевич',
+              role: 'ИСО',
+            }}
+            content={'ИСО приступил'}
+            status={(
+              <ChipStatus
+                status={'started'}
+                filled
+              />
+            )}
             date={(
               <>
-                02.06.2024
+                16.06.2023
                 <br/>
-                14:00, вт
+                10:30, вт
               </>
             )}
           />
           <TicketChatMessage
-            author={'Сергей Сергеевич'}
-            content={'Можете приехать 02.08.23 в 6:00?'}
-            status={<ChipStatus status={'processing'} />}
+            author={{
+              name: 'Сергей Сергеевич',
+              role: 'Координатор',
+            }}
+            content={'Просим предоставить кран 25т'}
+            status={(
+              <ChipStatus
+                status={'pending'}
+                filled
+              />
+            )}
             date={(
               <>
-                02.06.2024
+                16.06.2023
                 <br/>
-                11:00, вт
+                9:15, вт
               </>
             )}
           />
           <TicketChatMessage
-            author={'Иванов Иван Иванович'}
-            content={'Ближайшая возможная дата и время 01.09.2023 15-00'}
-            status={<ChipStatus status={'processing'} />}
+            author={{
+              name: 'Евгений Евгеньевич',
+              role: 'ИСО',
+            }}
+            content={'Кран отсутствует'}
+            status={(
+              <ChipStatus
+                status={'pause'}
+                filled
+              />
+            )}
             date={(
               <>
-                01.06.2024
+                16.06.2023
                 <br/>
-                10:00, пн
+                09:00, вт
+              </>
+            )}
+          />
+          <TicketChatMessage
+            author={{
+              name: 'Сергей Сергеевич',
+              role: 'Координатор',
+            }}
+            content={'Условия: необходим кран 25т на 9:00 16.06.2023'}
+            status={(
+              <ChipStatus
+                status={'pending'}
+                filled
+              />
+            )}
+            date={(
+              <>
+                15.06.2023
+                <br/>
+                11:00, пн
+              </>
+            )}
+          />
+          <TicketChatMessage
+            author={{
+              name: 'Сергей Сергеевич',
+              role: 'Координатор',
+            }}
+            content={'Ближайшая возможная дата и время 16.06.2023 9:00'}
+            status={(
+              <ChipStatus
+                status={'processing'}
+                filled
+              />
+            )}
+            date={(
+              <>
+                15.06.2023
+                <br/>
+                09:00, пн
               </>
             )}
           />

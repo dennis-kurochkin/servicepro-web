@@ -2,7 +2,7 @@ import { Chip, ChipProps } from '@mui/material'
 
 const getStatusColor = (status: string): ChipProps['color'] => {
   if (status === 'started') {
-    return 'warning'
+    return 'success'
   }
 
   if (status === 'pending') {
@@ -10,6 +10,10 @@ const getStatusColor = (status: string): ChipProps['color'] => {
   }
 
   if (status === 'processing') {
+    return 'error'
+  }
+
+  if (status === 'pause') {
     return 'info'
   }
 
@@ -29,21 +33,26 @@ const getStatusTitle = (status: string): string => {
     return 'В обработке'
   }
 
+  if (status === 'pause') {
+    return 'Пауза'
+  }
+
   return 'Выполнена'
 }
 
 export interface ChipStatusProps {
-  status?: 'started' | 'pending' | 'success' | 'processing'
+  status?: 'started' | 'pending' | 'success' | 'processing' | 'pause'
+  filled?: boolean
 }
 
-export const ChipStatus = ({ status }: ChipStatusProps) => {
+export const ChipStatus = ({ status, filled = false }: ChipStatusProps) => {
   const statusRandom = Math.random() > 0.5 ? 'started' : Math.random() > 0.5 ? 'pending' : 'finished'
   const statusColor = getStatusColor(status ?? statusRandom)
   const statusTitle = getStatusTitle(status ?? statusRandom)
 
   return (
     <Chip
-      variant="outlined"
+      variant={filled ? 'filled' : 'outlined'}
       color={statusColor}
       label={statusTitle}
       size={'small'}

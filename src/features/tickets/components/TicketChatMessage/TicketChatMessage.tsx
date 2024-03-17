@@ -6,13 +6,18 @@ import { DisplaySettings, Person } from '@mui/icons-material'
 import { Avatar, Box, Card, Typography } from '@mui/material'
 
 export interface TicketChatMessageProps {
-  author: string
+  author: null | {
+    name: string
+    role: string
+  }
   content: ReactNode | string
+  pictures?: string[]
   status?: ReactNode
   date?: ReactNode
+  actions?: ReactNode
 }
 
-export const TicketChatMessage = ({ author, content, status, date }: TicketChatMessageProps) => {
+export const TicketChatMessage = ({ author, content, pictures, status, date, actions }: TicketChatMessageProps) => {
   return (
     <Box
       sx={{
@@ -75,22 +80,22 @@ export const TicketChatMessage = ({ author, content, status, date }: TicketChatM
               width: '24px',
               height: '24px',
             }}
-            alt={author}
+            alt={author?.name ?? 'Система'}
           >
-            {author === 'system' ? <DisplaySettings fontSize={'small'} /> : <Person fontSize={'small'} />}
+            {!author ? <DisplaySettings fontSize={'small'} /> : <Person fontSize={'small'} />}
           </Avatar>
           <Typography
             variant={'body2'}
           >
-            {author === 'system' ? 'Система' : author}
-            {author !== 'system' && (
+            {author?.name ?? 'Система'}
+            {author && (
               <Box
                 component={'span'}
                 sx={{
                   color: (theme) => theme.palette.grey['700'],
                 }}
               >
-                {'  • Инженер'}
+                {`  • ${author.role}`}
               </Box>
             )}
           </Typography>
@@ -122,6 +127,37 @@ export const TicketChatMessage = ({ author, content, status, date }: TicketChatM
             {content}
           </Typography>
         </Card>
+        {pictures && (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '8px',
+            }}
+          >
+            {pictures.map((picture, index) => (
+              <Box
+                key={index}
+                sx={{
+                  aspectRatio: 1,
+                  backgroundImage: `url(${picture})`,
+                  backgroundSize: 'cover',
+                }}
+              />
+            ))}
+          </Box>
+        )}
+        {actions && (
+          <Box
+            sx={{
+              display: 'grid',
+              gap: '8px',
+              gridTemplateColumns: '1fr 1fr',
+            }}
+          >
+            {actions}
+          </Box>
+        )}
       </Box>
     </Box>
   )
