@@ -64,16 +64,17 @@ export const AuthRoute = () => {
   return (
     <Box
       sx={{
-        display: 'flex',
+        display: 'grid',
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
+        paddingTop: '24px',
+        paddingBottom: '150px',
       }}
     >
       <Box
         sx={{
           display: 'flex',
-          mt: '-150px',
           flexDirection: 'column',
           alignItems: 'center',
         }}

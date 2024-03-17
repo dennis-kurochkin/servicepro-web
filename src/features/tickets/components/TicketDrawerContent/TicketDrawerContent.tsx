@@ -83,9 +83,9 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
             )}
             date={(
               <>
-                15.06.2023
+                16.06.2023
                 <br/>
-                09:00, пн
+                16:00, пн
               </>
             )}
             actions={(
