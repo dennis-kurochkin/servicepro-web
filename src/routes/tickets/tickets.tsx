@@ -167,6 +167,7 @@ export const TicketsRoute = () => {
                   desiredDate: '13.11.2023 15:30',
                   approvedDate: '15.11.2023 16:00',
                 }}
+                status={'processing'}
               />
               <TicketRow
                 id={2}
@@ -179,6 +180,7 @@ export const TicketsRoute = () => {
                   desiredDate: '15.06.2023 9:00',
                   approvedDate: '15.06.2023 12:00',
                 }}
+                status={'started'}
               />
               <TicketRow
                 id={3}
@@ -191,6 +193,7 @@ export const TicketsRoute = () => {
                   desiredDate: '15.08.2023 9:00',
                   approvedDate: '15.08.2023 12:00',
                 }}
+                status={'success'}
               />
               <TicketRow
                 id={3}
@@ -203,6 +206,7 @@ export const TicketsRoute = () => {
                   desiredDate: '15.08.2023 9:00',
                   approvedDate: '15.08.2023 12:00',
                 }}
+                status={'pause'}
               />
               <TicketRow
                 id={5}
@@ -215,6 +219,7 @@ export const TicketsRoute = () => {
                   desiredDate: '18.11.2023 15:30',
                   approvedDate: '19.11.2023 16:00',
                 }}
+                status={'pending'}
               />
             </TableBody>
           </Table>

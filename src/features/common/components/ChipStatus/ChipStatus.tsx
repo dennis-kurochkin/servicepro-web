@@ -6,7 +6,7 @@ const getStatusColor = (status: string): ChipProps['color'] => {
   }
 
   if (status === 'pending') {
-    return 'error'
+    return 'warning'
   }
 
   if (status === 'processing') {

@@ -188,6 +188,17 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
                 11:00, пн
               </>
             )}
+            actions={(
+              <Button
+                variant={'contained'}
+                size={'small'}
+                color={'success'}
+                disableElevation
+                disabled
+              >
+                Принято
+              </Button>
+            )}
           />
           <TicketChatMessage
             author={{
@@ -207,6 +218,17 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
                 <br/>
                 09:00, пн
               </>
+            )}
+            actions={(
+              <Button
+                variant={'contained'}
+                size={'small'}
+                color={'success'}
+                disableElevation
+                disabled
+              >
+                Принято
+              </Button>
             )}
           />
         </TicketChatContainer>

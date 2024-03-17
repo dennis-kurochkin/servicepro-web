@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ButtonContextActions } from '@components/ButtonContextActions'
-import { ChipStatus } from '@components/ChipStatus/ChipStatus'
+import { ChipStatus, ChipStatusProps } from '@components/ChipStatus/ChipStatus'
 import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { TicketDrawerContent } from '@features/tickets/components/TicketDrawerContent'
@@ -17,9 +17,10 @@ export interface TicketRowProps {
     desiredDate: string
     approvedDate: string
   }
+  status?: ChipStatusProps['status']
 }
 
-export const TicketRow = ({ id, data }: TicketRowProps) => {
+export const TicketRow = ({ id, data, status }: TicketRowProps) => {
   const [open, setOpen] = useState(false)
 
   return (
@@ -61,7 +62,7 @@ export const TicketRow = ({ id, data }: TicketRowProps) => {
           {data.approvedDate}
         </TableCell>
         <TableCell>
-          <ChipStatus />
+          <ChipStatus status={status} />
         </TableCell>
         <TableCell>
           <EngineerAvatar />
