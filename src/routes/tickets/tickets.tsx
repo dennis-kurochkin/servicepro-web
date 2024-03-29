@@ -1,11 +1,25 @@
+import { useQuery } from 'react-query'
 import { Map } from '@components/Map'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { TicketRow } from '@features/tickets/components/TicketRow'
+import { useApi } from '@hooks/useApi'
+import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Container, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
 
 export const TicketsRoute = () => {
+  const { organizationID } = useOrganizationID()
+  const { api } = useApi()
+
+  const { data, isSuccess } = useQuery(['ticketsle', organizationID], async () => {
+    const { data } = await api.workSersTasksList({
+      orgId: organizationID.toString(),
+    })
+
+    return data
+  })
+
   // const query = useQuery(['tickets'], async () => {
   //   try {
   //     const orgResponse = await api.orgMyRetrieve()
@@ -156,71 +170,16 @@ export const TicketsRoute = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TicketRow
-                id={1}
-                data={{
-                  client: '«Путиловец» ООО',
-                  region: 'г. Краснодар',
-                  district: 'ул. Тестовская, с. 311',
-                  brand: 'John Deere',
-                  model: '9630',
-                  desiredDate: '13.11.2023 15:30',
-                  approvedDate: '15.11.2023 16:00',
-                }}
-                status={'processing'}
-              />
-              <TicketRow
-                id={2}
-                data={{
-                  client: 'ООО СПК Колос',
-                  region: 'г. Краснодар',
-                  district: 'ул. Северная, д. 100',
-                  brand: 'John Deere',
-                  model: '9630',
-                  desiredDate: '15.06.2023 9:00',
-                  approvedDate: '15.06.2023 12:00',
-                }}
-                status={'started'}
-              />
-              <TicketRow
-                id={3}
-                data={{
-                  client: 'ООО Рога и копыта',
-                  region: 'ст. Динская',
-                  district: 'ул. Красная, 23',
-                  brand: 'John Deere',
-                  model: '9630',
-                  desiredDate: '15.08.2023 9:00',
-                  approvedDate: '15.08.2023 12:00',
-                }}
-                status={'success'}
-              />
-              <TicketRow
-                id={3}
-                data={{
-                  client: 'ЗАО АгроПлюс',
-                  region: 'ст. Динская',
-                  district: 'ул. Калинина, 154',
-                  brand: 'John Deere',
-                  model: '9630',
-                  desiredDate: '15.08.2023 9:00',
-                  approvedDate: '15.08.2023 12:00',
-                }}
-                status={'pause'}
-              />
-              <TicketRow
-                id={5}
-                data={{
-                  client: '«Путиловец» ООО',
-                  region: 'г. Краснодар',
-                  district: 'ул. Тестовская, с. 311',
-                  brand: 'Агромаш',
-                  model: '3000',
-                  desiredDate: '18.11.2023 15:30',
-                  approvedDate: '19.11.2023 16:00',
-                }}
-                status={'pending'}
-              />
+              {isSuccess && (
+                <>
+                  {data.map((task) => (
+                    <TicketRow
+                      key={task.id}
+                      task={task}
+                    />
+                  ))}
+                </>
+              )}
             </TableBody>
           </Table>
         </TableWrapper>

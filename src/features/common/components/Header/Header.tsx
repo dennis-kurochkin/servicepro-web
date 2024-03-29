@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import logo from '@assets/logo.png'
 import { HeaderProfileMenu } from '@components/HeaderProfileMenu'
 import { theme } from '@data/theme'
+import { useOrganizationID } from '@hooks/useOrganizationID'
 import { AppBar, Box, Button, Container, Toolbar } from '@mui/material'
 
 export const headerHeight = 54
@@ -31,10 +32,11 @@ const pages = [
 
 export const Header = () => {
   const navigate = useNavigate()
+  const { organizationID } = useOrganizationID()
   const { pathname } = useLocation()
 
   const handleClickNavButton = (url: string) => {
-    navigate(url)
+    navigate(`/${organizationID}${url}`)
   }
 
   return (
@@ -78,11 +80,11 @@ export const Header = () => {
             {pages.map(({ title, url }) => (
               <Button
                 key={url}
-                variant={pathname === url ? 'contained' : 'text'}
+                variant={pathname === `/${organizationID}${url}` ? 'contained' : 'text'}
                 sx={{
                   display: 'block',
                   paddingX: '16px',
-                  pointerEvents: pathname === url ? 'none' : undefined,
+                  pointerEvents: pathname === `/${organizationID}${url}` ? 'none' : undefined,
                 }}
                 disableElevation
                 onClick={() => handleClickNavButton(url)}

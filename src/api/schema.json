@@ -2930,6 +2930,53 @@
                 }
             }
         },
+        "/api/v1/vehicle/orgs/{org_id}/catalog-cache/{param}/": {
+            "get": {
+                "operationId": "vehicle_orgs_catalog_cache_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "param",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "vehicle"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrganizationCacheFile"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/vehicle/orgs/{org_id}/equipment/": {
             "get": {
                 "operationId": "vehicle_orgs_equipment_list",
@@ -6239,6 +6286,139 @@
                 }
             }
         },
+        "/api/v1/work/orgs/{org_id}/my-geo/": {
+            "get": {
+                "operationId": "work_orgs_my_geo_list",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-real_date",
+                                    "created_at",
+                                    "real_date"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `real_date` - Real date\n* `-real_date` - Real date (descending)\n* `created_at` - Created at\n* `-created_at` - Created at (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedWorkEmployeeGeolocationList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "work_orgs_my_geo_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkEmployeeGeolocation"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkEmployeeGeolocation"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkEmployeeGeolocation"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkEmployeeGeolocation"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/work/orgs/{org_id}/sers/": {
             "get": {
                 "operationId": "work_orgs_sers_list",
@@ -6421,10 +6601,22 @@
                 }
             }
         },
-        "/api/v1/work/orgs/{org_id}/task/": {
+        "/api/v1/work/orgs/{org_id}/tasks/": {
             "get": {
-                "operationId": "work_orgs_task_list",
+                "operationId": "work_orgs_tasks_list",
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "ids",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "explode": true,
+                        "style": "form"
+                    },
                     {
                         "name": "limit",
                         "required": false,
@@ -6513,7 +6705,7 @@
                 }
             },
             "post": {
-                "operationId": "work_orgs_task_create",
+                "operationId": "work_orgs_tasks_create",
                 "parameters": [
                     {
                         "in": "path",
@@ -6532,17 +6724,17 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/OrgWorkTask"
+                                "$ref": "#/components/schemas/OrgWorkTaskEdit"
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/OrgWorkTask"
+                                "$ref": "#/components/schemas/OrgWorkTaskEdit"
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/OrgWorkTask"
+                                "$ref": "#/components/schemas/OrgWorkTaskEdit"
                             }
                         }
                     },
@@ -6561,7 +6753,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OrgWorkTask"
+                                    "$ref": "#/components/schemas/OrgWorkTaskEdit"
                                 }
                             }
                         },
@@ -6570,9 +6762,9 @@
                 }
             }
         },
-        "/api/v1/work/orgs/{org_id}/task/{id}/": {
+        "/api/v1/work/orgs/{org_id}/tasks/{id}/": {
             "get": {
-                "operationId": "work_orgs_task_retrieve",
+                "operationId": "work_orgs_tasks_retrieve",
                 "parameters": [
                     {
                         "in": "path",
@@ -6618,7 +6810,161 @@
                 }
             },
             "patch": {
-                "operationId": "work_orgs_task_partial_update",
+                "operationId": "work_orgs_tasks_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedOrgWorkTaskEdit"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedOrgWorkTaskEdit"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedOrgWorkTaskEdit"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrgWorkTaskEdit"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "work_orgs_tasks_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/{id}/geo/": {
+            "get": {
+                "operationId": "work_orgs_tasks_geo_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskGeo"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/{id}/reject/": {
+            "patch": {
+                "operationId": "work_orgs_tasks_reject_partial_update",
                 "parameters": [
                     {
                         "in": "path",
@@ -6681,50 +7027,11 @@
                         "description": ""
                     }
                 }
-            },
-            "delete": {
-                "operationId": "work_orgs_task_destroy",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this work task.",
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "org_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "work"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No response body"
-                    }
-                }
             }
         },
-        "/api/v1/work/orgs/{org_id}/tasks/{task_id}/task/": {
+        "/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/": {
             "get": {
-                "operationId": "work_orgs_tasks_task_list",
+                "operationId": "work_orgs_tasks_statuses_list",
                 "parameters": [
                     {
                         "name": "limit",
@@ -6816,7 +7123,7 @@
                 }
             },
             "post": {
-                "operationId": "work_orgs_tasks_task_create",
+                "operationId": "work_orgs_tasks_statuses_create",
                 "parameters": [
                     {
                         "in": "path",
@@ -6881,9 +7188,9 @@
                 }
             }
         },
-        "/api/v1/work/orgs/{org_id}/tasks/{task_id}/task/{uuid}/": {
+        "/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/{uuid}/": {
             "get": {
-                "operationId": "work_orgs_tasks_task_retrieve",
+                "operationId": "work_orgs_tasks_statuses_retrieve",
                 "parameters": [
                     {
                         "in": "path",
@@ -6939,7 +7246,7 @@
                 }
             },
             "patch": {
-                "operationId": "work_orgs_tasks_task_partial_update",
+                "operationId": "work_orgs_tasks_statuses_partial_update",
                 "parameters": [
                     {
                         "in": "path",
@@ -7014,7 +7321,7 @@
                 }
             },
             "delete": {
-                "operationId": "work_orgs_tasks_task_destroy",
+                "operationId": "work_orgs_tasks_statuses_destroy",
                 "parameters": [
                     {
                         "in": "path",
@@ -7059,6 +7366,92 @@
                 "responses": {
                     "204": {
                         "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/geos/": {
+            "get": {
+                "operationId": "work_orgs_tasks_geos_retrieve",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "ids",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "explode": true,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-status_date",
+                                    "-updated_at",
+                                    "created_at",
+                                    "status_date",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `status_date` - Status date\n* `-status_date` - Status date (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskGeo"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -7222,6 +7615,139 @@
                 }
             }
         },
+        "/api/v1/work/sers/{org_id}/my-geo/": {
+            "get": {
+                "operationId": "work_sers_my_geo_list",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-real_date",
+                                    "created_at",
+                                    "real_date"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `real_date` - Real date\n* `-real_date` - Real date (descending)\n* `created_at` - Created at\n* `-created_at` - Created at (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedWorkEmployeeGeolocationList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "work_sers_my_geo_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkEmployeeGeolocation"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkEmployeeGeolocation"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkEmployeeGeolocation"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkEmployeeGeolocation"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/work/sers/{org_id}/orgs/": {
             "get": {
                 "operationId": "work_sers_orgs_list",
@@ -7346,10 +7872,22 @@
                 }
             }
         },
-        "/api/v1/work/sers/{org_id}/task/": {
+        "/api/v1/work/sers/{org_id}/tasks/": {
             "get": {
-                "operationId": "work_sers_task_list",
+                "operationId": "work_sers_tasks_list",
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "ids",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "explode": true,
+                        "style": "form"
+                    },
                     {
                         "name": "limit",
                         "required": false,
@@ -7438,9 +7976,9 @@
                 }
             }
         },
-        "/api/v1/work/sers/{org_id}/task/{id}/": {
+        "/api/v1/work/sers/{org_id}/tasks/{id}/": {
             "get": {
-                "operationId": "work_sers_task_retrieve",
+                "operationId": "work_sers_tasks_retrieve",
                 "parameters": [
                     {
                         "in": "path",
@@ -7486,10 +8024,19 @@
                 }
             }
         },
-        "/api/v1/work/sers/{org_id}/task/verbose/": {
+        "/api/v1/work/sers/{org_id}/tasks/{id}/geo/": {
             "get": {
-                "operationId": "work_sers_task_verbose_retrieve",
+                "operationId": "work_sers_tasks_geo_retrieve",
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
                     {
                         "in": "path",
                         "name": "org_id",
@@ -7516,7 +8063,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SerWorkTaskVerbose"
+                                    "$ref": "#/components/schemas/WorkTaskGeo"
                                 }
                             }
                         },
@@ -7525,9 +8072,199 @@
                 }
             }
         },
-        "/api/v1/work/sers/{org_id}/tasks/{task_id}/task/": {
+        "/api/v1/work/sers/{org_id}/tasks/{task_id}/routes/": {
             "get": {
-                "operationId": "work_sers_tasks_task_list",
+                "operationId": "work_sers_tasks_routes_list",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedWorkTaskRouteList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "work_sers_tasks_routes_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkTaskRoute"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkTaskRoute"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkTaskRoute"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskRoute"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/{task_id}/routes/{uuid}/": {
+            "get": {
+                "operationId": "work_sers_tasks_routes_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "uuid",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "description": "A UUID string identifying this task route.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskRoute"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/{task_id}/statuses/": {
+            "get": {
+                "operationId": "work_sers_tasks_statuses_list",
                 "parameters": [
                     {
                         "name": "limit",
@@ -7619,7 +8356,7 @@
                 }
             },
             "post": {
-                "operationId": "work_sers_tasks_task_create",
+                "operationId": "work_sers_tasks_statuses_create",
                 "parameters": [
                     {
                         "in": "path",
@@ -7684,9 +8421,9 @@
                 }
             }
         },
-        "/api/v1/work/sers/{org_id}/tasks/{task_id}/task/{uuid}/": {
+        "/api/v1/work/sers/{org_id}/tasks/{task_id}/statuses/{uuid}/": {
             "get": {
-                "operationId": "work_sers_tasks_task_retrieve",
+                "operationId": "work_sers_tasks_statuses_retrieve",
                 "parameters": [
                     {
                         "in": "path",
@@ -7742,7 +8479,7 @@
                 }
             },
             "patch": {
-                "operationId": "work_sers_tasks_task_partial_update",
+                "operationId": "work_sers_tasks_statuses_partial_update",
                 "parameters": [
                     {
                         "in": "path",
@@ -7817,7 +8554,7 @@
                 }
             },
             "delete": {
-                "operationId": "work_sers_tasks_task_destroy",
+                "operationId": "work_sers_tasks_statuses_destroy",
                 "parameters": [
                     {
                         "in": "path",
@@ -7862,6 +8599,178 @@
                 "responses": {
                     "204": {
                         "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/geos/": {
+            "get": {
+                "operationId": "work_sers_tasks_geos_retrieve",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "ids",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "explode": true,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-status_date",
+                                    "-updated_at",
+                                    "created_at",
+                                    "status_date",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `status_date` - Status date\n* `-status_date` - Status date (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskGeo"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/verbose/": {
+            "get": {
+                "operationId": "work_sers_tasks_verbose_retrieve",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "ids",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "explode": true,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-status_date",
+                                    "-updated_at",
+                                    "created_at",
+                                    "status_date",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `status_date` - Status date\n* `-status_date` - Status date (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SerWorkTaskVerbose"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -8549,6 +9458,42 @@
                     "updated_at"
                 ]
             },
+            "EmployeeGeolocation": {
+                "type": "object",
+                "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "lon": {
+                        "type": "number",
+                        "format": "double",
+                        "title": "Longitude"
+                    },
+                    "lat": {
+                        "type": "number",
+                        "format": "double",
+                        "title": "Latitude"
+                    },
+                    "real_date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "lat",
+                    "lon",
+                    "real_date",
+                    "uuid"
+                ]
+            },
             "KeyEnum": {
                 "enum": [
                     "vehicle_catalog"
@@ -8574,16 +9519,6 @@
                 ],
                 "type": "string",
                 "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete"
-            },
-            "MarkEnumEnum": {
-                "enum": [
-                    0,
-                    10,
-                    20,
-                    30
-                ],
-                "type": "integer",
-                "description": "* `0` - Черновик\n* `10` - Опубликована\n* `20` - Отклонена\n* `30` - Удалена"
             },
             "MeaningEnum": {
                 "enum": [
@@ -9125,6 +10060,14 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
                     "status_date": {
                         "type": [
                             "string",
@@ -9138,14 +10081,6 @@
                             "null"
                         ],
                         "format": "date-time"
-                    },
-                    "mark_enum": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/MarkEnumEnum"
-                            }
-                        ],
-                        "title": "Mark"
                     },
                     "organization": {
                         "type": "integer"
@@ -9188,6 +10123,142 @@
                     "status",
                     "updated_at",
                     "vehicle"
+                ]
+            },
+            "OrgWorkTaskEdit": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "mark": {
+                        "$ref": "#/components/schemas/MarkEnum"
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "approval": {
+                        "$ref": "#/components/schemas/WorkTaskCustomerApproval"
+                    },
+                    "new_photos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VehiclePhotoDetailed"
+                        },
+                        "writeOnly": true
+                    },
+                    "add_photos": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "writeOnly": true
+                        },
+                        "writeOnly": true
+                    },
+                    "remove_photos": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "writeOnly": true
+                        },
+                        "writeOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "status_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "mark_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "organization": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "service_center": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "vehicle": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "customer": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "coordinator": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "executor": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true
+                    },
+                    "parent": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "title": "Parent task"
+                    }
+                },
+                "required": [
+                    "approval",
+                    "created_at",
+                    "executor",
+                    "id",
+                    "mark",
+                    "organization",
+                    "status",
+                    "status_date",
+                    "updated_at"
                 ]
             },
             "Organization": {
@@ -9851,6 +10922,12 @@
                     "$ref": "#/components/schemas/VehicleRuntime"
                 }
             },
+            "PaginatedWorkEmployeeGeolocationList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/WorkEmployeeGeolocation"
+                }
+            },
             "PaginatedWorkEmployeeList": {
                 "type": "array",
                 "items": {
@@ -9867,6 +10944,12 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/WorkServiceCenter"
+                }
+            },
+            "PaginatedWorkTaskRouteList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/WorkTaskRoute"
                 }
             },
             "PaginatedWorkTaskStatusChangeDetailedList": {
@@ -10008,6 +11091,14 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
                     "status_date": {
                         "type": [
                             "string",
@@ -10022,16 +11113,133 @@
                         ],
                         "format": "date-time"
                     },
-                    "mark_enum": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/MarkEnumEnum"
-                            }
-                        ],
-                        "title": "Mark"
-                    },
                     "organization": {
                         "type": "integer"
+                    },
+                    "customer": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "coordinator": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "executor": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true
+                    },
+                    "parent": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "title": "Parent task"
+                    }
+                }
+            },
+            "PatchedOrgWorkTaskEdit": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "mark": {
+                        "$ref": "#/components/schemas/MarkEnum"
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "approval": {
+                        "$ref": "#/components/schemas/WorkTaskCustomerApproval"
+                    },
+                    "new_photos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VehiclePhotoDetailed"
+                        },
+                        "writeOnly": true
+                    },
+                    "add_photos": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "writeOnly": true
+                        },
+                        "writeOnly": true
+                    },
+                    "remove_photos": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "writeOnly": true
+                        },
+                        "writeOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "status_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "mark_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "organization": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "service_center": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "vehicle": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
                     },
                     "customer": {
                         "type": [
@@ -10274,7 +11482,10 @@
                         "readOnly": true
                     },
                     "icon": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "format": "uri"
                     },
                     "is_public": {
@@ -10385,7 +11596,10 @@
                         "readOnly": true
                     },
                     "icon": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "format": "uri"
                     },
                     "is_public": {
@@ -10761,11 +11975,6 @@
                     "latitude": {
                         "type": "number",
                         "format": "double"
-                    },
-                    "is_approved": {
-                        "type": "boolean",
-                        "readOnly": true,
-                        "title": "Approved"
                     }
                 }
             },
@@ -10837,6 +12046,15 @@
                     "id",
                     "updated_at"
                 ]
+            },
+            "ProviderEnum": {
+                "enum": [
+                    "manual",
+                    "openroute",
+                    "twogis"
+                ],
+                "type": "string",
+                "description": "* `manual` - manual\n* `openroute` - openroute\n* `twogis` - twogis"
             },
             "Region": {
                 "type": "object",
@@ -10913,6 +12131,14 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
                     "status_date": {
                         "type": [
                             "string",
@@ -10926,14 +12152,6 @@
                             "null"
                         ],
                         "format": "date-time"
-                    },
-                    "mark_enum": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/MarkEnumEnum"
-                            }
-                        ],
-                        "title": "Mark"
                     },
                     "service_center": {
                         "type": [
@@ -11050,6 +12268,14 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
                     "status_date": {
                         "type": [
                             "string",
@@ -11063,14 +12289,6 @@
                             "null"
                         ],
                         "format": "date-time"
-                    },
-                    "mark_enum": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/MarkEnumEnum"
-                            }
-                        ],
-                        "title": "Mark"
                     },
                     "service_center": {
                         "type": [
@@ -11158,17 +12376,31 @@
                 "type": "string",
                 "description": "* `user` - user\n* `osm` - osm\n* `dadata` - dadata\n* `fias` - fias"
             },
+            "StateEnum": {
+                "enum": [
+                    "prepare",
+                    "ready",
+                    "rebuilt",
+                    "start",
+                    "stop",
+                    "done",
+                    "cancel"
+                ],
+                "type": "string",
+                "description": "* `prepare` - prepare\n* `ready` - ready\n* `rebuilt` - rebuilt\n* `start` - start\n* `stop` - stop\n* `done` - done\n* `cancel` - cancel"
+            },
             "StatusEnum": {
                 "enum": [
                     "search",
                     "approval",
                     "wait",
+                    "on_way",
                     "pause",
                     "work",
                     "done"
                 ],
                 "type": "string",
-                "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
             },
             "TokenBlacklist": {
                 "type": "object",
@@ -11777,7 +13009,10 @@
                         "readOnly": true
                     },
                     "icon": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "format": "uri"
                     },
                     "is_public": {
@@ -11816,7 +13051,6 @@
                 },
                 "required": [
                     "created_at",
-                    "icon",
                     "id",
                     "is_public",
                     "name",
@@ -12086,7 +13320,10 @@
                         "readOnly": true
                     },
                     "icon": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "format": "uri"
                     },
                     "is_public": {
@@ -12139,7 +13376,6 @@
                 "required": [
                     "brand",
                     "created_at",
-                    "icon",
                     "id",
                     "is_public",
                     "name",
@@ -12155,7 +13391,10 @@
                         "readOnly": true
                     },
                     "icon": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "format": "uri"
                     },
                     "is_public": {
@@ -12216,7 +13455,6 @@
                     "brand",
                     "created_at",
                     "equipment",
-                    "icon",
                     "id",
                     "is_public",
                     "name",
@@ -12292,7 +13530,10 @@
                         "$ref": "#/components/schemas/VerdictEnum"
                     },
                     "file": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "format": "uri"
                     },
                     "author": {
@@ -12356,7 +13597,6 @@
                     "auditor",
                     "author",
                     "created_at",
-                    "file",
                     "id",
                     "is_approved",
                     "is_rejected",
@@ -12744,6 +13984,51 @@
                     "updated_at"
                 ]
             },
+            "WorkEmployeeGeolocation": {
+                "type": "object",
+                "properties": {
+                    "lon": {
+                        "type": "number",
+                        "format": "double",
+                        "title": "Longitude"
+                    },
+                    "lat": {
+                        "type": "number",
+                        "format": "double",
+                        "title": "Latitude"
+                    },
+                    "real_date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "device": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "task": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "writeOnly": true
+                    },
+                    "route": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "writeOnly": true
+                    }
+                },
+                "required": [
+                    "lat",
+                    "lon",
+                    "real_date"
+                ]
+            },
             "WorkOrganization": {
                 "type": "object",
                 "properties": {
@@ -13066,6 +14351,66 @@
                     "updated_at"
                 ]
             },
+            "WorkTaskCheckGeo": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "executor_mark": {
+                        "type": "boolean"
+                    },
+                    "control_point": {
+                        "$ref": "#/components/schemas/ControlPoint"
+                    }
+                },
+                "required": [
+                    "control_point",
+                    "id"
+                ]
+            },
+            "WorkTaskCustomerApproval": {
+                "type": "object",
+                "properties": {
+                    "customer_description": {
+                        "type": "string",
+                        "maxLength": 510
+                    },
+                    "customer_approve_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "want_start_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "want_complete_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "reject_text": {
+                        "type": "string",
+                        "maxLength": 510
+                    },
+                    "reject_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                }
+            },
             "WorkTaskDetailed": {
                 "type": "object",
                 "properties": {
@@ -13159,6 +14504,14 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
                     "status_date": {
                         "type": [
                             "string",
@@ -13172,14 +14525,6 @@
                             "null"
                         ],
                         "format": "date-time"
-                    },
-                    "mark_enum": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/MarkEnumEnum"
-                            }
-                        ],
-                        "title": "Mark"
                     },
                     "parent": {
                         "type": [
@@ -13204,6 +14549,171 @@
                     "status",
                     "updated_at",
                     "vehicle"
+                ]
+            },
+            "WorkTaskGeo": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "status_changes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskStatusChangeGeo"
+                        }
+                    },
+                    "checklist": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskCheckGeo"
+                        }
+                    },
+                    "routes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskRoute"
+                        }
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "checklist",
+                    "id",
+                    "routes",
+                    "status_changes"
+                ]
+            },
+            "WorkTaskRoute": {
+                "type": "object",
+                "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "provider": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ProviderEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "state": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StateEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "points": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskRoutePoint"
+                        },
+                        "readOnly": true
+                    },
+                    "geolocation": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EmployeeGeolocation"
+                        },
+                        "readOnly": true
+                    },
+                    "start": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/WorkTaskRoutePoint"
+                            }
+                        ],
+                        "writeOnly": true
+                    },
+                    "stops": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskRoutePoint"
+                        },
+                        "writeOnly": true
+                    },
+                    "end": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/WorkTaskRoutePoint"
+                            }
+                        ],
+                        "writeOnly": true
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "length": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "employee": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "task": {
+                        "type": "integer",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "duration",
+                    "employee",
+                    "end",
+                    "geolocation",
+                    "length",
+                    "points",
+                    "provider",
+                    "start",
+                    "state",
+                    "stops",
+                    "task",
+                    "updated_at",
+                    "uuid"
+                ]
+            },
+            "WorkTaskRoutePoint": {
+                "type": "object",
+                "properties": {
+                    "lon": {
+                        "type": "number",
+                        "format": "double",
+                        "title": "Longitude"
+                    },
+                    "lat": {
+                        "type": "number",
+                        "format": "double",
+                        "title": "Latitude"
+                    }
+                },
+                "required": [
+                    "lat",
+                    "lon"
                 ]
             },
             "WorkTaskShort": {
@@ -13236,6 +14746,14 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
                     "status_date": {
                         "type": [
                             "string",
@@ -13249,14 +14767,6 @@
                             "null"
                         ],
                         "format": "date-time"
-                    },
-                    "mark_enum": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/MarkEnumEnum"
-                            }
-                        ],
-                        "title": "Mark"
                     },
                     "organization": {
                         "type": "integer"
@@ -13330,6 +14840,14 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
                     "status_date": {
                         "type": [
                             "string",
@@ -13343,14 +14861,6 @@
                             "null"
                         ],
                         "format": "date-time"
-                    },
-                    "mark_enum": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/MarkEnumEnum"
-                            }
-                        ],
-                        "title": "Mark"
                     },
                     "organization": {
                         "type": "integer"
@@ -13414,17 +14924,40 @@
                     "latitude": {
                         "type": "number",
                         "format": "double"
-                    },
-                    "is_approved": {
-                        "type": "boolean",
-                        "readOnly": true,
-                        "title": "Approved"
                     }
                 },
                 "required": [
                     "initiator",
-                    "is_approved",
                     "uuid"
+                ]
+            },
+            "WorkTaskStatusChangeGeo": {
+                "type": "object",
+                "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "verdict": {
+                        "$ref": "#/components/schemas/VerdictEnum"
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "status",
+                    "uuid",
+                    "verdict"
                 ]
             },
             "WorkVehicle": {

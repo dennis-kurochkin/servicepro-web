@@ -1,60 +1,37 @@
 import { Chip, ChipProps } from '@mui/material'
+import { StatusEnum } from '~/api/servicepro.generated'
 
-const getStatusColor = (status: string): ChipProps['color'] => {
-  if (status === 'started') {
-    return 'success'
-  }
-
-  if (status === 'pending') {
-    return 'warning'
-  }
-
-  if (status === 'processing') {
-    return 'error'
-  }
-
-  if (status === 'pause') {
-    return 'info'
-  }
-
-  return 'success'
+const StatusEnumTitle: Record<StatusEnum, string> = {
+  [StatusEnum.Done]: 'Выполнено',
+  [StatusEnum.Approval]: 'В обработке',
+  [StatusEnum.OnWay]: 'В пути',
+  [StatusEnum.Wait]: 'Ожидание ИСО',
+  [StatusEnum.Pause]: 'Пауза',
+  [StatusEnum.Search]: 'Поиск',
+  [StatusEnum.Work]: 'ИСО приступил',
 }
 
-const getStatusTitle = (status: string): string => {
-  if (status === 'started') {
-    return 'ИСО приступил'
-  }
-
-  if (status === 'pending') {
-    return 'Ожидание ИСО'
-  }
-
-  if (status === 'processing') {
-    return 'В обработке'
-  }
-
-  if (status === 'pause') {
-    return 'Пауза'
-  }
-
-  return 'Выполнена'
+const StatusEnumColor: Record<StatusEnum, ChipProps['color']> = {
+  [StatusEnum.Done]: 'success',
+  [StatusEnum.Approval]: 'error',
+  [StatusEnum.OnWay]: 'info',
+  [StatusEnum.Wait]: 'warning',
+  [StatusEnum.Pause]: 'info',
+  [StatusEnum.Search]: 'info',
+  [StatusEnum.Work]: 'success',
 }
 
 export interface ChipStatusProps {
-  status?: 'started' | 'pending' | 'success' | 'processing' | 'pause'
+  status: StatusEnum
   filled?: boolean
 }
 
 export const ChipStatus = ({ status, filled = false }: ChipStatusProps) => {
-  const statusRandom = Math.random() > 0.5 ? 'started' : Math.random() > 0.5 ? 'pending' : 'finished'
-  const statusColor = getStatusColor(status ?? statusRandom)
-  const statusTitle = getStatusTitle(status ?? statusRandom)
-
   return (
     <Chip
       variant={filled ? 'filled' : 'outlined'}
-      color={statusColor}
-      label={statusTitle}
+      color={StatusEnumColor[status]}
+      label={StatusEnumTitle[status]}
       size={'small'}
     />
   )

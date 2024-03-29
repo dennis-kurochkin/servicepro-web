@@ -48,33 +48,42 @@ export const router = createBrowserRouter(getConfiguredRoutes([
     path: '/organization',
   },
   {
-    element: <LayoutMain />,
+    path: '/:organizationID',
     children: [
       {
-        element: <LayoutHeader />,
+        element: <LayoutMain />,
         children: [
           {
-            path: '/tickets',
-            element: <TicketsRoute />,
+            element: <LayoutHeader />,
+            children: [
+              {
+                path: 'tickets',
+                element: <TicketsRoute />,
+              },
+            ],
+          },
+          {
+            element: <LayoutHeaderContained />,
+            children: [
+              {
+                path: 'vehicles',
+                element: <VehiclesRoute />,
+              },
+              {
+                path: 'engineers',
+                element: <EngineersRoute />,
+              },
+              {
+                path: 'clients',
+                element: <ClientsRoute />,
+              },
+            ],
           },
         ],
       },
       {
-        element: <LayoutHeaderContained />,
-        children: [
-          {
-            path: '/vehicles',
-            element: <VehiclesRoute />,
-          },
-          {
-            path: '/engineers',
-            element: <EngineersRoute />,
-          },
-          {
-            path: '/clients',
-            element: <ClientsRoute />,
-          },
-        ],
+        path: '',
+        element: <NotFoundRoute />,
       },
     ],
   },

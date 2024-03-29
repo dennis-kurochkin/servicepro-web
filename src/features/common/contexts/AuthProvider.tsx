@@ -1,5 +1,4 @@
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useState } from 'react'
-import { MyEmployment } from '~/api/servicepro.generated'
 
 export type AuthContextData = {
   user?: {
@@ -14,13 +13,10 @@ export const AuthContext = createContext<{
   setAuth: Dispatch<SetStateAction<AuthContextData>>,
   persist: boolean,
   setPersist: Dispatch<SetStateAction<boolean>>
-  employment?: MyEmployment | null,
-  setEmployment: Dispatch<SetStateAction<MyEmployment | null>>
 }>({
   setAuth: () => {},
   persist: false,
   setPersist: () => {},
-  setEmployment: () => {},
 })
 
 export interface AuthProviderProps {}
@@ -28,7 +24,6 @@ export interface AuthProviderProps {}
 export const AuthProvider = ({ children }: PropsWithChildren<AuthProviderProps>) => {
   const [auth, setAuth] = useState<AuthContextData>({})
   const [persist, setPersist] = useState<boolean>(JSON.parse(localStorage.getItem('persist') ?? 'true'))
-  const [employment, setEmployment] = useState<MyEmployment | null>(null)
 
   return (
     <AuthContext.Provider
@@ -37,8 +32,6 @@ export const AuthProvider = ({ children }: PropsWithChildren<AuthProviderProps>)
         setAuth,
         persist,
         setPersist,
-        employment,
-        setEmployment,
       }}
     >
       {children}

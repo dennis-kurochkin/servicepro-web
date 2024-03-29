@@ -1,14 +1,14 @@
 import { ButtonContextActions } from '@components/ButtonContextActions'
-import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
+import { EMPTY_VALUE_DASH, TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
-import { AgricultureOutlined } from '@mui/icons-material'
 import { TableCell, TableRow } from '@mui/material'
+import { Vehicle } from '~/api/servicepro.generated'
 
 export interface VehicleRow {
-  id: number
+  vehicle: Vehicle
 }
 
-export const VehicleRow = ({ id }: VehicleRow) => {
+export const VehicleRow = ({ vehicle }: VehicleRow) => {
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -16,22 +16,26 @@ export const VehicleRow = ({ id }: VehicleRow) => {
       <TableCell
         size={'small'}
       >
-        {id}
+        {vehicle.id}
       </TableCell>
       <TableCell>
-        John Deere
+        {vehicle.model.brand.name || EMPTY_VALUE_DASH}
       </TableCell>
       <TableCell>
-        9630
+        {vehicle.model.name || EMPTY_VALUE_DASH}
       </TableCell>
       <TableCell>
-        <AgricultureOutlined />
+        <img
+          src={vehicle.model.equipment.icon}
+          alt={vehicle.model.brand.name || EMPTY_VALUE_DASH}
+          style={{ display: 'block' }}
+        />
       </TableCell>
       <TableCell>
-        DFHWE6722GNNSSD2009
+        {vehicle.sn ? `SN ${vehicle.sn}` : EMPTY_VALUE_DASH}
       </TableCell>
       <TableCell>
-        500мч
+        {vehicle.summary?.runtime_sum ? `${vehicle.summary.runtime_sum}мч` : EMPTY_VALUE_DASH}
       </TableCell>
       <TableCell>
         Агротехник

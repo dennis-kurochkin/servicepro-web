@@ -5,7 +5,7 @@ import { FilterAltTwoTone, Search } from '@mui/icons-material'
 import { Badge, Box, InputAdornment, SxProps, Typography } from '@mui/material'
 
 export interface TableHeaderProps {
-  amount: number
+  amount?: number
   sx?: SxProps
 }
 
@@ -19,24 +19,35 @@ export const TableHeader = ({ amount, sx = {}, children }: PropsWithChildren<Tab
         ...sx,
       }}
     >
-      <Badge
-        color={'primary'}
-        badgeContent={amount}
-        overlap={'rectangular'}
-        sx={{
-          marginRight: 'auto',
-          '& > .MuiBadge-badge': {
-            top: '4px',
-            right: '-4px',
-          },
-        }}
-      >
+      {typeof amount === 'number' ? (
+        <Badge
+          color={'primary'}
+          badgeContent={amount}
+          overlap={'rectangular'}
+          sx={{
+            marginRight: 'auto',
+            '& > .MuiBadge-badge': {
+              top: '4px',
+              right: '-4px',
+            },
+          }}
+        >
+          <Typography
+            variant={'h5'}
+          >
+            {children}
+          </Typography>
+        </Badge>
+      ) : (
         <Typography
           variant={'h5'}
+          sx={{
+            marginRight: 'auto',
+          }}
         >
           {children}
         </Typography>
-      </Badge>
+      )}
       <form id={'table-header'}>
         <FieldInput
           value={''}

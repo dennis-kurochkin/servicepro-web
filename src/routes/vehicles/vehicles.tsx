@@ -1,7 +1,10 @@
+import { useQuery } from 'react-query'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { VehicleRow } from '@features/vehicles/components/VehicleRow'
+import { useApi } from '@hooks/useApi'
+import { useOrganizationID } from '@hooks/useOrganizationID'
 import {
   Table,
   TableBody,
@@ -11,10 +14,20 @@ import {
 } from '@mui/material'
 
 export const VehiclesRoute = () => {
+  const { organizationID } = useOrganizationID()
+  const { api } = useApi()
+
+  const { data, isSuccess } = useQuery(['vehicles', organizationID], async () => {
+    const { data } = await api.vehicleSersVehiclesList({
+      orgId: organizationID.toString(),
+    })
+
+    return data
+  })
+
   return (
     <>
       <TableHeader
-        amount={20}
         sx={{ marginTop: '8px' }}
       >
         Техника
@@ -144,12 +157,16 @@ export const VehiclesRoute = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.from({ length: 20 }).map((_, index) => (
-              <VehicleRow
-                key={index}
-                id={index + 1}
-              />
-            ))}
+            {isSuccess && (
+              <>
+                {data.map((vehicle) => (
+                  <VehicleRow
+                    key={vehicle.id}
+                    vehicle={vehicle}
+                  />
+                ))}
+              </>
+            )}
           </TableBody>
         </Table>
       </TableWrapper>

@@ -1,11 +1,9 @@
 import { Fragment } from 'react'
-import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import logoVertical from '@assets/logo-vertical.png'
 import { FooterCopyright } from '@components/FooterCopyright'
 import { theme } from '@data/theme'
-import { useApi } from '@hooks/useApi'
-import { useAuth } from '@hooks/useAuth'
+import { useProfile } from '@hooks/useProfile'
 import {
   Alert,
   Avatar,
@@ -15,31 +13,17 @@ import {
   ListItemAvatar,
   ListItemButton,
   ListItemText,
-  Skeleton, Typography,
+  Skeleton,
+  Typography,
 } from '@mui/material'
 
 export const OrganizationRoute = () => {
-  const { api } = useApi()
-  const { setEmployment } = useAuth()
   const navigate = useNavigate()
-  const query = useQuery(['my'], async () => {
-    const { data } = await api.orgMyRetrieve()
-    return {
-      ...data,
-      employments: [
-        ...data.employments,
-        ...data.employments,
-        ...data.employments,
-      ],
+  const { query: { data: profile, isFetching, isSuccess }, setEmployment } = useProfile((data) => {
+    if (data.employments.length === 1) {
+      setEmployment(data.employments[0] ?? null)
+      navigate(`/${data.employments[0].organization.id}/tickets`)
     }
-  }, {
-    onSuccess: (data) => {
-      if (data.employments.length === 1) {
-        setEmployment(data.employments[0] ?? null)
-        localStorage.setItem('employmentID', data.employments[0].id.toString())
-        navigate(`/${data.employments[0].id}/tickets`)
-      }
-    },
   })
 
   return (
@@ -74,7 +58,7 @@ export const OrganizationRoute = () => {
         <Alert severity={'info'}>
           Выберите сервисный центр
         </Alert>
-        {query.isLoading ? (
+        {!isSuccess || isFetching ? (
           <Box
             sx={{
               display: 'grid',
@@ -104,7 +88,7 @@ export const OrganizationRoute = () => {
               margin: '4px -28px 0',
             }}
           >
-            {query.data?.employments.map((employment, index) => (
+            {profile!.employments.map((employment, index) => (
               <Fragment key={`${employment.id}${index}`}>
                 {index !== 0 && (
                   <Divider
@@ -151,9 +135,11 @@ export const OrganizationRoute = () => {
                         >
                           {employment.profile.position}
                         </Typography>
-                        <div>
+                        <span
+                          style={{ display: 'block' }}
+                        >
                           {employment.profile.phone_number}
-                        </div>
+                        </span>
                       </>
                     }
                   />

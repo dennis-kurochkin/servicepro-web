@@ -1,15 +1,24 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '@hooks/useAuth'
+import { useProfile } from '@hooks/useProfile'
 import { Logout, Person, Settings } from '@mui/icons-material'
-import { Avatar, Badge, Box, Button, Divider, ListItemIcon, MenuItem, Typography } from '@mui/material'
+import { Avatar, Badge, Box, Button, Divider, ListItemIcon, MenuItem, Skeleton, Typography } from '@mui/material'
 import { publicClient } from '~/api'
+import { RoleEnum } from '~/api/servicepro.generated'
 import ContextMenu from '~/features/common/components/ContextMenu'
+
+const RoleEnumLabel: Record<RoleEnum, string> = {
+  [RoleEnum.Client]: 'Клиент',
+  [RoleEnum.Coordinator]: 'Координатор',
+  [RoleEnum.Engineer]: 'Инженер',
+}
 
 export const HeaderProfileMenu = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { setAuth } = useAuth()
+  const { employment } = useProfile()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const isUserMenuOpen = Boolean(anchorEl)
 
@@ -35,7 +44,7 @@ export const HeaderProfileMenu = () => {
   return (
     <>
       <Badge
-        badgeContent={'Координатор'}
+        badgeContent={RoleEnumLabel[employment?.role ?? RoleEnum.Coordinator]}
         color="info"
         anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
         overlap="circular"
@@ -57,10 +66,10 @@ export const HeaderProfileMenu = () => {
         >
           <Avatar
             id={'account-menu-avatar'}
+            src={employment?.profile?.photo ?? undefined}
             sx={{
               width: '32px',
               height: '32px',
-              // backgroundColor: theme.palette.primary.light,
               boxShadow: 1,
             }}
           >
@@ -87,16 +96,29 @@ export const HeaderProfileMenu = () => {
                 padding: '0 20px 12px 12px',
               }}
             >
-              <Typography
-                variant={'body1'}
-              >
-                Иван Иванов
-              </Typography>
-              <Typography
-                variant={'body2'}
-              >
-                test@test.ru
-              </Typography>
+              {!employment ? (
+                <>
+                  <Skeleton
+                    variant={'text'}
+                  />
+                  <Skeleton
+                    variant={'text'}
+                  />
+                </>
+              ) : (
+                <>
+                  <Typography
+                    variant={'body1'}
+                  >
+                    {employment.profile.first_name} {employment.profile.last_name}
+                  </Typography>
+                  <Typography
+                    variant={'body2'}
+                  >
+                    {employment.profile.email}
+                  </Typography>
+                </>
+              )}
             </Box>
             <Divider sx={{ marginBottom: '8px' }} />
           </Box>

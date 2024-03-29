@@ -1,27 +1,20 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ButtonContextActions } from '@components/ButtonContextActions'
-import { ChipStatus, ChipStatusProps } from '@components/ChipStatus/ChipStatus'
-import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
+import { ChipStatus } from '@components/ChipStatus/ChipStatus'
+import { EMPTY_VALUE_DASH, TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { TicketDrawerContent } from '@features/tickets/components/TicketDrawerContent'
 import { Drawer, TableCell, TableRow } from '@mui/material'
+import { SerWorkTask } from '~/api/servicepro.generated'
 
 export interface TicketRowProps {
-  id: number
-  data: {
-    client: string
-    region: string
-    district: string
-    brand: string
-    model: string
-    desiredDate: string
-    approvedDate: string
-  }
-  status?: ChipStatusProps['status']
+  task: SerWorkTask
 }
 
-export const TicketRow = ({ id, data, status }: TicketRowProps) => {
+export const TicketRow = ({ task }: TicketRowProps) => {
   const [open, setOpen] = useState(false)
+  const requisites = useMemo(() => task.organization?.requisites ?? null, [task.organization?.requisites])
+  const vehicle = useMemo(() => task.vehicle ?? null, [task.vehicle])
 
   return (
     <>
@@ -38,31 +31,31 @@ export const TicketRow = ({ id, data, status }: TicketRowProps) => {
         <TableCell
           size={'small'}
         >
-          {id}
+          {task.id}
         </TableCell>
         <TableCell>
-          {data.client}
+          {task.customer ?? EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          {data.region}
+          {requisites?.legal_address?.region?.local_name ?? requisites?.physical_address?.region?.local_name ?? requisites?.postal_address?.region?.local_name ?? EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          {data.district}
+          {requisites?.legal_address?.value ?? requisites?.physical_address?.value ?? requisites?.postal_address?.value ?? EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          {data.brand}
+          {vehicle?.model.brand.name || EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          {data.model}
+          {vehicle?.model.name || EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          {data.desiredDate}
+          {/*{data.desiredDate}*/}
         </TableCell>
         <TableCell>
-          {data.approvedDate}
+          {/*{data.approvedDate}*/}
         </TableCell>
         <TableCell>
-          <ChipStatus status={status} />
+          <ChipStatus status={task.status} />
         </TableCell>
         <TableCell>
           <EngineerAvatar />
