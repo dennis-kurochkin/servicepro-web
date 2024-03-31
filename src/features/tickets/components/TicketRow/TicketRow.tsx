@@ -34,7 +34,7 @@ export const TicketRow = ({ task }: TicketRowProps) => {
           {task.id}
         </TableCell>
         <TableCell>
-          {task.customer ?? EMPTY_VALUE_DASH}
+          {task.customer?.id ?? EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
           {requisites?.legal_address?.region?.local_name ?? requisites?.physical_address?.region?.local_name ?? requisites?.postal_address?.region?.local_name ?? EMPTY_VALUE_DASH}

@@ -193,8 +193,6 @@ export interface Employee {
   readonly created_at: string;
   /** @format date-time */
   readonly updated_at: string;
-  /** Owner */
-  is_owner?: boolean;
   /** Active */
   is_active?: boolean;
   readonly organization: number;
@@ -214,11 +212,28 @@ export interface EmployeeDetailed {
   readonly created_at: string;
   /** @format date-time */
   readonly updated_at: string;
-  /** Owner */
-  is_owner?: boolean;
   /** Active */
   is_active?: boolean;
   readonly organization: number;
+}
+
+export interface EmployeeGeo {
+  readonly id: number;
+  /**
+   * * `client` - client
+   * * `engineer` - engineer
+   * * `coordinator` - coordinator
+   */
+  role: RoleEnum;
+  readonly geolocation: EmployeeGeolocation[];
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** Active */
+  is_active?: boolean;
+  organization: number;
+  profile?: number | null;
 }
 
 export interface EmployeeGeolocation {
@@ -488,6 +503,8 @@ export interface OrgWorkTask {
   status: StatusEnum;
   readonly service_center: OrganizationPublic;
   readonly vehicle: Vehicle;
+  readonly executor: EmployeeDetailed;
+  readonly coordinator: EmployeeDetailed;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -505,8 +522,6 @@ export interface OrgWorkTask {
   mark_date?: string | null;
   organization: number;
   customer?: number | null;
-  coordinator?: number | null;
-  readonly executor: number | null;
   /** Parent task */
   parent?: number | null;
 }
@@ -798,8 +813,6 @@ export interface PatchedEmployee {
   readonly created_at?: string;
   /** @format date-time */
   readonly updated_at?: string;
-  /** Owner */
-  is_owner?: boolean;
   /** Active */
   is_active?: boolean;
   readonly organization?: number;
@@ -827,6 +840,8 @@ export interface PatchedOrgWorkTask {
   status?: StatusEnum;
   readonly service_center?: OrganizationPublic;
   readonly vehicle?: Vehicle;
+  readonly executor?: EmployeeDetailed;
+  readonly coordinator?: EmployeeDetailed;
   /** @format date-time */
   readonly created_at?: string;
   /** @format date-time */
@@ -844,8 +859,6 @@ export interface PatchedOrgWorkTask {
   mark_date?: string | null;
   organization?: number;
   customer?: number | null;
-  coordinator?: number | null;
-  readonly executor?: number | null;
   /** Parent task */
   parent?: number | null;
 }
@@ -1265,6 +1278,7 @@ export interface SerWorkTask {
   status: StatusEnum;
   readonly organization: OrganizationPublic;
   readonly vehicle: Vehicle;
+  readonly customer: EmployeeDetailed;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -1281,7 +1295,6 @@ export interface SerWorkTask {
   /** @format date-time */
   mark_date?: string | null;
   service_center?: number | null;
-  customer?: number | null;
   coordinator?: number | null;
   readonly executor: number | null;
   /** Parent task */
@@ -2117,6 +2130,7 @@ export interface WorkTaskGeo {
   longitude?: number;
   /** @format double */
   latitude?: number;
+  readonly executor: EmployeeGeo;
 }
 
 export interface WorkTaskRoute {

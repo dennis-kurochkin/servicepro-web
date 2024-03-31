@@ -1,10 +1,22 @@
 import React, { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useAuth } from '@hooks/useAuth'
+import { Link } from 'react-router-dom'
+import { OrganizationInfoDrawerContent } from '@features/organization/components/OrganizationInfoDrawerContent'
 import { useProfile } from '@hooks/useProfile'
-import { Logout, Person, Settings } from '@mui/icons-material'
-import { Avatar, Badge, Box, Button, Divider, ListItemIcon, MenuItem, Skeleton, Typography } from '@mui/material'
-import { publicClient } from '~/api'
+import { useSignOut } from '@hooks/useSignOut'
+import { BusinessCenter, Info, Logout, Person, Settings } from '@mui/icons-material'
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Chip,
+  Divider,
+  Drawer,
+  ListItemIcon,
+  MenuItem,
+  Skeleton,
+  Typography,
+} from '@mui/material'
 import { RoleEnum } from '~/api/servicepro.generated'
 import ContextMenu from '~/features/common/components/ContextMenu'
 
@@ -15,12 +27,11 @@ const RoleEnumLabel: Record<RoleEnum, string> = {
 }
 
 export const HeaderProfileMenu = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { setAuth } = useAuth()
   const { employment } = useProfile()
+  const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const isUserMenuOpen = Boolean(anchorEl)
+  const { signOut } = useSignOut()
 
   const handleUserMenuClick = (event: React.MouseEvent) => {
     setAnchorEl(event.currentTarget)
@@ -28,17 +39,6 @@ export const HeaderProfileMenu = () => {
 
   const handleClose = () => {
     setAnchorEl(null)
-  }
-
-  const handleSignOutClick = async () => {
-    try {
-      await publicClient.api.accountJwtBlacklistCookieCreate({ withCredentials: true })
-    } catch (error) {
-      //
-    } finally {
-      setAuth({})
-      navigate('/auth', { state: { from: location } })
-    }
   }
 
   return (
@@ -117,6 +117,43 @@ export const HeaderProfileMenu = () => {
                   >
                     {employment.profile.email}
                   </Typography>
+                  {employment.organization && (
+                    <Chip
+                      label={employment.organization.name}
+                      color={'default'}
+                      variant={'outlined'}
+                      size={'medium'}
+                      avatar={(
+                        <Avatar
+                          variant={'rounded'}
+                          sx={{ background: 'none' }}
+                          src={employment.organization.photo + 'f'}
+                        >
+                          <BusinessCenter
+                            fontSize={'small'}
+                          />
+                        </Avatar>
+                      )}
+                      deleteIcon={(
+                        <Info
+                          sx={{
+                            marginLeft: 'auto !important',
+                          }}
+                        />
+                      )}
+                      sx={{
+                        width: '100%',
+                        marginTop: '12px',
+                        padding: '6px 2px 6px 4px',
+                        height: 'auto',
+                        gap: '0px',
+                        justifyContent: 'flex-start',
+                        borderRadius: '8px',
+                      }}
+                      onDelete={() => setOpen(true)}
+                      onClick={() => setOpen(true)}
+                    />
+                  )}
                 </>
               )}
             </Box>
@@ -132,7 +169,7 @@ export const HeaderProfileMenu = () => {
             Настройки
           </MenuItem>
           <Divider />
-          <MenuItem onClick={handleSignOutClick}>
+          <MenuItem onClick={signOut}>
             <ListItemIcon>
               <Logout fontSize="small" />
             </ListItemIcon>
@@ -140,6 +177,13 @@ export const HeaderProfileMenu = () => {
           </MenuItem>
         </Box>
       </ContextMenu>
+      <Drawer
+        open={open}
+        anchor={'right'}
+        onClose={() => setOpen(false)}
+      >
+        <OrganizationInfoDrawerContent onClose={() => setOpen(false)} />
+      </Drawer>
     </>
   )
 }

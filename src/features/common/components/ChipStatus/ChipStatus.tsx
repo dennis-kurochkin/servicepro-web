@@ -22,11 +22,11 @@ const StatusEnumColor: Record<StatusEnum, ChipProps['color']> = {
 }
 
 export interface ChipStatusProps {
-  status: StatusEnum
+  status?: StatusEnum
   filled?: boolean
 }
 
-export const ChipStatus = ({ status, filled = false }: ChipStatusProps) => {
+export const ChipStatus = ({ status = StatusEnum.Wait, filled = false }: ChipStatusProps) => {
   return (
     <Chip
       variant={filled ? 'filled' : 'outlined'}

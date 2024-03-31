@@ -15,7 +15,6 @@ export const useProfile = (onSuccess?: (data: MyUserAll) => void) => {
     const { data } = await api.orgMyRetrieve()
     return data ?? {}
   }, {
-    staleTime: 5 * 60 * 1000,
     enabled: !!auth?.accessToken,
     onSuccess: (data) => {
       if (organizationID && !employment) {

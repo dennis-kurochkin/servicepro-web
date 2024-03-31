@@ -12,6 +12,7 @@ import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHea
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
 import { Send } from '@mui/icons-material'
 import { Box, BoxProps, Button, InputAdornment, styled } from '@mui/material'
+import { StatusEnum } from '~/api/servicepro.generated'
 
 const ContentWrapper = styled(Box)<BoxProps>(() => ({
   flexGrow: 1,
@@ -77,7 +78,7 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
             content={'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation'}
             status={(
               <ChipStatus
-                status={'success'}
+                status={StatusEnum.Work}
                 filled
               />
             )}
@@ -117,7 +118,7 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
             content={'ИСО приступил'}
             status={(
               <ChipStatus
-                status={'started'}
+                status={StatusEnum.Work}
                 filled
               />
             )}
@@ -137,7 +138,7 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
             content={'Просим предоставить кран 25т'}
             status={(
               <ChipStatus
-                status={'pending'}
+                status={StatusEnum.Work}
                 filled
               />
             )}
@@ -157,7 +158,7 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
             content={'Кран отсутствует'}
             status={(
               <ChipStatus
-                status={'pause'}
+                status={StatusEnum.Work}
                 filled
               />
             )}
@@ -177,7 +178,7 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
             content={'Условия: необходим кран 25т на 9:00 16.06.2023'}
             status={(
               <ChipStatus
-                status={'pending'}
+                status={StatusEnum.Work}
                 filled
               />
             )}
@@ -208,7 +209,7 @@ export const TicketDrawerContent = ({ onClose }: TicketDrawerContentProps) => {
             content={'Ближайшая возможная дата и время 16.06.2023 9:00'}
             status={(
               <ChipStatus
-                status={'processing'}
+                status={StatusEnum.Work}
                 filled
               />
             )}

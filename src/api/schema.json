@@ -9381,10 +9381,6 @@
                         "format": "date-time",
                         "readOnly": true
                     },
-                    "is_owner": {
-                        "type": "boolean",
-                        "title": "Owner"
-                    },
                     "is_active": {
                         "type": "boolean",
                         "title": "Active"
@@ -9436,10 +9432,6 @@
                         "format": "date-time",
                         "readOnly": true
                     },
-                    "is_owner": {
-                        "type": "boolean",
-                        "title": "Owner"
-                    },
                     "is_active": {
                         "type": "boolean",
                         "title": "Active"
@@ -9454,6 +9446,56 @@
                     "id",
                     "organization",
                     "profile",
+                    "role",
+                    "updated_at"
+                ]
+            },
+            "EmployeeGeo": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleEnum"
+                    },
+                    "geolocation": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EmployeeGeolocation"
+                        },
+                        "readOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "title": "Active"
+                    },
+                    "organization": {
+                        "type": "integer"
+                    },
+                    "profile": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "geolocation",
+                    "id",
+                    "organization",
                     "role",
                     "updated_at"
                 ]
@@ -10043,6 +10085,22 @@
                         ],
                         "readOnly": true
                     },
+                    "executor": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/EmployeeDetailed"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "coordinator": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/EmployeeDetailed"
+                            }
+                        ],
+                        "readOnly": true
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -10091,19 +10149,6 @@
                             "null"
                         ]
                     },
-                    "coordinator": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "executor": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "readOnly": true
-                    },
                     "parent": {
                         "type": [
                             "integer",
@@ -10113,6 +10158,7 @@
                     }
                 },
                 "required": [
+                    "coordinator",
                     "created_at",
                     "executor",
                     "id",
@@ -11025,10 +11071,6 @@
                         "format": "date-time",
                         "readOnly": true
                     },
-                    "is_owner": {
-                        "type": "boolean",
-                        "title": "Owner"
-                    },
                     "is_active": {
                         "type": "boolean",
                         "title": "Active"
@@ -11070,6 +11112,22 @@
                         "allOf": [
                             {
                                 "$ref": "#/components/schemas/Vehicle"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "executor": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/EmployeeDetailed"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "coordinator": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/EmployeeDetailed"
                             }
                         ],
                         "readOnly": true
@@ -11121,19 +11179,6 @@
                             "integer",
                             "null"
                         ]
-                    },
-                    "coordinator": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "executor": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "readOnly": true
                     },
                     "parent": {
                         "type": [
@@ -12114,6 +12159,14 @@
                         ],
                         "readOnly": true
                     },
+                    "customer": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/EmployeeDetailed"
+                            }
+                        ],
+                        "readOnly": true
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -12159,12 +12212,6 @@
                             "null"
                         ]
                     },
-                    "customer": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
                     "coordinator": {
                         "type": [
                             "integer",
@@ -12188,6 +12235,7 @@
                 },
                 "required": [
                     "created_at",
+                    "customer",
                     "executor",
                     "id",
                     "mark",
@@ -14583,10 +14631,19 @@
                     "latitude": {
                         "type": "number",
                         "format": "double"
+                    },
+                    "executor": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/EmployeeGeo"
+                            }
+                        ],
+                        "readOnly": true
                     }
                 },
                 "required": [
                     "checklist",
+                    "executor",
                     "id",
                     "routes",
                     "status_changes"
