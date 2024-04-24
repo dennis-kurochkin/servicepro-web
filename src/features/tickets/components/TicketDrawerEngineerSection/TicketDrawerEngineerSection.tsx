@@ -1,12 +1,13 @@
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { ManageAccounts } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
+import { Profile } from '~/api/servicepro.generated'
 
 interface TicketDrawerEngineerSectionProps {
-  data: string | null
+  profile: Profile | null
 }
 
-export const TicketDrawerEngineerSection = ({ data }: TicketDrawerEngineerSectionProps) => {
+export const TicketDrawerEngineerSection = ({ profile }: TicketDrawerEngineerSectionProps) => {
   return (
     <Box
       sx={{
@@ -20,8 +21,10 @@ export const TicketDrawerEngineerSection = ({ data }: TicketDrawerEngineerSectio
       >
         Инженер
       </Typography>
-      {data ? (
-        <EngineerAvatar />
+      {profile ? (
+        <EngineerAvatar
+          profile={profile}
+        />
       ) : (
         <Button
           variant={'contained'}

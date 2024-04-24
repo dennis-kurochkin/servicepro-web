@@ -1,58 +1,46 @@
+import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { Map } from '@components/Map'
+import { TableCellHeadFilter } from '@components/TableCellHeadFilter/TableCellHeadFilter'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
+import { TicketDrawer } from '@features/tickets/components/TicketDrwer'
 import { TicketRow } from '@features/tickets/components/TicketRow'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
-import { Container, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
+import { Container, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 
 export const TicketsRoute = () => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
 
-  const { data, isSuccess } = useQuery(['ticketsle', organizationID], async () => {
-    const { data } = await api.workSersTasksList({
+  const [selected, setSelected] = useState<number | null>(null)
+
+  const { data, isSuccess } = useQuery(['tickets', organizationID], async () => {
+    const { data: tasks } = await api.workSersTasksVerboseList({
       orgId: organizationID.toString(),
     })
 
-    return data
+    const { data: geos } = await api.workSersTasksGeosList({
+      orgId: organizationID.toString(),
+    })
+
+    return tasks.map((task) => ({
+      task,
+      geo: geos.find(({ id }) => id == task.id),
+    }))
+  }, {
+    refetchOnWindowFocus: false,
+    onSuccess(data) {
+      setSelected(data[0].task.id)
+    },
   })
-
-  // const query = useQuery(['tickets'], async () => {
-  //   try {
-  //     const orgResponse = await api.orgMyRetrieve()
-  //     const orgId = orgResponse.data.employments[0].organization.id?.toString() ?? ''
-  //
-  //     const { data } = await rr(api.workOrgsTaskList)({
-  //       orgId,
-  //     })
-  //
-  //     console.log(data)
-  //   } catch (error) {
-  //     alert(error, 'Не удалось получить профиль')
-  //     throw error
-  //   }
-  // })
-
-  //
-  // const authMutation = useMutation(['test'], async () => {
-  //   try {
-  //     const { data } = await api.orgMyRetrieve()
-  //     console.log(data)
-  //   } catch (error) {
-  //     alert(error, 'Не удалось получить профиль')
-  //   }
-  // })
-  //
-  // const handleClick = async () => {
-  //   await authMutation.mutateAsync()
-  // }
 
   return (
     <>
       <Map
+        geo={data?.find((task) => task.task.id === selected)?.geo}
         sx={{
           height: '45vh',
           minHeight: '328px',
@@ -66,7 +54,6 @@ export const TicketsRoute = () => {
         }}
       >
         <TableHeader
-          amount={32}
           sx={{ marginTop: '8px' }}
         >
           Заявки
@@ -80,89 +67,34 @@ export const TicketsRoute = () => {
               <TableRow>
                 <TableCell
                   size={'small'}
-                >
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
+                />
+                <TableCellHeadFilter>
                   Клиент
-                  <TableSortLabel
-                    direction={'desc'}
-                    active
-                  />
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
+                </TableCellHeadFilter>
+                <TableCellHeadFilter>
                   Регион
-                  <TableSortLabel
-                    direction={'desc'}
-                    active
-                  />
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
+                </TableCellHeadFilter>
+                <TableCellHeadFilter>
                   Район
-                  <TableSortLabel
-                    direction={'desc'}
-                    active
-                  />
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
+                </TableCellHeadFilter>
+                <TableCellHeadFilter>
                   Бренд
-                  <TableSortLabel
-                    direction={'desc'}
-                    active
-                  />
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
+                </TableCellHeadFilter>
+                <TableCellHeadFilter>
                   Модель
-                  <TableSortLabel
-                    direction={'desc'}
-                    active
-                  />
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
-                  Желаемое время
-                  <TableSortLabel
-                    direction={'desc'}
-                    active
-                  />
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
+                </TableCellHeadFilter>
+                <TableCellHeadFilter>
+                  Желаемое&nbsp;время
+                </TableCellHeadFilter>
+                <TableCellHeadFilter>
                   Согласованное
-                  <TableSortLabel
-                    direction={'desc'}
-                    active
-                  />
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
+                </TableCellHeadFilter>
+                <TableCellHeadFilter>
                   Статус
-                  <TableSortLabel
-                    direction={'desc'}
-                    active
-                  />
-                </TableCell>
-                <TableCell
-                  size={'small'}
-                >
+                </TableCellHeadFilter>
+                <TableCellHeadFilter>
                   Инженер
-                  <TableSortLabel
-                    direction={'desc'}
-                    active
-                  />
-                </TableCell>
+                </TableCellHeadFilter>
                 <TableCell
                   size={'small'}
                   sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}
@@ -174,8 +106,10 @@ export const TicketsRoute = () => {
                 <>
                   {data.map((task) => (
                     <TicketRow
-                      key={task.id}
-                      task={task}
+                      key={task.task.id}
+                      task={task.task}
+                      selected={selected === task.task.id}
+                      onSelect={() => setSelected(task.task.id)}
                     />
                   ))}
                 </>
@@ -184,6 +118,7 @@ export const TicketsRoute = () => {
           </Table>
         </TableWrapper>
       </Container>
+      <TicketDrawer />
     </>
   )
 }

@@ -57,7 +57,7 @@ export const router = createBrowserRouter(getConfiguredRoutes([
             element: <LayoutHeader />,
             children: [
               {
-                path: 'tickets',
+                path: 'tickets/:ticketID?',
                 element: <TicketsRoute />,
               },
             ],

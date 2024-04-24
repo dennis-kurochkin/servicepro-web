@@ -1,30 +1,31 @@
 import { ReactNode } from 'react'
-import avatarPicture from '@assets/avatar.png'
-import { Tooltip } from '@components/Tooltip'
 import { theme } from '@data/theme'
 import { Person } from '@mui/icons-material'
 import { Avatar, Box, Chip, SxProps, Typography } from '@mui/material'
 
-const shortName = 'Иванов И.'
-const fullName = 'Иванов Иван Александрович'
-
 interface EngineerAvatarProps {
+  profile: {
+    last_name?: string
+    first_name?: string
+    photo?: string | null
+  }
+  fullName?: string,
   labelled?: boolean
   sx?: SxProps
   renderAfterChip?: ReactNode
   onClick?: () => void
 }
 
-export const EngineerAvatar = ({ labelled = true, sx, renderAfterChip, onClick }: EngineerAvatarProps) => {
+export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', labelled = true, sx, renderAfterChip, onClick }: EngineerAvatarProps) => {
   const handleClick = () => {}
 
   const avatar = (
     <Avatar
       alt={fullName}
-      src={Math.random() > 0.5 ? avatarPicture : undefined}
+      src={profile.photo ?? undefined}
       sx={{
-        width: `${labelled ? 20 : 32}px !important`,
-        height: `${labelled ? 20 : 32}px !important`,
+        width: '24px !important',
+        height: '24px !important',
         border: labelled ? 'none' : undefined,
         cursor: 'pointer',
       }}
@@ -44,48 +45,41 @@ export const EngineerAvatar = ({ labelled = true, sx, renderAfterChip, onClick }
   )
 
   return (
-    <Tooltip
-      placement={'left'}
-      content={(
-        <Box>
-          <Typography variant={'body2'}>
-            {fullName}{' '}
-          </Typography>
-        </Box>
-      )}
+    <Box
+      sx={{ position: 'relative', ...sx }}
     >
-      <Box
-        sx={{ position: 'relative', ...sx }}
-      >
-        {labelled ? (
-          <Chip
-            variant={'filled'}
-            sx={{ height: '28px' }}
-            avatar={avatar}
-            label={(
-              <>
-                {shortName}
-                <Typography
-                  component={'span'}
-                  variant={'body2'}
-                  fontWeight={700}
-                  color={theme.palette.success.main}
-                  sx={{
-                    marginLeft: '6px',
-                  }}
-                >
+      {labelled ? (
+        <Chip
+          variant={'filled'}
+          sx={{
+            height: '32px',
+            borderRadius: '20px 8px 8px 20px',
+            background: 'rgba(0, 0, 0, 0.06)',
+          }}
+          avatar={avatar}
+          label={(
+            <>
+              {`${profile.last_name} ${profile.first_name?.[0]}.`}
+              <Typography
+                component={'span'}
+                variant={'body2'}
+                fontWeight={700}
+                color={theme.palette.success.main}
+                sx={{
+                  marginLeft: '6px',
+                }}
+              >
                   4.3
-                </Typography>
-              </>
-            )}
-            onClick={async (e) => {
-              e.stopPropagation()
-              onClick ? onClick() : handleClick()
-            }}
-          />
-        ) : avatar}
-        {renderAfterChip}
-      </Box>
-    </Tooltip>
+              </Typography>
+            </>
+          )}
+          onClick={async (e) => {
+            e.stopPropagation()
+            onClick ? onClick() : handleClick()
+          }}
+        />
+      ) : avatar}
+      {renderAfterChip}
+    </Box>
   )
 }

@@ -1,14 +1,15 @@
 import { ReactNode } from 'react'
 import { Close } from '@mui/icons-material'
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, IconButton, Skeleton, Typography } from '@mui/material'
 
 interface TicketDrawerHeaderProps {
   title: string
+  loading?: boolean
   renderChips: ReactNode
   onClose: () => void
 }
 
-export const TicketDrawerHeader = ({ title, renderChips, onClose }: TicketDrawerHeaderProps) => {
+export const TicketDrawerHeader = ({ title, loading = false, renderChips, onClose }: TicketDrawerHeaderProps) => {
   return (
     <Box
       sx={{
@@ -25,12 +26,20 @@ export const TicketDrawerHeader = ({ title, renderChips, onClose }: TicketDrawer
           justifyContent: 'space-between',
         }}
       >
-        <Typography
-          variant={'h6'}
-          fontWeight={500}
-        >
-          {title}
-        </Typography>
+        {loading ? (
+          <Skeleton
+            variant={'rounded'}
+            height={24}
+            width={'30%'}
+          />
+        ) : (
+          <Typography
+            variant={'h6'}
+            fontWeight={500}
+          >
+            {title}
+          </Typography>
+        )}
         <IconButton
           size={'small'}
           aria-label="close"
@@ -46,7 +55,18 @@ export const TicketDrawerHeader = ({ title, renderChips, onClose }: TicketDrawer
           marginTop: '4px',
         }}
       >
-        {renderChips}
+        {!loading ? renderChips : (
+          <>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Skeleton
+                key={index}
+                variant={'rounded'}
+                height={24}
+                width={'100px'}
+              />
+            ))}
+          </>
+        )}
       </Box>
     </Box>
   )

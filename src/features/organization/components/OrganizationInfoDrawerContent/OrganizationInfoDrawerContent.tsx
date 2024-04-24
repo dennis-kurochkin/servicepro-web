@@ -22,7 +22,6 @@ export const OrganizationInfoDrawerContent = ({ onClose }: OrganizationInfoDrawe
   const query = useQuery([organizationID, 'organization', 'info'], async () => {
     try {
       const { data } = await api.orgOrgsRetrieve(organizationID)
-      console.log(data)
       return data
     } catch (error) {
       //

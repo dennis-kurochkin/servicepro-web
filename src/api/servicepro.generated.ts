@@ -65,7 +65,7 @@ export interface Address {
 
 export interface ControlPoint {
   readonly id: number;
-  address?: Address;
+  address?: Address | null;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -78,7 +78,7 @@ export interface ControlPoint {
   latitude?: number;
   /** Permanent */
   is_permanent?: boolean;
-  organization: number;
+  readonly organization: number;
 }
 
 export interface CookieTokenRefresh {
@@ -276,12 +276,14 @@ export enum LevelEnum {
  * * `posted` - posted
  * * `reject` - reject
  * * `delete` - delete
+ * * `archived` - archived
  */
 export enum MarkEnum {
   Draft = "draft",
   Posted = "posted",
   Reject = "reject",
   Delete = "delete",
+  Archived = "archived",
 }
 
 /**
@@ -489,6 +491,7 @@ export interface OrgWorkTask {
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
+   * * `archived` - archived
    */
   mark: MarkEnum;
   /**
@@ -533,6 +536,7 @@ export interface OrgWorkTaskEdit {
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
+   * * `archived` - archived
    */
   mark: MarkEnum;
   readonly status: StatusEnum;
@@ -544,8 +548,6 @@ export interface OrgWorkTaskEdit {
   readonly created_at: string;
   /** @format date-time */
   readonly updated_at: string;
-  /** @maxLength 120 */
-  title?: string;
   /** @format double */
   longitude?: number;
   /** @format double */
@@ -557,9 +559,6 @@ export interface OrgWorkTaskEdit {
   readonly organization: number;
   service_center?: number | null;
   vehicle?: number | null;
-  customer?: number | null;
-  coordinator?: number | null;
-  readonly executor: number | null;
   /** Parent task */
   parent?: number | null;
 }
@@ -749,6 +748,8 @@ export type PaginatedOrganizationList = Organization[];
 
 export type PaginatedSerWorkTaskList = SerWorkTask[];
 
+export type PaginatedSerWorkTaskVerboseList = SerWorkTaskVerbose[];
+
 export type PaginatedUserInviteList = UserInvite[];
 
 export type PaginatedVehicleBrandList = VehicleBrand[];
@@ -777,6 +778,10 @@ export type PaginatedWorkOrganizationList = WorkOrganization[];
 
 export type PaginatedWorkServiceCenterList = WorkServiceCenter[];
 
+export type PaginatedWorkTaskDetailedList = WorkTaskDetailed[];
+
+export type PaginatedWorkTaskGeoList = WorkTaskGeo[];
+
 export type PaginatedWorkTaskRouteList = WorkTaskRoute[];
 
 export type PaginatedWorkTaskStatusChangeDetailedList = WorkTaskStatusChangeDetailed[];
@@ -785,7 +790,7 @@ export type PaginatedWorkVehicleList = WorkVehicle[];
 
 export interface PatchedControlPoint {
   readonly id?: number;
-  address?: Address;
+  address?: Address | null;
   /** @format date-time */
   readonly created_at?: string;
   /** @format date-time */
@@ -798,7 +803,7 @@ export interface PatchedControlPoint {
   latitude?: number;
   /** Permanent */
   is_permanent?: boolean;
-  organization?: number;
+  readonly organization?: number;
 }
 
 export interface PatchedEmployee {
@@ -819,50 +824,6 @@ export interface PatchedEmployee {
   profile?: number | null;
 }
 
-export interface PatchedOrgWorkTask {
-  readonly id?: number;
-  /**
-   * * `draft` - draft
-   * * `posted` - posted
-   * * `reject` - reject
-   * * `delete` - delete
-   */
-  mark?: MarkEnum;
-  /**
-   * * `search` - search
-   * * `approval` - approval
-   * * `wait` - wait
-   * * `on_way` - on_way
-   * * `pause` - pause
-   * * `work` - work
-   * * `done` - done
-   */
-  status?: StatusEnum;
-  readonly service_center?: OrganizationPublic;
-  readonly vehicle?: Vehicle;
-  readonly executor?: EmployeeDetailed;
-  readonly coordinator?: EmployeeDetailed;
-  /** @format date-time */
-  readonly created_at?: string;
-  /** @format date-time */
-  readonly updated_at?: string;
-  number?: number;
-  /** @maxLength 120 */
-  title?: string;
-  /** @format double */
-  longitude?: number;
-  /** @format double */
-  latitude?: number;
-  /** @format date-time */
-  status_date?: string | null;
-  /** @format date-time */
-  mark_date?: string | null;
-  organization?: number;
-  customer?: number | null;
-  /** Parent task */
-  parent?: number | null;
-}
-
 export interface PatchedOrgWorkTaskEdit {
   readonly id?: number;
   /**
@@ -870,6 +831,7 @@ export interface PatchedOrgWorkTaskEdit {
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
+   * * `archived` - archived
    */
   mark?: MarkEnum;
   readonly status?: StatusEnum;
@@ -881,8 +843,6 @@ export interface PatchedOrgWorkTaskEdit {
   readonly created_at?: string;
   /** @format date-time */
   readonly updated_at?: string;
-  /** @maxLength 120 */
-  title?: string;
   /** @format double */
   longitude?: number;
   /** @format double */
@@ -894,9 +854,6 @@ export interface PatchedOrgWorkTaskEdit {
   readonly organization?: number;
   service_center?: number | null;
   vehicle?: number | null;
-  customer?: number | null;
-  coordinator?: number | null;
-  readonly executor?: number | null;
   /** Parent task */
   parent?: number | null;
 }
@@ -973,6 +930,8 @@ export interface PatchedServiceCenter {
   readonly created_at?: string;
   /** @format date-time */
   readonly updated_at?: string;
+  /** Points radius */
+  coverage_radius?: number[];
 }
 
 export interface PatchedUserPersonal {
@@ -1185,6 +1144,21 @@ export interface PatchedWorkTaskStatusChangeDetailed {
   latitude?: number;
 }
 
+export interface PointRadius {
+  /**
+   * Longitude center
+   * @format double
+   */
+  lon_center: number;
+  /**
+   * Latitude center
+   * @format double
+   */
+  lat_center: number;
+  /** @format double */
+  radius?: number;
+}
+
 export interface Profile {
   readonly id: number;
   /** @format uri */
@@ -1264,6 +1238,7 @@ export interface SerWorkTask {
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
+   * * `archived` - archived
    */
   mark: MarkEnum;
   /**
@@ -1308,6 +1283,7 @@ export interface SerWorkTaskVerbose {
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
+   * * `archived` - archived
    */
   mark: MarkEnum;
   /**
@@ -1353,6 +1329,8 @@ export interface ServiceCenter {
   readonly created_at: string;
   /** @format date-time */
   readonly updated_at: string;
+  /** Points radius */
+  coverage_radius?: number[];
 }
 
 /**
@@ -1999,6 +1977,7 @@ export interface WorkServiceCenter {
 export interface WorkServiceCenterSearch {
   readonly service_centers: WorkServiceCenter[];
   region?: Region;
+  radius?: PointRadius;
 }
 
 export interface WorkTaskApproval {
@@ -2082,6 +2061,7 @@ export interface WorkTaskDetailed {
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
+   * * `archived` - archived
    */
   mark: MarkEnum;
   /**
@@ -2173,6 +2153,7 @@ export interface WorkTaskShort {
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
+   * * `archived` - archived
    */
   mark: MarkEnum;
   /**
@@ -2213,6 +2194,7 @@ export interface WorkTaskShortWithExecutor {
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
+   * * `archived` - archived
    */
   mark: MarkEnum;
   /**
@@ -2445,7 +2427,12 @@ export interface OrgOrgsEmployeesListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   profile?: number;
-  role?: string;
+  /**
+   * * `client` - client
+   * * `engineer` - engineer
+   * * `coordinator` - coordinator
+   */
+  role?: "client" | "coordinator" | "engineer";
   user?: number;
   /** @pattern ^\d+$ */
   orgId: string;
@@ -2466,6 +2453,7 @@ export type OrgOrgsMyProfileRetrieveData = Profile;
 export type OrgOrgsMyProfilePartialUpdateData = Profile;
 
 export interface OrgOrgsPointsListParams {
+  is_permanent?: boolean;
   /** Number of results to return per page. */
   limit?: number;
   /**
@@ -2978,9 +2966,18 @@ export type WorkOrgsSersRetrieveData = WorkServiceCenter;
 export type WorkOrgsSersSearchCreateData = WorkServiceCenterSearch;
 
 export interface WorkOrgsTasksListParams {
+  executor?: number;
   ids?: number[];
   /** Number of results to return per page. */
   limit?: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   * * `archived` - archived
+   */
+  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
   number?: number;
   /**
    * Ordering
@@ -2995,7 +2992,18 @@ export interface WorkOrgsTasksListParams {
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `on_way` - on_way
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
   title?: string;
+  vehicle?: number;
   /** @pattern ^\d+$ */
   orgId: string;
 }
@@ -3011,8 +3019,6 @@ export type WorkOrgsTasksPartialUpdateData = OrgWorkTaskEdit;
 export type WorkOrgsTasksDestroyData = any;
 
 export type WorkOrgsTasksGeoRetrieveData = WorkTaskGeo;
-
-export type WorkOrgsTasksRejectPartialUpdateData = OrgWorkTask;
 
 export interface WorkOrgsTasksStatusesListParams {
   /** Number of results to return per page. */
@@ -3047,8 +3053,19 @@ export type WorkOrgsTasksStatusesPartialUpdateData = WorkTaskStatusChangeDetaile
 
 export type WorkOrgsTasksStatusesDestroyData = any;
 
-export interface WorkOrgsTasksGeosRetrieveParams {
+export interface WorkOrgsTasksFullListParams {
+  executor?: number;
   ids?: number[];
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   * * `archived` - archived
+   */
+  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
   number?: number;
   /**
    * Ordering
@@ -3061,12 +3078,70 @@ export interface WorkOrgsTasksGeosRetrieveParams {
    * * `-status_date` - Status date (descending)
    */
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `on_way` - on_way
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
   title?: string;
+  vehicle?: number;
   /** @pattern ^\d+$ */
   orgId: string;
 }
 
-export type WorkOrgsTasksGeosRetrieveData = WorkTaskGeo;
+export type WorkOrgsTasksFullListData = PaginatedWorkTaskDetailedList;
+
+export interface WorkOrgsTasksGeosListParams {
+  executor?: number;
+  ids?: number[];
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   * * `archived` - archived
+   */
+  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
+  number?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `status_date` - Status date
+   * * `-status_date` - Status date (descending)
+   */
+  o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `on_way` - on_way
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
+  title?: string;
+  vehicle?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type WorkOrgsTasksGeosListData = PaginatedWorkTaskGeoList;
 
 export interface WorkSersEmployeesListParams {
   is_active?: boolean;
@@ -3085,7 +3160,12 @@ export interface WorkSersEmployeesListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   profile?: number;
-  role?: string;
+  /**
+   * * `client` - client
+   * * `engineer` - engineer
+   * * `coordinator` - coordinator
+   */
+  role?: "client" | "coordinator" | "engineer";
   user?: number;
   /** @pattern ^\d+$ */
   orgId: string;
@@ -3140,9 +3220,18 @@ export type WorkSersOrgsListData = PaginatedWorkOrganizationList;
 export type WorkSersOrgsRetrieveData = WorkOrganization;
 
 export interface WorkSersTasksListParams {
+  executor?: number;
   ids?: number[];
   /** Number of results to return per page. */
   limit?: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   * * `archived` - archived
+   */
+  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
   number?: number;
   /**
    * Ordering
@@ -3157,7 +3246,18 @@ export interface WorkSersTasksListParams {
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `on_way` - on_way
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
   title?: string;
+  vehicle?: number;
   /** @pattern ^\d+$ */
   orgId: string;
 }
@@ -3173,6 +3273,16 @@ export interface WorkSersTasksRoutesListParams {
   limit?: number;
   /** The initial index from which to return the results. */
   offset?: number;
+  /**
+   * * `prepare` - prepare
+   * * `ready` - ready
+   * * `rebuilt` - rebuilt
+   * * `start` - start
+   * * `stop` - stop
+   * * `done` - done
+   * * `cancel` - cancel
+   */
+  state?: "cancel" | "done" | "prepare" | "ready" | "rebuilt" | "start" | "stop";
   /** @pattern ^\d+$ */
   orgId: string;
   /** @pattern ^\d+$ */
@@ -3218,8 +3328,19 @@ export type WorkSersTasksStatusesPartialUpdateData = WorkTaskStatusChangeDetaile
 
 export type WorkSersTasksStatusesDestroyData = any;
 
-export interface WorkSersTasksGeosRetrieveParams {
+export interface WorkSersTasksFullListParams {
+  executor?: number;
   ids?: number[];
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   * * `archived` - archived
+   */
+  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
   number?: number;
   /**
    * Ordering
@@ -3232,15 +3353,39 @@ export interface WorkSersTasksGeosRetrieveParams {
    * * `-status_date` - Status date (descending)
    */
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `on_way` - on_way
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
   title?: string;
+  vehicle?: number;
   /** @pattern ^\d+$ */
   orgId: string;
 }
 
-export type WorkSersTasksGeosRetrieveData = WorkTaskGeo;
+export type WorkSersTasksFullListData = PaginatedWorkTaskDetailedList;
 
-export interface WorkSersTasksVerboseRetrieveParams {
+export interface WorkSersTasksGeosListParams {
+  executor?: number;
   ids?: number[];
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   * * `archived` - archived
+   */
+  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
   number?: number;
   /**
    * Ordering
@@ -3253,12 +3398,70 @@ export interface WorkSersTasksVerboseRetrieveParams {
    * * `-status_date` - Status date (descending)
    */
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `on_way` - on_way
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
   title?: string;
+  vehicle?: number;
   /** @pattern ^\d+$ */
   orgId: string;
 }
 
-export type WorkSersTasksVerboseRetrieveData = SerWorkTaskVerbose;
+export type WorkSersTasksGeosListData = PaginatedWorkTaskGeoList;
+
+export interface WorkSersTasksVerboseListParams {
+  executor?: number;
+  ids?: number[];
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * * `draft` - draft
+   * * `posted` - posted
+   * * `reject` - reject
+   * * `delete` - delete
+   * * `archived` - archived
+   */
+  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
+  number?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `status_date` - Status date
+   * * `-status_date` - Status date (descending)
+   */
+  o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `on_way` - on_way
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
+  title?: string;
+  vehicle?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type WorkSersTasksVerboseListData = PaginatedSerWorkTaskVerboseList;
 
 export interface WorkSersVehiclesListParams {
   gos_number?: string;
@@ -4436,12 +4639,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags vehicle
      * @name VehicleOrgsCatalogCacheRetrieve
-     * @request GET:/api/v1/vehicle/orgs/{org_id}/catalog-cache/{param}/
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/catalog-cache/{version}/
      * @secure
      */
-    vehicleOrgsCatalogCacheRetrieve: (param: string, orgId: string, params: RequestParams = {}) =>
+    vehicleOrgsCatalogCacheRetrieve: (orgId: string, version: string, params: RequestParams = {}) =>
       this.request<VehicleOrgsCatalogCacheRetrieveData, any>({
-        path: `/api/v1/vehicle/orgs/${orgId}/catalog-cache/${param}/`,
+        path: `/api/v1/vehicle/orgs/${orgId}/catalog-cache/${version}/`,
         method: "GET",
         secure: true,
         ...params,
@@ -5580,29 +5783,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
-     * @name WorkOrgsTasksRejectPartialUpdate
-     * @request PATCH:/api/v1/work/orgs/{org_id}/tasks/{id}/reject/
-     * @secure
-     */
-    workOrgsTasksRejectPartialUpdate: (
-      id: number,
-      orgId: string,
-      data: PatchedOrgWorkTask,
-      params: RequestParams = {},
-    ) =>
-      this.request<WorkOrgsTasksRejectPartialUpdateData, any>({
-        path: `/api/v1/work/orgs/${orgId}/tasks/${id}/reject/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
      * @name WorkOrgsTasksStatusesList
      * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/
      * @secure
@@ -5702,12 +5882,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
-     * @name WorkOrgsTasksGeosRetrieve
+     * @name WorkOrgsTasksFullList
+     * @request GET:/api/v1/work/orgs/{org_id}/tasks/full/
+     * @secure
+     */
+    workOrgsTasksFullList: ({ orgId, ...query }: WorkOrgsTasksFullListParams, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksFullListData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/full/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksGeosList
      * @request GET:/api/v1/work/orgs/{org_id}/tasks/geos/
      * @secure
      */
-    workOrgsTasksGeosRetrieve: ({ orgId, ...query }: WorkOrgsTasksGeosRetrieveParams, params: RequestParams = {}) =>
-      this.request<WorkOrgsTasksGeosRetrieveData, any>({
+    workOrgsTasksGeosList: ({ orgId, ...query }: WorkOrgsTasksGeosListParams, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksGeosListData, any>({
         path: `/api/v1/work/orgs/${orgId}/tasks/geos/`,
         method: "GET",
         query: query,
@@ -6019,12 +6216,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
-     * @name WorkSersTasksGeosRetrieve
+     * @name WorkSersTasksFullList
+     * @request GET:/api/v1/work/sers/{org_id}/tasks/full/
+     * @secure
+     */
+    workSersTasksFullList: ({ orgId, ...query }: WorkSersTasksFullListParams, params: RequestParams = {}) =>
+      this.request<WorkSersTasksFullListData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/full/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksGeosList
      * @request GET:/api/v1/work/sers/{org_id}/tasks/geos/
      * @secure
      */
-    workSersTasksGeosRetrieve: ({ orgId, ...query }: WorkSersTasksGeosRetrieveParams, params: RequestParams = {}) =>
-      this.request<WorkSersTasksGeosRetrieveData, any>({
+    workSersTasksGeosList: ({ orgId, ...query }: WorkSersTasksGeosListParams, params: RequestParams = {}) =>
+      this.request<WorkSersTasksGeosListData, any>({
         path: `/api/v1/work/sers/${orgId}/tasks/geos/`,
         method: "GET",
         query: query,
@@ -6036,15 +6250,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
-     * @name WorkSersTasksVerboseRetrieve
+     * @name WorkSersTasksVerboseList
      * @request GET:/api/v1/work/sers/{org_id}/tasks/verbose/
      * @secure
      */
-    workSersTasksVerboseRetrieve: (
-      { orgId, ...query }: WorkSersTasksVerboseRetrieveParams,
-      params: RequestParams = {},
-    ) =>
-      this.request<WorkSersTasksVerboseRetrieveData, any>({
+    workSersTasksVerboseList: ({ orgId, ...query }: WorkSersTasksVerboseListParams, params: RequestParams = {}) =>
+      this.request<WorkSersTasksVerboseListData, any>({
         path: `/api/v1/work/sers/${orgId}/tasks/verbose/`,
         method: "GET",
         query: query,

@@ -4,6 +4,7 @@ import { theme } from '@data/theme'
 import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
 import { DisplaySettings, Person } from '@mui/icons-material'
 import { Avatar, Box, Card, Typography } from '@mui/material'
+import { StatusEnum } from '~/api/servicepro.generated'
 
 export interface TicketChatMessageProps {
   author: null | {
@@ -12,7 +13,7 @@ export interface TicketChatMessageProps {
   }
   content: ReactNode | string
   pictures?: string[]
-  status?: ReactNode
+  status?: StatusEnum
   date?: ReactNode
   actions?: ReactNode
 }
@@ -60,7 +61,11 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
           marginTop: '36px',
         }}
       >
-        {status ?? <ChipStatus />}
+        <ChipStatus
+          status={status}
+          size={400}
+          filled
+        />
       </Box>
       <Box
         sx={{

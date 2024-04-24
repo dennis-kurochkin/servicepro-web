@@ -1504,8 +1504,14 @@
                         "in": "query",
                         "name": "role",
                         "schema": {
-                            "type": "string"
-                        }
+                            "type": "string",
+                            "enum": [
+                                "client",
+                                "coordinator",
+                                "engineer"
+                            ]
+                        },
+                        "description": "* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
                     },
                     {
                         "in": "query",
@@ -1844,6 +1850,13 @@
                 "operationId": "org_orgs_points_list",
                 "parameters": [
                     {
+                        "in": "query",
+                        "name": "is_permanent",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
                         "name": "limit",
                         "required": false,
                         "in": "query",
@@ -1947,8 +1960,7 @@
                                 "$ref": "#/components/schemas/ControlPoint"
                             }
                         }
-                    },
-                    "required": true
+                    }
                 },
                 "security": [
                     {
@@ -2930,24 +2942,24 @@
                 }
             }
         },
-        "/api/v1/vehicle/orgs/{org_id}/catalog-cache/{param}/": {
+        "/api/v1/vehicle/orgs/{org_id}/catalog-cache/{version}/": {
             "get": {
                 "operationId": "vehicle_orgs_catalog_cache_retrieve",
                 "parameters": [
-                    {
-                        "in": "path",
-                        "name": "param",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true
-                    },
                     {
                         "in": "path",
                         "name": "org_id",
                         "schema": {
                             "type": "string",
                             "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "version",
+                        "schema": {
+                            "type": "string"
                         },
                         "required": true
                     }
@@ -6607,6 +6619,13 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "executor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
                         "name": "ids",
                         "schema": {
                             "type": "array",
@@ -6625,6 +6644,21 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "in": "query",
+                        "name": "mark",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "archived",
+                                "delete",
+                                "draft",
+                                "posted",
+                                "reject"
+                            ]
+                        },
+                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
                     },
                     {
                         "in": "query",
@@ -6674,9 +6708,33 @@
                     },
                     {
                         "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "done",
+                                "on_way",
+                                "pause",
+                                "search",
+                                "wait",
+                                "work"
+                            ]
+                        },
+                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                    },
+                    {
+                        "in": "query",
                         "name": "title",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "vehicle",
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -6954,73 +7012,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/WorkTaskGeo"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/work/orgs/{org_id}/tasks/{id}/reject/": {
-            "patch": {
-                "operationId": "work_orgs_tasks_reject_partial_update",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this work task.",
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "org_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "work"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedOrgWorkTask"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedOrgWorkTask"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedOrgWorkTask"
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/OrgWorkTask"
                                 }
                             }
                         },
@@ -7370,10 +7361,17 @@
                 }
             }
         },
-        "/api/v1/work/orgs/{org_id}/tasks/geos/": {
+        "/api/v1/work/orgs/{org_id}/tasks/full/": {
             "get": {
-                "operationId": "work_orgs_tasks_geos_retrieve",
+                "operationId": "work_orgs_tasks_full_list",
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "executor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
                     {
                         "in": "query",
                         "name": "ids",
@@ -7385,6 +7383,30 @@
                         },
                         "explode": true,
                         "style": "form"
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "mark",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "archived",
+                                "delete",
+                                "draft",
+                                "posted",
+                                "reject"
+                            ]
+                        },
+                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
                     },
                     {
                         "in": "query",
@@ -7415,6 +7437,15 @@
                         "style": "form"
                     },
                     {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "in": "path",
                         "name": "org_id",
                         "schema": {
@@ -7425,9 +7456,33 @@
                     },
                     {
                         "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "done",
+                                "on_way",
+                                "pause",
+                                "search",
+                                "wait",
+                                "work"
+                            ]
+                        },
+                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                    },
+                    {
+                        "in": "query",
                         "name": "title",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "vehicle",
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -7447,7 +7502,157 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WorkTaskGeo"
+                                    "$ref": "#/components/schemas/PaginatedWorkTaskDetailedList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/geos/": {
+            "get": {
+                "operationId": "work_orgs_tasks_geos_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "executor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "ids",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "explode": true,
+                        "style": "form"
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "mark",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "archived",
+                                "delete",
+                                "draft",
+                                "posted",
+                                "reject"
+                            ]
+                        },
+                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+                    },
+                    {
+                        "in": "query",
+                        "name": "number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-status_date",
+                                    "-updated_at",
+                                    "created_at",
+                                    "status_date",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `status_date` - Status date\n* `-status_date` - Status date (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "done",
+                                "on_way",
+                                "pause",
+                                "search",
+                                "wait",
+                                "work"
+                            ]
+                        },
+                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "vehicle",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedWorkTaskGeoList"
                                 }
                             }
                         },
@@ -7531,8 +7736,14 @@
                         "in": "query",
                         "name": "role",
                         "schema": {
-                            "type": "string"
-                        }
+                            "type": "string",
+                            "enum": [
+                                "client",
+                                "coordinator",
+                                "engineer"
+                            ]
+                        },
+                        "description": "* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
                     },
                     {
                         "in": "query",
@@ -7878,6 +8089,13 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "executor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
                         "name": "ids",
                         "schema": {
                             "type": "array",
@@ -7896,6 +8114,21 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "in": "query",
+                        "name": "mark",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "archived",
+                                "delete",
+                                "draft",
+                                "posted",
+                                "reject"
+                            ]
+                        },
+                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
                     },
                     {
                         "in": "query",
@@ -7945,9 +8178,33 @@
                     },
                     {
                         "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "done",
+                                "on_way",
+                                "pause",
+                                "search",
+                                "wait",
+                                "work"
+                            ]
+                        },
+                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                    },
+                    {
+                        "in": "query",
                         "name": "title",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "vehicle",
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -8102,6 +8359,23 @@
                             "pattern": "^\\d+$"
                         },
                         "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "state",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "cancel",
+                                "done",
+                                "prepare",
+                                "ready",
+                                "rebuilt",
+                                "start",
+                                "stop"
+                            ]
+                        },
+                        "description": "* `prepare` - prepare\n* `ready` - ready\n* `rebuilt` - rebuilt\n* `start` - start\n* `stop` - stop\n* `done` - done\n* `cancel` - cancel"
                     },
                     {
                         "in": "path",
@@ -8603,10 +8877,17 @@
                 }
             }
         },
-        "/api/v1/work/sers/{org_id}/tasks/geos/": {
+        "/api/v1/work/sers/{org_id}/tasks/full/": {
             "get": {
-                "operationId": "work_sers_tasks_geos_retrieve",
+                "operationId": "work_sers_tasks_full_list",
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "executor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
                     {
                         "in": "query",
                         "name": "ids",
@@ -8618,6 +8899,30 @@
                         },
                         "explode": true,
                         "style": "form"
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "mark",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "archived",
+                                "delete",
+                                "draft",
+                                "posted",
+                                "reject"
+                            ]
+                        },
+                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
                     },
                     {
                         "in": "query",
@@ -8648,6 +8953,15 @@
                         "style": "form"
                     },
                     {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "in": "path",
                         "name": "org_id",
                         "schema": {
@@ -8658,9 +8972,33 @@
                     },
                     {
                         "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "done",
+                                "on_way",
+                                "pause",
+                                "search",
+                                "wait",
+                                "work"
+                            ]
+                        },
+                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                    },
+                    {
+                        "in": "query",
                         "name": "title",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "vehicle",
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -8680,7 +9018,157 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WorkTaskGeo"
+                                    "$ref": "#/components/schemas/PaginatedWorkTaskDetailedList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/geos/": {
+            "get": {
+                "operationId": "work_sers_tasks_geos_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "executor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "ids",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "explode": true,
+                        "style": "form"
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "mark",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "archived",
+                                "delete",
+                                "draft",
+                                "posted",
+                                "reject"
+                            ]
+                        },
+                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+                    },
+                    {
+                        "in": "query",
+                        "name": "number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-status_date",
+                                    "-updated_at",
+                                    "created_at",
+                                    "status_date",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `status_date` - Status date\n* `-status_date` - Status date (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "done",
+                                "on_way",
+                                "pause",
+                                "search",
+                                "wait",
+                                "work"
+                            ]
+                        },
+                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "vehicle",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedWorkTaskGeoList"
                                 }
                             }
                         },
@@ -8691,8 +9179,15 @@
         },
         "/api/v1/work/sers/{org_id}/tasks/verbose/": {
             "get": {
-                "operationId": "work_sers_tasks_verbose_retrieve",
+                "operationId": "work_sers_tasks_verbose_list",
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "executor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
                     {
                         "in": "query",
                         "name": "ids",
@@ -8704,6 +9199,30 @@
                         },
                         "explode": true,
                         "style": "form"
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "mark",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "archived",
+                                "delete",
+                                "draft",
+                                "posted",
+                                "reject"
+                            ]
+                        },
+                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
                     },
                     {
                         "in": "query",
@@ -8734,6 +9253,15 @@
                         "style": "form"
                     },
                     {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "in": "path",
                         "name": "org_id",
                         "schema": {
@@ -8744,9 +9272,33 @@
                     },
                     {
                         "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "done",
+                                "on_way",
+                                "pause",
+                                "search",
+                                "wait",
+                                "work"
+                            ]
+                        },
+                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                    },
+                    {
+                        "in": "query",
                         "name": "title",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "vehicle",
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -8766,7 +9318,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SerWorkTaskVerbose"
+                                    "$ref": "#/components/schemas/PaginatedSerWorkTaskVerboseList"
                                 }
                             }
                         },
@@ -9107,7 +9659,14 @@
                         "readOnly": true
                     },
                     "address": {
-                        "$ref": "#/components/schemas/Address"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Address"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     },
                     "created_at": {
                         "type": "string",
@@ -9136,7 +9695,8 @@
                         "title": "Permanent"
                     },
                     "organization": {
-                        "type": "integer"
+                        "type": "integer",
+                        "readOnly": true
                     }
                 },
                 "required": [
@@ -9557,10 +10117,11 @@
                     "draft",
                     "posted",
                     "reject",
-                    "delete"
+                    "delete",
+                    "archived"
                 ],
                 "type": "string",
-                "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete"
+                "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
             },
             "MeaningEnum": {
                 "enum": [
@@ -10225,10 +10786,6 @@
                         "format": "date-time",
                         "readOnly": true
                     },
-                    "title": {
-                        "type": "string",
-                        "maxLength": 120
-                    },
                     "longitude": {
                         "type": "number",
                         "format": "double"
@@ -10268,25 +10825,6 @@
                             "null"
                         ]
                     },
-                    "customer": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "coordinator": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "executor": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "readOnly": true
-                    },
                     "parent": {
                         "type": [
                             "integer",
@@ -10298,7 +10836,6 @@
                 "required": [
                     "approval",
                     "created_at",
-                    "executor",
                     "id",
                     "mark",
                     "organization",
@@ -10908,6 +11445,12 @@
                     "$ref": "#/components/schemas/SerWorkTask"
                 }
             },
+            "PaginatedSerWorkTaskVerboseList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/SerWorkTaskVerbose"
+                }
+            },
             "PaginatedUserInviteList": {
                 "type": "array",
                 "items": {
@@ -10992,6 +11535,18 @@
                     "$ref": "#/components/schemas/WorkServiceCenter"
                 }
             },
+            "PaginatedWorkTaskDetailedList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/WorkTaskDetailed"
+                }
+            },
+            "PaginatedWorkTaskGeoList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/WorkTaskGeo"
+                }
+            },
             "PaginatedWorkTaskRouteList": {
                 "type": "array",
                 "items": {
@@ -11018,7 +11573,14 @@
                         "readOnly": true
                     },
                     "address": {
-                        "$ref": "#/components/schemas/Address"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Address"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     },
                     "created_at": {
                         "type": "string",
@@ -11047,7 +11609,8 @@
                         "title": "Permanent"
                     },
                     "organization": {
-                        "type": "integer"
+                        "type": "integer",
+                        "readOnly": true
                     }
                 }
             },
@@ -11084,108 +11647,6 @@
                             "integer",
                             "null"
                         ]
-                    }
-                }
-            },
-            "PatchedOrgWorkTask": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
-                    "mark": {
-                        "$ref": "#/components/schemas/MarkEnum"
-                    },
-                    "status": {
-                        "$ref": "#/components/schemas/StatusEnum"
-                    },
-                    "service_center": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/OrganizationPublic"
-                            }
-                        ],
-                        "readOnly": true
-                    },
-                    "vehicle": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/Vehicle"
-                            }
-                        ],
-                        "readOnly": true
-                    },
-                    "executor": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/EmployeeDetailed"
-                            }
-                        ],
-                        "readOnly": true
-                    },
-                    "coordinator": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/EmployeeDetailed"
-                            }
-                        ],
-                        "readOnly": true
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "number": {
-                        "type": "integer"
-                    },
-                    "title": {
-                        "type": "string",
-                        "maxLength": 120
-                    },
-                    "longitude": {
-                        "type": "number",
-                        "format": "double"
-                    },
-                    "latitude": {
-                        "type": "number",
-                        "format": "double"
-                    },
-                    "status_date": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "mark_date": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "organization": {
-                        "type": "integer"
-                    },
-                    "customer": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "parent": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "title": "Parent task"
                     }
                 }
             },
@@ -11243,10 +11704,6 @@
                         "format": "date-time",
                         "readOnly": true
                     },
-                    "title": {
-                        "type": "string",
-                        "maxLength": 120
-                    },
                     "longitude": {
                         "type": "number",
                         "format": "double"
@@ -11285,25 +11742,6 @@
                             "integer",
                             "null"
                         ]
-                    },
-                    "customer": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "coordinator": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "executor": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "readOnly": true
                     },
                     "parent": {
                         "type": [
@@ -11475,6 +11913,14 @@
                         "type": "string",
                         "format": "date-time",
                         "readOnly": true
+                    },
+                    "coverage_radius": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "title": "Points radius"
+                        },
+                        "title": "Points radius"
                     }
                 }
             },
@@ -12023,6 +12469,29 @@
                     }
                 }
             },
+            "PointRadius": {
+                "type": "object",
+                "properties": {
+                    "lon_center": {
+                        "type": "number",
+                        "format": "double",
+                        "title": "Longitude center"
+                    },
+                    "lat_center": {
+                        "type": "number",
+                        "format": "double",
+                        "title": "Latitude center"
+                    },
+                    "radius": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "lat_center",
+                    "lon_center"
+                ]
+            },
             "Profile": {
                 "type": "object",
                 "properties": {
@@ -12397,6 +12866,14 @@
                         "type": "string",
                         "format": "date-time",
                         "readOnly": true
+                    },
+                    "coverage_radius": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "title": "Points radius"
+                        },
+                        "title": "Points radius"
                     }
                 },
                 "required": [
@@ -14221,6 +14698,14 @@
                         "allOf": [
                             {
                                 "$ref": "#/components/schemas/Region"
+                            }
+                        ],
+                        "writeOnly": true
+                    },
+                    "radius": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PointRadius"
                             }
                         ],
                         "writeOnly": true

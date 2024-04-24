@@ -1,20 +1,38 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ButtonContextActions } from '@components/ButtonContextActions'
+import { ButtonIcon } from '@components/ButtonIcon'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
-import { EMPTY_VALUE_DASH, TABLE_CELL_DENSE_PADDING } from '@constants/index'
+import { DATE_FORMAT_TIME_AHEAD, EMPTY_VALUE_DASH, TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
-import { TicketDrawerContent } from '@features/tickets/components/TicketDrawerContent'
-import { Drawer, TableCell, TableRow } from '@mui/material'
-import { SerWorkTask } from '~/api/servicepro.generated'
+import { useOrganizationID } from '@hooks/useOrganizationID'
+import { GpsFixedOutlined, GpsNotFixed } from '@mui/icons-material'
+import { Box, TableCell, TableRow } from '@mui/material'
+import { format } from 'date-fns'
+import { SerWorkTaskVerbose } from '~/api/servicepro.generated'
 
 export interface TicketRowProps {
-  task: SerWorkTask
+  task: SerWorkTaskVerbose
+  selected: boolean
+  onSelect: () => void
 }
 
-export const TicketRow = ({ task }: TicketRowProps) => {
-  const [open, setOpen] = useState(false)
+/**
+ *
+ * описание от клиента в чате, координатор может его редактировать, после редакции нужна отметка,
+ * что описание было отредактировано координатором
+ */
+
+export const TicketRow = ({ task, selected, onSelect }: TicketRowProps) => {
+  const navigate = useNavigate()
+  const { organizationID } = useOrganizationID()
+
   const requisites = useMemo(() => task.organization?.requisites ?? null, [task.organization?.requisites])
   const vehicle = useMemo(() => task.vehicle ?? null, [task.vehicle])
+
+  const handleClick = () => {
+    navigate(`/${organizationID}/tickets/${task.id}`)
+  }
 
   return (
     <>
@@ -24,17 +42,24 @@ export const TicketRow = ({ task }: TicketRowProps) => {
           '&:last-child td, &:last-child th': {
             border: 0,
           },
+          '& td': {
+            verticalAlign: 'top',
+          },
         }}
         hover
-        onClick={() => setOpen(true)}
+        onClick={() => handleClick()}
       >
-        <TableCell
-          size={'small'}
-        >
+        <TableCell>
           {task.id}
         </TableCell>
         <TableCell>
-          {task.customer?.id ?? EMPTY_VALUE_DASH}
+          {task.customer?.profile ? (
+            <>
+              {task.customer.profile?.last_name}{'\u00A0'}
+              {task.customer.profile?.first_name ? `${task.customer.profile.first_name[0].toUpperCase()}.\u00A0` : ''}
+              {task.customer.profile?.middle_name ? `${task.customer.profile.middle_name[0].toUpperCase()}.\u00A0` : ''}
+            </>
+          ) : EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
           {requisites?.legal_address?.region?.local_name ?? requisites?.physical_address?.region?.local_name ?? requisites?.postal_address?.region?.local_name ?? EMPTY_VALUE_DASH}
@@ -49,47 +74,45 @@ export const TicketRow = ({ task }: TicketRowProps) => {
           {vehicle?.model.name || EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          {/*{data.desiredDate}*/}
+          {task.approval.want_start_date ? format(new Date(task.approval.want_start_date), DATE_FORMAT_TIME_AHEAD) : EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          {/*{data.approvedDate}*/}
+          {task.approval.plan_start_date ? format(new Date(task.approval.plan_start_date), DATE_FORMAT_TIME_AHEAD) : EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
           <ChipStatus status={task.status} />
         </TableCell>
         <TableCell>
-          <EngineerAvatar />
-          {/*<Typography*/}
-          {/*  variant={'body2'}*/}
-          {/*>*/}
-          {/*  Петров И.А.{' '}*/}
-          {/*  <Typography*/}
-          {/*    component={'span'}*/}
-          {/*    variant={'body2'}*/}
-          {/*    fontWeight={700}*/}
-          {/*    color={theme.palette.success.main}*/}
-          {/*  >*/}
-          {/*    (4.3)*/}
-          {/*  </Typography>*/}
-          {/*</Typography>*/}
+          <EngineerAvatar
+            profile={task.executor.profile}
+          />
         </TableCell>
         <TableCell
           sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}
         >
-          <ButtonContextActions
-            onClick={(e) => {
-              e.stopPropagation()
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
             }}
-          />
+          >
+            <ButtonIcon
+              Icon={selected ? GpsFixedOutlined : GpsNotFixed}
+              onClick={(e) => {
+                e.stopPropagation()
+                onSelect()
+              }}
+            />
+            <ButtonContextActions
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
+            />
+          </Box>
         </TableCell>
       </TableRow>
-      <Drawer
-        open={open}
-        anchor={'right'}
-        onClose={() => setOpen(false)}
-      >
-        <TicketDrawerContent onClose={() => setOpen(false)} />
-      </Drawer>
+
     </>
   )
 }
