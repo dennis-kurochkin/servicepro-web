@@ -2,7 +2,15 @@ import { PropsWithChildren } from 'react'
 import { theme } from '@data/theme'
 import { Paper, TableContainer, TablePagination } from '@mui/material'
 
-export const TableWrapper = ({ children }: PropsWithChildren) => {
+interface TableWrapperProps extends PropsWithChildren {
+  pagination: {
+    page: number,
+    count: number,
+    rowsPerPage?: number,
+  }
+}
+
+export const TableWrapper = ({ pagination, children }: TableWrapperProps) => {
   return (
     <TableContainer
       component={Paper}
@@ -15,10 +23,10 @@ export const TableWrapper = ({ children }: PropsWithChildren) => {
     >
       <TablePagination
         component="div"
-        count={50}
-        rowsPerPage={20}
-        rowsPerPageOptions={[{ value: 20, label: '20' }]}
-        page={2}
+        count={pagination.count}
+        rowsPerPage={pagination.rowsPerPage ?? 10}
+        rowsPerPageOptions={[{ value: 10, label: '10' }]}
+        page={pagination.page}
         sx={{
           borderBottom: `1px solid ${theme.palette.grey['300']}`,
         }}
@@ -27,10 +35,10 @@ export const TableWrapper = ({ children }: PropsWithChildren) => {
       {children}
       <TablePagination
         component="div"
-        count={50}
-        rowsPerPage={20}
-        rowsPerPageOptions={[{ value: 20, label: '20' }]}
-        page={2}
+        count={pagination.count}
+        rowsPerPage={pagination.rowsPerPage ?? 10}
+        rowsPerPageOptions={[{ value: 10, label: '10' }]}
+        page={pagination.page}
         sx={{
           borderTop: `1px solid ${theme.palette.grey['300']}`,
         }}

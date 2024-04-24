@@ -68,7 +68,12 @@ export const VehiclesRoute = () => {
       {/*  labelInside*/}
       {/*  onChange={() => {}}*/}
       {/*/>*/}
-      <TableWrapper>
+      <TableWrapper
+        pagination={{
+          page: 0,
+          count: data?.length ?? 0,
+        }}
+      >
         <Table
           sx={{ minHeight: 200 }}
           size={'small'}

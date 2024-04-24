@@ -28,7 +28,12 @@ export const ClientsRoute = () => {
       {/*  labelInside*/}
       {/*  onChange={() => {}}*/}
       {/*/>*/}
-      <TableWrapper>
+      <TableWrapper
+        pagination={{
+          page: 0,
+          count: 5,
+        }}
+      >
         <Table
           sx={{ minHeight: 200 }}
           size={'small'}
