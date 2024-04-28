@@ -1,7 +1,10 @@
+import { useQuery } from 'react-query'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { EngineerRow } from '@features/engineers/components/EngineerRow'
+import { useApi } from '@hooks/useApi'
+import { useOrganizationID } from '@hooks/useOrganizationID'
 import {
   Table,
   TableBody,
@@ -11,6 +14,18 @@ import {
 } from '@mui/material'
 
 export const EngineersRoute = () => {
+  const { api } = useApi()
+  const { organizationID } = useOrganizationID()
+
+  const { data } = useQuery(['tickets', organizationID], async () => {
+    const { data } = await api.workSersEmployeesList({
+      orgId: organizationID.toString(),
+    })
+    return data ?? []
+  }, {
+    refetchOnWindowFocus: false,
+  })
+
   return (
     <>
       <TableHeader
@@ -87,10 +102,10 @@ export const EngineersRoute = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.from({ length: 20 }).map((_, index) => (
+            {data?.map((engineer, index) => (
               <EngineerRow
                 key={index}
-                id={index + 1}
+                data={engineer}
               />
             ))}
           </TableBody>

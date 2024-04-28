@@ -4,12 +4,14 @@ import { TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { Add, NearMeOutlined } from '@mui/icons-material'
 import { Box, Button, IconButton, TableCell, TableRow, TableSortLabel } from '@mui/material'
+import { WorkEmployee } from '~/api/servicepro.generated'
 
 export interface EngineerRow {
-  id: number
+  data: WorkEmployee
 }
 
-export const EngineerRow = ({ id }: EngineerRow) => {
+export const EngineerRow = ({ data }: EngineerRow) => {
+  console.log(data)
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -17,11 +19,11 @@ export const EngineerRow = ({ id }: EngineerRow) => {
       <TableCell
         size={'small'}
       >
-        {id}
+        {data.id}
       </TableCell>
       <TableCell>
         <EngineerAvatar
-          profile={{}}
+          profile={data.profile}
         />
       </TableCell>
       <TableCell>
