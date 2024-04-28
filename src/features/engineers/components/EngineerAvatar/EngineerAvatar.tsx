@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { theme } from '@data/theme'
+import { getEngineerLabel } from '@features/engineers/helpers'
 import { Person } from '@mui/icons-material'
 import { Avatar, Box, Chip, SxProps, Typography } from '@mui/material'
 
@@ -59,7 +60,7 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', l
           avatar={avatar}
           label={(
             <>
-              {`${profile.last_name} ${profile.first_name?.[0]}.`}
+              {getEngineerLabel(profile)}
               <Typography
                 component={'span'}
                 variant={'body2'}
@@ -69,7 +70,7 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', l
                   marginLeft: '6px',
                 }}
               >
-                  4.3
+                4.3
               </Typography>
             </>
           )}

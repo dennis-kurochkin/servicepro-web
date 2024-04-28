@@ -20,7 +20,9 @@ export const EngineerRow = ({ id }: EngineerRow) => {
         {id}
       </TableCell>
       <TableCell>
-        <EngineerAvatar />
+        <EngineerAvatar
+          profile={{}}
+        />
       </TableCell>
       <TableCell>
         Агротехник 13:00 05.06.2023

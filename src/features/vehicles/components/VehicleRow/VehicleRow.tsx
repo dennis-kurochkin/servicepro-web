@@ -44,7 +44,9 @@ export const VehicleRow = ({ vehicle }: VehicleRow) => {
         Агротехник 13:00 05.06.2023
       </TableCell>
       <TableCell>
-        <EngineerAvatar />
+        <EngineerAvatar
+          profile={{}}
+        />
       </TableCell>
       <TableCell
         sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}

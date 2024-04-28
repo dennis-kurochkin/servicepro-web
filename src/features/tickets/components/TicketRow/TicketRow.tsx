@@ -5,6 +5,7 @@ import { ButtonIcon } from '@components/ButtonIcon'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { DATE_FORMAT_TIME_AHEAD, EMPTY_VALUE_DASH, TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
+import { getEngineerLabel } from '@features/engineers/helpers'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { GpsFixedOutlined, GpsNotFixed } from '@mui/icons-material'
 import { Box, TableCell, TableRow } from '@mui/material'
@@ -53,13 +54,7 @@ export const TicketRow = ({ task, selected, onSelect }: TicketRowProps) => {
           {task.id}
         </TableCell>
         <TableCell>
-          {task.customer?.profile ? (
-            <>
-              {task.customer.profile?.last_name}{'\u00A0'}
-              {task.customer.profile?.first_name ? `${task.customer.profile.first_name[0].toUpperCase()}.\u00A0` : ''}
-              {task.customer.profile?.middle_name ? `${task.customer.profile.middle_name[0].toUpperCase()}.\u00A0` : ''}
-            </>
-          ) : EMPTY_VALUE_DASH}
+          {task.customer?.profile ? getEngineerLabel(task.customer?.profile) : EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
           {requisites?.legal_address?.region?.local_name ?? requisites?.physical_address?.region?.local_name ?? requisites?.postal_address?.region?.local_name ?? EMPTY_VALUE_DASH}
@@ -84,7 +79,7 @@ export const TicketRow = ({ task, selected, onSelect }: TicketRowProps) => {
         </TableCell>
         <TableCell>
           <EngineerAvatar
-            profile={task.executor.profile}
+            profile={task.executor?.profile}
           />
         </TableCell>
         <TableCell
@@ -112,7 +107,6 @@ export const TicketRow = ({ task, selected, onSelect }: TicketRowProps) => {
           </Box>
         </TableCell>
       </TableRow>
-
     </>
   )
 }
