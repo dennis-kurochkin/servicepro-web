@@ -3,6 +3,7 @@ import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { EngineerRow } from '@features/engineers/components/EngineerRow'
+import { QueryKey } from '@features/shared/data'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import {
@@ -17,7 +18,7 @@ export const EngineersRoute = () => {
   const { api } = useApi()
   const { organizationID } = useOrganizationID()
 
-  const { data } = useQuery(['tickets', organizationID], async () => {
+  const { data } = useQuery([QueryKey.Engineers, organizationID], async () => {
     const { data } = await api.workSersEmployeesList({
       orgId: organizationID.toString(),
     })
@@ -29,33 +30,14 @@ export const EngineersRoute = () => {
   return (
     <>
       <TableHeader
-        amount={10}
         sx={{ marginTop: '8px' }}
       >
         Инженеры
       </TableHeader>
-      {/*<FieldAutocompleteMultiple*/}
-      {/*  name={'client'}*/}
-      {/*  label={'Рейтинг'}*/}
-      {/*  value={[]}*/}
-      {/*  options={[]}*/}
-      {/*  sx={{ width: '200px' }}*/}
-      {/*  labelInside*/}
-      {/*  onChange={() => {}}*/}
-      {/*/>*/}
-      {/*<FieldAutocompleteMultiple*/}
-      {/*  name={'client'}*/}
-      {/*  label={'Статус'}*/}
-      {/*  value={[]}*/}
-      {/*  options={[]}*/}
-      {/*  sx={{ width: '250px' }}*/}
-      {/*  labelInside*/}
-      {/*  onChange={() => {}}*/}
-      {/*/>*/}
       <TableWrapper
         pagination={{
           page: 0,
-          count: 5,
+          count: data?.length ?? 0,
         }}
       >
         <Table
@@ -94,7 +76,6 @@ export const EngineersRoute = () => {
                   active
                 />
               </TableCell>
-              <TableCell />
               <TableCell
                 size={'small'}
                 sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}

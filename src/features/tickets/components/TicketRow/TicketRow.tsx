@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { ButtonContextActions } from '@components/ButtonContextActions'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
-import { DATE_FORMAT_TIME_AHEAD, EMPTY_VALUE_DASH, TABLE_CELL_DENSE_PADDING } from '@constants/index'
+import { TableCellActions } from '@components/TableCellActions'
+import { DATE_FORMAT_TIME_AHEAD, EMPTY_VALUE_DASH } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { GpsFixedOutlined, GpsNotFixed } from '@mui/icons-material'
-import { Box, TableCell, TableRow } from '@mui/material'
+import { TableCell, TableRow } from '@mui/material'
 import { format } from 'date-fns'
 import { SerWorkTaskVerbose } from '~/api/servicepro.generated'
 
@@ -82,30 +83,20 @@ export const TicketRow = ({ task, selected, onSelect }: TicketRowProps) => {
             profile={task.executor?.profile}
           />
         </TableCell>
-        <TableCell
-          sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
+        <TableCellActions>
+          <ButtonIcon
+            Icon={selected ? GpsFixedOutlined : GpsNotFixed}
+            onClick={(e) => {
+              e.stopPropagation()
+              onSelect()
             }}
-          >
-            <ButtonIcon
-              Icon={selected ? GpsFixedOutlined : GpsNotFixed}
-              onClick={(e) => {
-                e.stopPropagation()
-                onSelect()
-              }}
-            />
-            <ButtonContextActions
-              onClick={(e) => {
-                e.stopPropagation()
-              }}
-            />
-          </Box>
-        </TableCell>
+          />
+          <ButtonContextActions
+            onClick={(e) => {
+              e.stopPropagation()
+            }}
+          />
+        </TableCellActions>
       </TableRow>
     </>
   )

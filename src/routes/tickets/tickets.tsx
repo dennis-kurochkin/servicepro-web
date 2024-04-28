@@ -5,6 +5,7 @@ import { TableCellHeadFilter } from '@components/TableCellHeadFilter/TableCellHe
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
+import { QueryKey } from '@features/shared/data'
 import { TicketDrawer } from '@features/tickets/components/TicketDrwer'
 import { TicketRow } from '@features/tickets/components/TicketRow'
 import { useApi } from '@hooks/useApi'
@@ -17,7 +18,7 @@ export const TicketsRoute = () => {
 
   const [selected, setSelected] = useState<number | null>(null)
 
-  const { data, isSuccess } = useQuery(['tickets', organizationID], async () => {
+  const { data, isSuccess } = useQuery([QueryKey.Tickets, organizationID], async () => {
     const { data: tasks } = await api.workSersTasksVerboseList({
       orgId: organizationID.toString(),
     })
@@ -26,10 +27,10 @@ export const TicketsRoute = () => {
       orgId: organizationID.toString(),
     })
 
-    return tasks.map((task) => ({
+    return tasks.length > 0 ? tasks.map((task) => ({
       task,
       geo: geos.find(({ id }) => id == task.id),
-    }))
+    })) : []
   }, {
     refetchOnWindowFocus: false,
     onSuccess(data) {
@@ -40,7 +41,7 @@ export const TicketsRoute = () => {
   return (
     <>
       <Map
-        geo={data?.find((task) => task.task.id === selected)?.geo}
+        geo={data?.find((task) => task.task?.id === selected)?.geo}
         sx={{
           height: '45vh',
           minHeight: '328px',
@@ -113,8 +114,8 @@ export const TicketsRoute = () => {
                     <TicketRow
                       key={task.task.id}
                       task={task.task}
-                      selected={selected === task.task.id}
-                      onSelect={() => setSelected(task.task.id)}
+                      selected={selected === task.task?.id}
+                      onSelect={() => setSelected(task.task?.id)}
                     />
                   ))}
                 </>
