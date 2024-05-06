@@ -18,8 +18,6 @@ interface EngineerAvatarProps {
 }
 
 export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', labelled = true, sx, renderAfterChip, onClick }: EngineerAvatarProps) => {
-  const handleClick = () => {}
-
   const avatar = (
     <Avatar
       alt={fullName}
@@ -30,7 +28,7 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', l
         border: labelled ? 'none' : undefined,
         cursor: 'pointer',
       }}
-      onClick={() => !labelled && handleClick()}
+      onClick={onClick}
     >
       <Box
         component={'span'}
@@ -74,10 +72,10 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', l
               </Typography>
             </>
           )}
-          onClick={async (e) => {
+          onClick={onClick ? async (e) => {
             e.stopPropagation()
-            onClick ? onClick() : handleClick()
-          }}
+            onClick()
+          } : undefined}
         />
       ) : avatar}
       {renderAfterChip}

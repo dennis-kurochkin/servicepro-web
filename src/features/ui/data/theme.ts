@@ -42,6 +42,10 @@ export const theme = createTheme({
     MuiTableRow: {
       styleOverrides: {
         root: {
+          '& td': {
+            verticalAlign: 'top',
+            height: 'auto',
+          },
           '&.Mui-selected': {
             // backgroundColor: `${defaultTheme.palette.action.selected} !important`,
           },

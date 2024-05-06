@@ -16,6 +16,7 @@ export const TableHeader = ({ amount, sx = {}, children }: PropsWithChildren<Tab
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
+        width: '100%',
         ...sx,
       }}
     >

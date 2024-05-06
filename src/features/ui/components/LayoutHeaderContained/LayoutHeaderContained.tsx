@@ -11,6 +11,7 @@ export const LayoutHeaderContained = () => {
           flexDirection: 'column',
           paddingTop: `${headerHeight + 24}px`,
           flexGrow: 1,
+          alignItems: 'flex-start',
         }}
         maxWidth="xl"
       >

@@ -1,7 +1,11 @@
+import { useQuery } from 'react-query'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { ClientRow } from '@features/clients/components/ClientRow'
+import { QueryKey } from '@features/shared/data'
+import { useApi } from '@hooks/useApi'
+import { useOrganizationID } from '@hooks/useOrganizationID'
 import {
   Table,
   TableBody,
@@ -11,23 +15,26 @@ import {
 } from '@mui/material'
 
 export const ClientsRoute = () => {
+  const { organizationID } = useOrganizationID()
+  const { api } = useApi()
+
+  const { data } = useQuery([QueryKey.Clients, organizationID], async () => {
+    const { data } = await api.workSersOrgsList({
+      orgId: organizationID.toString(),
+    })
+
+    return data ?? []
+  }, {
+    refetchOnWindowFocus: false,
+  })
+
   return (
     <>
       <TableHeader
-        amount={67}
         sx={{ marginTop: '8px' }}
       >
         Клиенты
       </TableHeader>
-      {/*<FieldAutocompleteMultiple*/}
-      {/*  name={'client'}*/}
-      {/*  label={'Рекомендации'}*/}
-      {/*  value={[]}*/}
-      {/*  options={[]}*/}
-      {/*  sx={{ width: '200px' }}*/}
-      {/*  labelInside*/}
-      {/*  onChange={() => {}}*/}
-      {/*/>*/}
       <TableWrapper
         pagination={{
           page: 0,
@@ -97,10 +104,10 @@ export const ClientsRoute = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.from({ length: 20 }).map((_, index) => (
+            {(data ?? []).map((client, index) => (
               <ClientRow
                 key={index}
-                id={index + 1}
+                data={client}
               />
             ))}
           </TableBody>

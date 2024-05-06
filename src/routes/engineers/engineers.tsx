@@ -21,6 +21,7 @@ export const EngineersRoute = () => {
   const { data } = useQuery([QueryKey.Engineers, organizationID], async () => {
     const { data } = await api.workSersEmployeesList({
       orgId: organizationID.toString(),
+      role: 'engineer',
     })
     return data ?? []
   }, {
