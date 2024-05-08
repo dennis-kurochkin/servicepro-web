@@ -3,9 +3,10 @@ import { Button, IconButtonProps } from '@mui/material'
 
 interface ButtonContextActionsProps extends Pick<IconButtonProps, 'onClick'> {
   Icon: typeof MoreVert
+  fontSize?: string
 }
 
-export const ButtonIcon = ({ Icon, onClick }: ButtonContextActionsProps) => {
+export const ButtonIcon = ({ Icon, fontSize, onClick }: ButtonContextActionsProps) => {
   return (
     <Button
       size={'small'}
@@ -28,7 +29,7 @@ export const ButtonIcon = ({ Icon, onClick }: ButtonContextActionsProps) => {
       disableElevation
       onClick={onClick}
     >
-      <Icon sx={{ fontSize: '22px' }} />
+      <Icon sx={{ fontSize: fontSize ?? '22px' }} />
     </Button>
   )
 }

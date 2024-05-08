@@ -1,4 +1,3 @@
-import { useQuery } from 'react-query'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
@@ -12,17 +11,21 @@ import {
   TableHead,
   TableRow, TableSortLabel,
 } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 
 export const VehiclesRoute = () => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
 
-  const { data, isSuccess } = useQuery(['vehicles', organizationID], async () => {
-    const { data } = await api.vehicleSersVehiclesList({
-      orgId: organizationID.toString(),
-    })
+  const { data, isSuccess } = useQuery({
+    queryKey: ['vehicles', organizationID],
+    queryFn: async () => {
+      const { data } = await api.vehicleSersVehiclesList({
+        orgId: organizationID.toString(),
+      })
 
-    return data
+      return data
+    },
   })
 
   return (

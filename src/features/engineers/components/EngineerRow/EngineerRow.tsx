@@ -1,10 +1,12 @@
+import { useState } from 'react'
 import { ButtonContextActions } from '@components/ButtonContextActions'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { TableCellActions } from '@components/TableCellActions'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
-import { Add, GpsFixedOutlined } from '@mui/icons-material'
-import { IconButton, TableCell, TableRow, TableSortLabel } from '@mui/material'
+import { TableCellTickets } from '@features/shared/components/TableCellTickets'
+import { GpsFixedOutlined } from '@mui/icons-material'
+import { TableCell, TableRow } from '@mui/material'
 import { WorkEmployee } from '~/api/servicepro.generated'
 
 export interface EngineerRow {
@@ -12,6 +14,8 @@ export interface EngineerRow {
 }
 
 export const EngineerRow = ({ data }: EngineerRow) => {
+  const [selectedTaskID, setSelectedTaskID] = useState<number | null>(data.tasks?.[0]?.number ?? null)
+
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -27,19 +31,11 @@ export const EngineerRow = ({ data }: EngineerRow) => {
         />
       </TableCell>
       <TableCell>
-        Агротехник 13:00 05.06.2023
-        <TableSortLabel
-          direction={'desc'}
-          sx={{ marginLeft: '4px' }}
-          active
+        <TableCellTickets
+          selectedTaskID={selectedTaskID}
+          tasks={data.tasks}
+          onChangeSelectedTaskID={setSelectedTaskID}
         />
-        <IconButton
-          size={'small'}
-          color={'info'}
-          sx={{ marginLeft: '4px' }}
-        >
-          <Add fontSize={'small'} />
-        </IconButton>
       </TableCell>
       <TableCell>
         <ChipStatus />

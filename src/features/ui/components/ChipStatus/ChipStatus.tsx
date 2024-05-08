@@ -24,7 +24,7 @@ const StatusEnumColor: Record<StatusEnum, ChipProps['color']> = {
 export interface ChipStatusProps {
   status?: StatusEnum
   filled?: boolean
-  size?: 400 | 500
+  size?: 300 | 400 | 500
 }
 
 export const ChipStatus = ({ status = StatusEnum.Wait, filled = false, size = 500 }: ChipStatusProps) => {
@@ -38,13 +38,19 @@ export const ChipStatus = ({ status = StatusEnum.Wait, filled = false, size = 50
         paddingTop: '1px',
         borderRadius: '8px',
         fontWeight: 500,
+        textTransform: 'uppercase',
         ...(size === 500 ? {
           height: '30px',
           fontSize: '13px',
-        } : {
+        } : {}),
+        ...(size === 400 ? {
           height: '24px',
           fontSize: '12px',
-        }),
+        } : {}),
+        ...(size === 300 ? {
+          height: '18px',
+          fontSize: '10px',
+        } : {}),
       }}
     />
   )

@@ -1,16 +1,15 @@
 import { useState } from 'react'
-import { useQuery } from 'react-query'
 import { Map } from '@components/Map'
 import { TableCellHeadFilter } from '@components/TableCellHeadFilter/TableCellHeadFilter'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
-import { TicketDrawer } from '@features/tickets/components/TicketDrwer'
 import { TicketRow } from '@features/tickets/components/TicketRow'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Container, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 
 export const TicketsRoute = () => {
   const { organizationID } = useOrganizationID()
@@ -18,24 +17,26 @@ export const TicketsRoute = () => {
 
   const [selected, setSelected] = useState<number | null>(null)
 
-  const { data, isSuccess } = useQuery([QueryKey.Tickets, organizationID], async () => {
-    const { data: tasks } = await api.workSersTasksVerboseList({
-      orgId: organizationID.toString(),
-    })
+  const { data, isSuccess } = useQuery({
+    queryKey: [QueryKey.Tickets, organizationID],
+    queryFn: async () => {
+      const { data: tasks } = await api.workSersTasksVerboseList({
+        orgId: organizationID.toString(),
+      })
 
-    const { data: geos } = await api.workSersTasksGeosList({
-      orgId: organizationID.toString(),
-    })
+      const { data: geos } = await api.workSersTasksGeosList({
+        orgId: organizationID.toString(),
+      })
 
-    return tasks.length > 0 ? tasks.map((task) => ({
-      task,
-      geo: geos.find(({ id }) => id == task.id),
-    })) : []
-  }, {
-    refetchOnWindowFocus: false,
-    onSuccess(data) {
-      setSelected(data[0].task.id)
+      const result = tasks.length > 0 ? tasks.map((task) => ({
+        task,
+        geo: geos.find(({ id }) => id == task.id),
+      })) : []
+
+      setSelected(result[0].task.id)
+      return result
     },
+    refetchOnWindowFocus: false,
   })
 
   return (
@@ -124,7 +125,6 @@ export const TicketsRoute = () => {
           </Table>
         </TableWrapper>
       </Container>
-      <TicketDrawer />
     </>
   )
 }

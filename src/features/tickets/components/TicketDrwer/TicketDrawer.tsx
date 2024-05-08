@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
-import { useQuery } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Truck1 from '@assets/truck-1.png'
 import Truck2 from '@assets/truck-2.png'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
@@ -17,6 +16,7 @@ import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Send } from '@mui/icons-material'
 import { Box, BoxProps, Button, Drawer, InputAdornment, styled } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { StatusEnum } from '~/api/servicepro.generated'
 
@@ -35,21 +35,29 @@ export const TicketDrawer = () => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
   const params = useParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const open = useMemo(() => !!params.ticketID, [params])
-  const ticketID = useMemo(() => params.ticketID ? +params.ticketID : null, [params])
+  const open = useMemo(() => !!params.ticketID || !!searchParams.get('ticketID'), [params, searchParams])
+  const ticketID = useMemo(() => params.ticketID ? +params.ticketID : searchParams.get('ticketID') ? +searchParams.get('ticketID')! : null, [params, searchParams])
 
-  const { data, isFetching } = useQuery(['ticket', organizationID], async () => {
-    const { data } = await api.workSersTasksRetrieve(ticketID!, organizationID.toString())
-    return data
-  }, {
+  const { data, isFetching } = useQuery({
+    queryKey: ['ticket', organizationID],
+    queryFn: async () => {
+      const { data } = await api.workSersTasksRetrieve(ticketID!, organizationID.toString())
+      return data
+    },
     refetchOnWindowFocus: false,
     enabled: open,
   })
 
   const handleClose = () => {
-    navigate(`/${organizationID}/tickets`)
+    if (params.ticketID) {
+      navigate(`/${organizationID}/tickets`)
+    } else {
+      searchParams.delete('ticketID')
+      setSearchParams(searchParams)
+    }
   }
 
   return (
@@ -235,7 +243,7 @@ export const TicketDrawer = () => {
           </TicketChatContainer>
           <TicketDrawerFormsContainer>
             <TicketDrawerEngineerSection
-              profile={data?.executor.profile ?? null}
+              profile={data?.executor?.profile ?? null}
             />
             <TicketDrawerForm
               title={'Условия для выполнения заявки'}

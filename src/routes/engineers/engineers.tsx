@@ -1,4 +1,3 @@
-import { useQuery } from 'react-query'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
@@ -13,18 +12,21 @@ import {
   TableHead,
   TableRow, TableSortLabel,
 } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 
 export const EngineersRoute = () => {
   const { api } = useApi()
   const { organizationID } = useOrganizationID()
 
-  const { data } = useQuery([QueryKey.Engineers, organizationID], async () => {
-    const { data } = await api.workSersEmployeesList({
-      orgId: organizationID.toString(),
-      role: 'engineer',
-    })
-    return data ?? []
-  }, {
+  const { data } = useQuery({
+    queryKey: [QueryKey.Engineers, organizationID],
+    queryFn: async ()=> {
+      const { data } = await api.workSersEmployeesList({
+        orgId: organizationID.toString(),
+        role: 'engineer',
+      })
+      return data ?? []
+    },
     refetchOnWindowFocus: false,
   })
 

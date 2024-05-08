@@ -63,7 +63,7 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
       >
         <ChipStatus
           status={status}
-          size={400}
+          size={300}
           filled
         />
       </Box>

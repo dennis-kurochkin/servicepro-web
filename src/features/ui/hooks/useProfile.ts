@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { useQuery } from 'react-query'
 import { useApi } from '@hooks/useApi'
 import { useAuth } from '@hooks/useAuth'
 import { useOrganizationIDNullable } from '@hooks/useOrganizationIDNullable'
+import { useQuery } from '@tanstack/react-query'
 import { MyEmployment, MyUserAll } from '~/api/servicepro.generated'
 
 export const useProfile = (onSuccess?: (data: MyUserAll) => void) => {
@@ -11,18 +11,20 @@ export const useProfile = (onSuccess?: (data: MyUserAll) => void) => {
   const { organizationID } = useOrganizationIDNullable()
   const [employment, setEmployment] = useState<MyEmployment | null>(null)
 
-  const query = useQuery(['my', auth?.user, auth?.accessToken], async () => {
-    const { data } = await api.orgMyRetrieve()
-    return data ?? {}
-  }, {
-    enabled: !!auth?.accessToken,
-    onSuccess: (data) => {
+  const query = useQuery({
+    queryKey: ['my', auth?.user, auth?.accessToken],
+    queryFn: async () => {
+      const { data } = await api.orgMyRetrieve()
+
       if (organizationID && !employment) {
         setEmployment(data.employments.find(({ organization: { id } }) => id === organizationID) ?? null)
       }
 
       onSuccess?.(data)
+
+      return data ?? {}
     },
+    enabled: !!auth?.accessToken,
   })
 
   return {

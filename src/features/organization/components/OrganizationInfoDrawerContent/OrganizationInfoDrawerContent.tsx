@@ -1,4 +1,3 @@
-import { useQuery } from 'react-query'
 import { DrawerContent } from '@components/DrawerContent'
 import { FieldLabelValue } from '@components/FieldLabelValue'
 import { EMPTY_VALUE_DASH } from '@constants/index'
@@ -8,6 +7,7 @@ import { useProfile } from '@hooks/useProfile'
 import { useSignOut } from '@hooks/useSignOut'
 import { Logout } from '@mui/icons-material'
 import { Box, Button } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 
 interface OrganizationInfoDrawerContentProps {
   onClose: () => void
@@ -19,13 +19,16 @@ export const OrganizationInfoDrawerContent = ({ onClose }: OrganizationInfoDrawe
   const { employment } = useProfile()
   const { signOut } = useSignOut()
 
-  const query = useQuery([organizationID, 'organization', 'info'], async () => {
-    try {
-      const { data } = await api.orgOrgsRetrieve(organizationID)
-      return data
-    } catch (error) {
-      //
-    }
+  const query = useQuery({
+    queryKey: [organizationID, 'organization', 'info'],
+    queryFn: async () => {
+      try {
+        const { data } = await api.orgOrgsRetrieve(organizationID)
+        return data
+      } catch (error) {
+        //
+      }
+    },
   })
 
   return (

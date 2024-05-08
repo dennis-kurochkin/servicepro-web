@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation } from 'react-query'
 import { useLocation, useNavigate } from 'react-router-dom'
 import logoVertical from '@assets/logo-vertical.png'
 import { FieldInputControlled } from '@components/Field'
@@ -10,6 +9,7 @@ import { useAuth } from '@hooks/useAuth'
 import { useNotify } from '@hooks/useNotify'
 import { LoadingButton } from '@mui/lab'
 import { Box, Checkbox, FormControlLabel, Link } from '@mui/material'
+import { useMutation } from '@tanstack/react-query'
 import { publicClient } from '~/api'
 
 export interface AuthFormData {
@@ -30,24 +30,27 @@ export const AuthRoute = () => {
     }
   }, [])
 
-  const authMutation = useMutation(['auth'], async (input: AuthFormData) => {
-    try {
-      const { data: { access } } = await rr(publicClient.api.accountJwtCreateCookieCreate)(input, { withCredentials: true })
+  const authMutation = useMutation({
+    mutationKey: ['auth'],
+    mutationFn: async (input: AuthFormData) => {
+      try {
+        const { data: { access } } = await rr(publicClient.api.accountJwtCreateCookieCreate)(input, { withCredentials: true })
 
-      setAuth({
-        user: input,
-        accessToken: access,
-      })
+        setAuth({
+          user: input,
+          accessToken: access,
+        })
 
-      localStorage.setItem('persist', JSON.stringify(persist))
-      navigate(from, { replace: true })
-    } catch (error) {
-      notify({
-        message: 'Неверные логин или пароль',
-        variant: 'error',
-        preventDuplicate: true,
-      })
-    }
+        localStorage.setItem('persist', JSON.stringify(persist))
+        navigate(from, { replace: true })
+      } catch (error) {
+        notify({
+          message: 'Неверные логин или пароль',
+          variant: 'error',
+          preventDuplicate: true,
+        })
+      }
+    },
   })
 
   const { handleSubmit, control } = useForm<AuthFormData>({
@@ -103,7 +106,7 @@ export const AuthRoute = () => {
           <FieldInputControlled
             name={'username'}
             control={control}
-            disabled={authMutation.isLoading}
+            disabled={authMutation.isPending}
             label={'Логин'}
             rules={{ required: true }}
             placeholder={'Введите логин'}
@@ -112,7 +115,7 @@ export const AuthRoute = () => {
           <FieldInputControlled
             name={'password'}
             control={control}
-            disabled={authMutation.isLoading}
+            disabled={authMutation.isPending}
             type={'password'}
             label={'Пароль'}
             rules={{ required: true }}
@@ -126,7 +129,7 @@ export const AuthRoute = () => {
           >
             <FormControlLabel
               checked={persist}
-              disabled={authMutation.isLoading}
+              disabled={authMutation.isPending}
               label="Запомнить меня"
               sx={{
                 mt: '8px',
@@ -158,7 +161,7 @@ export const AuthRoute = () => {
               width: '100%',
             }}
             variant={'contained'}
-            loading={authMutation.isLoading}
+            loading={authMutation.isPending}
           >
             Войти в аккаунт
           </LoadingButton>

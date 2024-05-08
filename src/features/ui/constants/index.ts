@@ -8,3 +8,4 @@ export const TABLE_CELL_DENSE_PADDING = '12px'
 export const EMPTY_VALUE_DASH = '—'
 export const DATE_FORMAT_TIME_AHEAD = 'HH:mm dd.MM.yyyy'
 export const DATE_FORMAT_TIME_BEHIND = 'dd.MM.yyyy HH:mm'
+export const PAGINATION_DEFAULT_LIMIT = 10

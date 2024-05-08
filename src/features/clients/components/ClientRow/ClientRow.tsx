@@ -1,15 +1,8 @@
+import { useState } from 'react'
 import { ButtonContextActions } from '@components/ButtonContextActions'
 import { EMPTY_VALUE_DASH, TABLE_CELL_DENSE_PADDING } from '@constants/index'
-import { Add } from '@mui/icons-material'
-import {
-  Chip,
-  IconButton,
-  Stack,
-  TableCell,
-  TableRow,
-  TableSortLabel,
-  Typography,
-} from '@mui/material'
+import { TableCellTickets } from '@features/shared/components/TableCellTickets'
+import { Box, Chip, TableCell, TableRow, Typography } from '@mui/material'
 import { WorkOrganization } from '~/api/servicepro.generated'
 
 export interface ClientRowProps {
@@ -17,6 +10,8 @@ export interface ClientRowProps {
 }
 
 export const ClientRow = ({ data }: ClientRowProps) => {
+  const [selectedTaskID, setSelectedTaskID] = useState<number | null>(data.tasks?.[0]?.number ?? null)
+
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -40,42 +35,36 @@ export const ClientRow = ({ data }: ClientRowProps) => {
         {data.requisites?.legal_address?.value ?? data.requisites?.physical_address?.value ?? data.requisites?.postal_address?.value ?? EMPTY_VALUE_DASH}
       </TableCell>
       <TableCell>
-        Агротехник 13:00 05.06.2023
-        <TableSortLabel
-          direction={'desc'}
-          sx={{ marginLeft: '4px' }}
-          active
+        <TableCellTickets
+          selectedTaskID={selectedTaskID}
+          tasks={data.tasks}
+          onChangeSelectedTaskID={setSelectedTaskID}
         />
-        <IconButton
-          size={'small'}
-          color={'info'}
-          sx={{ marginLeft: '4px' }}
-        >
-          <Add fontSize={'small'} />
-        </IconButton>
       </TableCell>
       <TableCell align={'center'}>
-        <Stack
-          direction="row"
-          spacing={1}
-          justifyContent={'center'}
+        <Box
+          sx={{
+            display: 'flex',
+            gap: '4px',
+            paddingLeft: '8px',
+          }}
         >
           <Chip
-            size={'small'}
+            size={'medium'}
             label="3"
             color="primary"
           />
           <Chip
-            size={'small'}
+            size={'medium'}
             label="13"
             color="warning"
           />
           <Chip
-            size={'small'}
+            size={'medium'}
             label="2"
             color="info"
           />
-        </Stack>
+        </Box>
       </TableCell>
       <TableCell
         sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}
