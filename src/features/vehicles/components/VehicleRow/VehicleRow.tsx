@@ -2,10 +2,10 @@ import { ButtonContextActions } from '@components/ButtonContextActions'
 import { EMPTY_VALUE_DASH, TABLE_CELL_DENSE_PADDING } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { TableCell, TableRow } from '@mui/material'
-import { Vehicle } from '~/api/servicepro.generated'
+import { SerVehicle } from '~/api/servicepro.generated'
 
 export interface VehicleRow {
-  vehicle: Vehicle
+  vehicle: SerVehicle
 }
 
 export const VehicleRow = ({ vehicle }: VehicleRow) => {
@@ -38,7 +38,6 @@ export const VehicleRow = ({ vehicle }: VehicleRow) => {
         {vehicle.summary?.runtime_sum ? `${vehicle.summary.runtime_sum}мч` : EMPTY_VALUE_DASH}
       </TableCell>
       <TableCell>
-        {/* @ts-expect-error aboba */}
         {vehicle.organization?.name}
       </TableCell>
       <TableCell>

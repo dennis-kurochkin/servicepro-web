@@ -24,6 +24,7 @@ const RoleEnumLabel: Record<RoleEnum, string> = {
   [RoleEnum.Client]: 'Клиент',
   [RoleEnum.Coordinator]: 'Координатор',
   [RoleEnum.Engineer]: 'Инженер',
+  [RoleEnum.Server]: 'Сервер',
 }
 
 export const HeaderProfileMenu = () => {
