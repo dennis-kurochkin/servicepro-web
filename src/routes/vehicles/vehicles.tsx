@@ -35,42 +35,6 @@ export const VehiclesRoute = () => {
       >
         Техника
       </TableHeader>
-      {/*<FieldAutocompleteMultiple*/}
-      {/*  name={'client'}*/}
-      {/*  label={'Техника'}*/}
-      {/*  value={[]}*/}
-      {/*  options={[]}*/}
-      {/*  sx={{ width: '250px' }}*/}
-      {/*  labelInside*/}
-      {/*  onChange={() => {}}*/}
-      {/*/>*/}
-      {/*<FieldAutocompleteMultiple*/}
-      {/*  name={'client'}*/}
-      {/*  label={'Тип'}*/}
-      {/*  value={[]}*/}
-      {/*  options={[]}*/}
-      {/*  sx={{ width: '200px' }}*/}
-      {/*  labelInside*/}
-      {/*  onChange={() => {}}*/}
-      {/*/>*/}
-      {/*<FieldAutocompleteMultiple*/}
-      {/*  name={'client'}*/}
-      {/*  label={'Клиент'}*/}
-      {/*  value={[]}*/}
-      {/*  options={[]}*/}
-      {/*  sx={{ width: '200px' }}*/}
-      {/*  labelInside*/}
-      {/*  onChange={() => {}}*/}
-      {/*/>*/}
-      {/*<FieldAutocompleteMultiple*/}
-      {/*  name={'client'}*/}
-      {/*  label={'Исполнитель'}*/}
-      {/*  value={[]}*/}
-      {/*  options={[]}*/}
-      {/*  sx={{ width: '250px' }}*/}
-      {/*  labelInside*/}
-      {/*  onChange={() => {}}*/}
-      {/*/>*/}
       <TableWrapper
         pagination={{
           page: 0,

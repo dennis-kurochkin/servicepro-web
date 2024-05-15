@@ -10,9 +10,10 @@ export interface TableCellTicketsProps {
   selectedTaskID: number | null
   tasks: WorkTaskShort[]
   onChangeSelectedTaskID: (id: number) => void
+  onClickAdd?: () => void
 }
 
-export const TableCellTickets = ({ selectedTaskID, tasks, onChangeSelectedTaskID }: TableCellTicketsProps) => {
+export const TableCellTickets = ({ selectedTaskID, tasks, onChangeSelectedTaskID, onClickAdd }: TableCellTicketsProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const open = !!anchorEl
@@ -100,21 +101,25 @@ export const TableCellTickets = ({ selectedTaskID, tasks, onChangeSelectedTaskID
               fontSize={'18px'}
               onClick={handleClickOpenTicket}
             />
-            <Box
-              sx={{
-                height: '24px',
-                width: '1px',
-                alignSelf: 'center',
-                margin: '0 4px',
-                background: (theme) => theme.palette.grey['300'],
-              }}
-            />
+            {onClickAdd && (
+              <Box
+                sx={{
+                  height: '24px',
+                  width: '1px',
+                  alignSelf: 'center',
+                  margin: '0 4px',
+                  background: (theme) => theme.palette.grey['300'],
+                }}
+              />
+            )}
           </>
         )}
-        <ButtonIcon
-          Icon={Add}
-          onClick={() => {}}
-        />
+        {onClickAdd && (
+          <ButtonIcon
+            Icon={Add}
+            onClick={onClickAdd}
+          />
+        )}
       </Box>
       <Menu
         anchorEl={anchorEl}

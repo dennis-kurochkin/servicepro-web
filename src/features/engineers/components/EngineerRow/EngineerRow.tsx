@@ -34,6 +34,7 @@ export const EngineerRow = ({ data }: EngineerRow) => {
         <TableCellTickets
           selectedTaskID={selectedTaskID}
           tasks={data.tasks}
+          onClickAdd={() => {}}
           onChangeSelectedTaskID={setSelectedTaskID}
         />
       </TableCell>

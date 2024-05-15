@@ -63,6 +63,31 @@ export interface Address {
   readonly is_final: boolean;
 }
 
+export interface ChatButton {
+  task: number;
+  employee: number;
+  /** @format uuid */
+  message_uuid: string;
+  /** ['rejected', 'applied', 'apply', 'reject'] */
+  name: string;
+  /** @format uuid */
+  button_uuid?: string | null;
+}
+
+export interface ChatStatus {
+  task: number;
+  employee: number;
+  /** @format uuid */
+  message_uuid: string;
+  /** ['search', 'approval', 'wait', 'on_way', 'pause', 'work', 'done'] */
+  status: string;
+  edits: any;
+}
+
+export interface ChatToken {
+  readonly token: string;
+}
+
 export interface ControlPoint {
   readonly id: number;
   address?: Address | null;
@@ -184,6 +209,7 @@ export enum DeviceTypeEnum {
 export interface Employee {
   readonly id: number;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
@@ -202,6 +228,7 @@ export interface Employee {
 export interface EmployeeDetailed {
   readonly id: number;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
@@ -220,6 +247,7 @@ export interface EmployeeDetailed {
 export interface EmployeeGeo {
   readonly id: number;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
@@ -300,6 +328,7 @@ export enum MeaningEnum {
 export interface MyEmployment {
   readonly id: number;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
@@ -321,6 +350,7 @@ export interface MyInvite {
   readonly id: number;
   readonly is_expired: boolean;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
@@ -508,6 +538,7 @@ export interface OrgWorkTask {
   readonly vehicle: Vehicle;
   readonly executor: EmployeeDetailed;
   readonly coordinator: EmployeeDetailed;
+  readonly approval: WorkTaskApproval;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -746,6 +777,8 @@ export type PaginatedOrganizationInviteList = OrganizationInvite[];
 
 export type PaginatedOrganizationList = Organization[];
 
+export type PaginatedSerVehicleList = SerVehicle[];
+
 export type PaginatedSerWorkTaskList = SerWorkTask[];
 
 export type PaginatedSerWorkTaskVerboseList = SerWorkTaskVerbose[];
@@ -809,6 +842,7 @@ export interface PatchedControlPoint {
 export interface PatchedEmployee {
   readonly id?: number;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
@@ -1046,7 +1080,7 @@ export interface PatchedVehiclePhotoUpdate {
    * * `posted` - posted
    * * `rejected` - rejected
    */
-  verdict?: VerdictEnum;
+  verdict?: VehicleAdditionVerdict;
   readonly author?: EmployeeDetailed;
   readonly is_approved?: boolean;
   readonly is_rejected?: boolean;
@@ -1083,7 +1117,7 @@ export interface PatchedVehicleRecommendationDetailed {
    * * `posted` - posted
    * * `rejected` - rejected
    */
-  verdict?: VerdictEnum;
+  verdict?: VehicleAdditionVerdict;
   readonly author?: EmployeeDetailed;
   readonly is_approved?: boolean;
   readonly is_rejected?: boolean;
@@ -1114,7 +1148,7 @@ export interface PatchedVehicleRuntime {
    * * `posted` - posted
    * * `rejected` - rejected
    */
-  verdict?: VerdictEnum;
+  verdict?: VehicleAdditionVerdict;
   readonly is_rejected?: boolean;
   readonly is_completed?: boolean;
   readonly author?: EmployeeDetailed;
@@ -1133,15 +1167,34 @@ export interface PatchedVehicleRuntime {
 export interface PatchedWorkTaskStatusChangeDetailed {
   /** @format uuid */
   readonly uuid?: string;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `on_way` - on_way
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status?: StatusEnum;
+  /**
+   * * `discuss` - discuss
+   * * `rejected` - rejected
+   * * `applied` - applied
+   * * `removed` - removed
+   */
+  verdict?: WorkTaskEventVerdict;
   readonly initiator?: EmployeeDetailed;
+  readonly buttons?: WorkTaskStatusChangeButton[];
   /** @format date-time */
   real_date?: string | null;
-  /** @maxLength 510 */
-  text?: string;
+  /** @format uuid */
+  message_uuid?: string | null;
   /** @format double */
   longitude?: number;
   /** @format double */
   latitude?: number;
+  readonly edits?: any;
 }
 
 export interface PointRadius {
@@ -1221,14 +1274,44 @@ export interface Region {
 }
 
 /**
+ * * `server` - server
  * * `client` - client
  * * `engineer` - engineer
  * * `coordinator` - coordinator
  */
 export enum RoleEnum {
+  Server = "server",
   Client = "client",
   Engineer = "engineer",
   Coordinator = "coordinator",
+}
+
+export interface SerVehicle {
+  readonly id: number;
+  readonly is_hidden: boolean;
+  readonly summary: VehicleSummary;
+  readonly model: VehicleModelDetailed;
+  readonly name: string;
+  readonly gost_number: string;
+  readonly organization: OrganizationPublic;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /**
+   * Serial number
+   * @maxLength 254
+   */
+  sn?: string;
+  /** @maxLength 510 */
+  info?: string;
+  manufacture_date?: number | null;
+  /** @maxLength 15 */
+  gos_number?: string;
+  /** @format double */
+  order?: number;
+  /** @format date-time */
+  readonly hide_date: string | null;
 }
 
 export interface SerWorkTask {
@@ -1254,6 +1337,7 @@ export interface SerWorkTask {
   readonly organization: OrganizationPublic;
   readonly vehicle: Vehicle;
   readonly customer: EmployeeDetailed;
+  readonly approval: WorkTaskApproval;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -1453,6 +1537,7 @@ export interface UserInvite {
   readonly id: number;
   readonly is_expired: boolean;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
@@ -1489,6 +1574,7 @@ export interface UserInviteDetailed {
   readonly id: number;
   readonly is_expired: boolean;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
@@ -1589,6 +1675,17 @@ export interface Vehicle {
   readonly organization: number;
 }
 
+/**
+ * * `no` - no
+ * * `posted` - posted
+ * * `rejected` - rejected
+ */
+export enum VehicleAdditionVerdict {
+  No = "no",
+  Posted = "posted",
+  Rejected = "rejected",
+}
+
 export interface VehicleBrand {
   readonly id: number;
   /** @format uri */
@@ -1615,6 +1712,7 @@ export interface VehicleDetailed {
   readonly name: string;
   readonly gost_number: string;
   readonly recommendations: VehicleRecommendationDetailed[];
+  readonly organization: OrganizationPublic;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
@@ -1633,7 +1731,6 @@ export interface VehicleDetailed {
   order?: number;
   /** @format date-time */
   hide_date?: string | null;
-  readonly organization: number;
 }
 
 export interface VehicleDocumentationDetailed {
@@ -1758,7 +1855,7 @@ export interface VehiclePhotoDetailed {
    * * `posted` - posted
    * * `rejected` - rejected
    */
-  verdict: VerdictEnum;
+  verdict: VehicleAdditionVerdict;
   /** @format uri */
   file?: string | null;
   readonly author: EmployeeDetailed;
@@ -1790,7 +1887,7 @@ export interface VehiclePhotoUpdate {
    * * `posted` - posted
    * * `rejected` - rejected
    */
-  verdict: VerdictEnum;
+  verdict: VehicleAdditionVerdict;
   readonly author: EmployeeDetailed;
   readonly is_approved: boolean;
   readonly is_rejected: boolean;
@@ -1827,7 +1924,7 @@ export interface VehicleRecommendationDetailed {
    * * `posted` - posted
    * * `rejected` - rejected
    */
-  verdict: VerdictEnum;
+  verdict: VehicleAdditionVerdict;
   readonly author: EmployeeDetailed;
   readonly is_approved: boolean;
   readonly is_rejected: boolean;
@@ -1858,7 +1955,7 @@ export interface VehicleRuntime {
    * * `posted` - posted
    * * `rejected` - rejected
    */
-  verdict: VerdictEnum;
+  verdict: VehicleAdditionVerdict;
   readonly is_rejected: boolean;
   readonly is_completed: boolean;
   readonly author: EmployeeDetailed;
@@ -1886,20 +1983,10 @@ export interface VehicleSummary {
   t_total_count?: number;
 }
 
-/**
- * * `no` - no
- * * `posted` - posted
- * * `rejected` - rejected
- */
-export enum VerdictEnum {
-  No = "no",
-  Posted = "posted",
-  Rejected = "rejected",
-}
-
 export interface WorkEmployee {
   readonly id: number;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
@@ -1992,8 +2079,6 @@ export interface WorkTaskApproval {
   coordinator_description?: string;
   /** @maxLength 510 */
   executor_note?: string;
-  /** @maxLength 510 */
-  description?: string;
   /** @format date-time */
   customer_approve_date?: string | null;
   /** @format date-time */
@@ -2099,6 +2184,19 @@ export interface WorkTaskDetailed {
   mark_date?: string | null;
   /** Parent task */
   parent?: number | null;
+}
+
+/**
+ * * `discuss` - discuss
+ * * `rejected` - rejected
+ * * `applied` - applied
+ * * `removed` - removed
+ */
+export enum WorkTaskEventVerdict {
+  Discuss = "discuss",
+  Rejected = "rejected",
+  Applied = "applied",
+  Removed = "removed",
 }
 
 export interface WorkTaskGeo {
@@ -2228,18 +2326,42 @@ export interface WorkTaskShortWithExecutor {
   coordinator?: number | null;
 }
 
+export interface WorkTaskStatusChangeButton {
+  readonly name: string;
+  readonly active: boolean;
+}
+
 export interface WorkTaskStatusChangeDetailed {
   /** @format uuid */
   readonly uuid: string;
+  /**
+   * * `search` - search
+   * * `approval` - approval
+   * * `wait` - wait
+   * * `on_way` - on_way
+   * * `pause` - pause
+   * * `work` - work
+   * * `done` - done
+   */
+  status: StatusEnum;
+  /**
+   * * `discuss` - discuss
+   * * `rejected` - rejected
+   * * `applied` - applied
+   * * `removed` - removed
+   */
+  verdict: WorkTaskEventVerdict;
   readonly initiator: EmployeeDetailed;
+  readonly buttons: WorkTaskStatusChangeButton[];
   /** @format date-time */
   real_date?: string | null;
-  /** @maxLength 510 */
-  text?: string;
+  /** @format uuid */
+  message_uuid?: string | null;
   /** @format double */
   longitude?: number;
   /** @format double */
   latitude?: number;
+  readonly edits: any;
 }
 
 export interface WorkTaskStatusChangeGeo {
@@ -2256,11 +2378,12 @@ export interface WorkTaskStatusChangeGeo {
    */
   status: StatusEnum;
   /**
-   * * `no` - no
-   * * `posted` - posted
+   * * `discuss` - discuss
    * * `rejected` - rejected
+   * * `applied` - applied
+   * * `removed` - removed
    */
-  verdict: VerdictEnum;
+  verdict: WorkTaskEventVerdict;
   /** @format double */
   longitude?: number;
   /** @format double */
@@ -2428,11 +2551,12 @@ export interface OrgOrgsEmployeesListParams {
   offset?: number;
   profile?: number;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
    */
-  role?: "client" | "coordinator" | "engineer";
+  role?: "client" | "coordinator" | "engineer" | "server";
   user?: number;
   /** @pattern ^\d+$ */
   orgId: string;
@@ -2766,7 +2890,7 @@ export interface VehicleSersVehiclesListParams {
   orgId: string;
 }
 
-export type VehicleSersVehiclesListData = PaginatedVehicleList;
+export type VehicleSersVehiclesListData = PaginatedSerVehicleList;
 
 export type VehicleSersVehiclesRetrieveData = VehicleDetailed;
 
@@ -2919,6 +3043,12 @@ export type VehicleSersVehiclesRuntimePartialUpdateData = VehicleRuntime;
 
 export type VehicleSersVehiclesRuntimeDestroyData = any;
 
+export type WorkM2MChatButtonCreateData = ChatButton;
+
+export type WorkM2MChatStatusCreateData = ChatStatus;
+
+export type WorkOrgsChatTokensCreateData = ChatToken;
+
 export interface WorkOrgsMyGeoListParams {
   /** Number of results to return per page. */
   limit?: number;
@@ -2967,17 +3097,20 @@ export type WorkOrgsSersSearchCreateData = WorkServiceCenterSearch;
 
 export interface WorkOrgsTasksListParams {
   executor?: number;
-  ids?: number[];
+  /** Multiple values may be separated by commas. */
+  ids?: string[];
   /** Number of results to return per page. */
   limit?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `draft` - draft
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
+  mark?: ("archived" | "delete" | "draft" | "posted" | "reject")[];
   number?: number;
   /**
    * Ordering
@@ -2993,6 +3126,8 @@ export interface WorkOrgsTasksListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `search` - search
    * * `approval` - approval
    * * `wait` - wait
@@ -3001,7 +3136,7 @@ export interface WorkOrgsTasksListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
+  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
   title?: string;
   vehicle?: number;
   /** @pattern ^\d+$ */
@@ -3010,7 +3145,7 @@ export interface WorkOrgsTasksListParams {
 
 export type WorkOrgsTasksListData = PaginatedOrgWorkTaskList;
 
-export type WorkOrgsTasksCreateData = OrgWorkTaskEdit;
+export type WorkOrgsTasksCreateData = WorkTaskDetailed;
 
 export type WorkOrgsTasksRetrieveData = WorkTaskDetailed;
 
@@ -3023,6 +3158,8 @@ export type WorkOrgsTasksGeoRetrieveData = WorkTaskGeo;
 export interface WorkOrgsTasksStatusesListParams {
   /** Number of results to return per page. */
   limit?: number;
+  /** @format uuid */
+  message_uuid?: string;
   /**
    * Ordering
    *
@@ -3036,7 +3173,6 @@ export interface WorkOrgsTasksStatusesListParams {
   o?: ("-created_at" | "-updated_at" | "-verdict_date" | "created_at" | "updated_at" | "verdict_date")[];
   /** The initial index from which to return the results. */
   offset?: number;
-  text?: string;
   /** @pattern ^\d+$ */
   orgId: string;
   /** @pattern ^\d+$ */
@@ -3055,17 +3191,20 @@ export type WorkOrgsTasksStatusesDestroyData = any;
 
 export interface WorkOrgsTasksFullListParams {
   executor?: number;
-  ids?: number[];
+  /** Multiple values may be separated by commas. */
+  ids?: string[];
   /** Number of results to return per page. */
   limit?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `draft` - draft
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
+  mark?: ("archived" | "delete" | "draft" | "posted" | "reject")[];
   number?: number;
   /**
    * Ordering
@@ -3081,6 +3220,8 @@ export interface WorkOrgsTasksFullListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `search` - search
    * * `approval` - approval
    * * `wait` - wait
@@ -3089,7 +3230,7 @@ export interface WorkOrgsTasksFullListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
+  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
   title?: string;
   vehicle?: number;
   /** @pattern ^\d+$ */
@@ -3100,17 +3241,20 @@ export type WorkOrgsTasksFullListData = PaginatedWorkTaskDetailedList;
 
 export interface WorkOrgsTasksGeosListParams {
   executor?: number;
-  ids?: number[];
+  /** Multiple values may be separated by commas. */
+  ids?: string[];
   /** Number of results to return per page. */
   limit?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `draft` - draft
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
+  mark?: ("archived" | "delete" | "draft" | "posted" | "reject")[];
   number?: number;
   /**
    * Ordering
@@ -3126,6 +3270,8 @@ export interface WorkOrgsTasksGeosListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `search` - search
    * * `approval` - approval
    * * `wait` - wait
@@ -3134,7 +3280,7 @@ export interface WorkOrgsTasksGeosListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
+  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
   title?: string;
   vehicle?: number;
   /** @pattern ^\d+$ */
@@ -3142,6 +3288,8 @@ export interface WorkOrgsTasksGeosListParams {
 }
 
 export type WorkOrgsTasksGeosListData = PaginatedWorkTaskGeoList;
+
+export type WorkSersChatTokensCreateData = ChatToken;
 
 export interface WorkSersEmployeesListParams {
   is_active?: boolean;
@@ -3161,11 +3309,12 @@ export interface WorkSersEmployeesListParams {
   offset?: number;
   profile?: number;
   /**
+   * * `server` - server
    * * `client` - client
    * * `engineer` - engineer
    * * `coordinator` - coordinator
    */
-  role?: "client" | "coordinator" | "engineer";
+  role?: "client" | "coordinator" | "engineer" | "server";
   user?: number;
   /** @pattern ^\d+$ */
   orgId: string;
@@ -3221,17 +3370,20 @@ export type WorkSersOrgsRetrieveData = WorkOrganization;
 
 export interface WorkSersTasksListParams {
   executor?: number;
-  ids?: number[];
+  /** Multiple values may be separated by commas. */
+  ids?: string[];
   /** Number of results to return per page. */
   limit?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `draft` - draft
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
+  mark?: ("archived" | "delete" | "draft" | "posted" | "reject")[];
   number?: number;
   /**
    * Ordering
@@ -3247,6 +3399,8 @@ export interface WorkSersTasksListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `search` - search
    * * `approval` - approval
    * * `wait` - wait
@@ -3255,7 +3409,7 @@ export interface WorkSersTasksListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
+  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
   title?: string;
   vehicle?: number;
   /** @pattern ^\d+$ */
@@ -3274,6 +3428,8 @@ export interface WorkSersTasksRoutesListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `prepare` - prepare
    * * `ready` - ready
    * * `rebuilt` - rebuilt
@@ -3282,7 +3438,7 @@ export interface WorkSersTasksRoutesListParams {
    * * `done` - done
    * * `cancel` - cancel
    */
-  state?: "cancel" | "done" | "prepare" | "ready" | "rebuilt" | "start" | "stop";
+  state?: ("cancel" | "done" | "prepare" | "ready" | "rebuilt" | "start" | "stop")[];
   /** @pattern ^\d+$ */
   orgId: string;
   /** @pattern ^\d+$ */
@@ -3298,6 +3454,8 @@ export type WorkSersTasksRoutesRetrieveData = WorkTaskRoute;
 export interface WorkSersTasksStatusesListParams {
   /** Number of results to return per page. */
   limit?: number;
+  /** @format uuid */
+  message_uuid?: string;
   /**
    * Ordering
    *
@@ -3311,7 +3469,6 @@ export interface WorkSersTasksStatusesListParams {
   o?: ("-created_at" | "-updated_at" | "-verdict_date" | "created_at" | "updated_at" | "verdict_date")[];
   /** The initial index from which to return the results. */
   offset?: number;
-  text?: string;
   /** @pattern ^\d+$ */
   orgId: string;
   /** @pattern ^\d+$ */
@@ -3330,17 +3487,20 @@ export type WorkSersTasksStatusesDestroyData = any;
 
 export interface WorkSersTasksFullListParams {
   executor?: number;
-  ids?: number[];
+  /** Multiple values may be separated by commas. */
+  ids?: string[];
   /** Number of results to return per page. */
   limit?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `draft` - draft
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
+  mark?: ("archived" | "delete" | "draft" | "posted" | "reject")[];
   number?: number;
   /**
    * Ordering
@@ -3356,6 +3516,8 @@ export interface WorkSersTasksFullListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `search` - search
    * * `approval` - approval
    * * `wait` - wait
@@ -3364,7 +3526,7 @@ export interface WorkSersTasksFullListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
+  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
   title?: string;
   vehicle?: number;
   /** @pattern ^\d+$ */
@@ -3375,17 +3537,20 @@ export type WorkSersTasksFullListData = PaginatedWorkTaskDetailedList;
 
 export interface WorkSersTasksGeosListParams {
   executor?: number;
-  ids?: number[];
+  /** Multiple values may be separated by commas. */
+  ids?: string[];
   /** Number of results to return per page. */
   limit?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `draft` - draft
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
+  mark?: ("archived" | "delete" | "draft" | "posted" | "reject")[];
   number?: number;
   /**
    * Ordering
@@ -3401,6 +3566,8 @@ export interface WorkSersTasksGeosListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `search` - search
    * * `approval` - approval
    * * `wait` - wait
@@ -3409,7 +3576,7 @@ export interface WorkSersTasksGeosListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
+  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
   title?: string;
   vehicle?: number;
   /** @pattern ^\d+$ */
@@ -3420,17 +3587,20 @@ export type WorkSersTasksGeosListData = PaginatedWorkTaskGeoList;
 
 export interface WorkSersTasksVerboseListParams {
   executor?: number;
-  ids?: number[];
+  /** Multiple values may be separated by commas. */
+  ids?: string[];
   /** Number of results to return per page. */
   limit?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `draft` - draft
    * * `posted` - posted
    * * `reject` - reject
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark?: "archived" | "delete" | "draft" | "posted" | "reject";
+  mark?: ("archived" | "delete" | "draft" | "posted" | "reject")[];
   number?: number;
   /**
    * Ordering
@@ -3446,6 +3616,8 @@ export interface WorkSersTasksVerboseListParams {
   /** The initial index from which to return the results. */
   offset?: number;
   /**
+   * Multiple values may be separated by commas.
+   *
    * * `search` - search
    * * `approval` - approval
    * * `wait` - wait
@@ -3454,7 +3626,7 @@ export interface WorkSersTasksVerboseListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: "approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work";
+  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
   title?: string;
   vehicle?: number;
   /** @pattern ^\d+$ */
@@ -4639,12 +4811,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags vehicle
      * @name VehicleOrgsCatalogCacheRetrieve
-     * @request GET:/api/v1/vehicle/orgs/{org_id}/catalog-cache/{version}/
+     * @request GET:/api/v1/vehicle/orgs/{org_id}/catalog-cache/{format_version}/
      * @secure
      */
-    vehicleOrgsCatalogCacheRetrieve: (orgId: string, version: string, params: RequestParams = {}) =>
+    vehicleOrgsCatalogCacheRetrieve: (formatVersion: number, orgId: string, params: RequestParams = {}) =>
       this.request<VehicleOrgsCatalogCacheRetrieveData, any>({
-        path: `/api/v1/vehicle/orgs/${orgId}/catalog-cache/${version}/`,
+        path: `/api/v1/vehicle/orgs/${orgId}/catalog-cache/${formatVersion}/`,
         method: "GET",
         secure: true,
         ...params,
@@ -5596,6 +5768,60 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
+     * @name WorkM2MChatButtonCreate
+     * @request POST:/api/v1/work/m2m/chat-button/
+     * @secure
+     */
+    workM2MChatButtonCreate: (data: ChatButton, params: RequestParams = {}) =>
+      this.request<WorkM2MChatButtonCreateData, any>({
+        path: `/api/v1/work/m2m/chat-button/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkM2MChatStatusCreate
+     * @request POST:/api/v1/work/m2m/chat-status/
+     * @secure
+     */
+    workM2MChatStatusCreate: (data: ChatStatus, params: RequestParams = {}) =>
+      this.request<WorkM2MChatStatusCreateData, any>({
+        path: `/api/v1/work/m2m/chat-status/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsChatTokensCreate
+     * @request POST:/api/v1/work/orgs/{org_id}/chat-tokens/
+     * @secure
+     */
+    workOrgsChatTokensCreate: (orgId: string, data: ChatToken, params: RequestParams = {}) =>
+      this.request<WorkOrgsChatTokensCreateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/chat-tokens/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
      * @name WorkOrgsMyGeoList
      * @request GET:/api/v1/work/orgs/{org_id}/my-geo/
      * @secure
@@ -5909,6 +6135,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "GET",
         query: query,
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersChatTokensCreate
+     * @request POST:/api/v1/work/sers/{org_id}/chat-tokens/
+     * @secure
+     */
+    workSersChatTokensCreate: (orgId: string, data: ChatToken, params: RequestParams = {}) =>
+      this.request<WorkSersChatTokensCreateData, any>({
+        path: `/api/v1/work/sers/${orgId}/chat-tokens/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
 

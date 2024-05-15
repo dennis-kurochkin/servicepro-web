@@ -31,9 +31,12 @@ const ContentWrapper = styled(Box)<BoxProps>(() => ({
   height: '100vh',
 }))
 
+// const sdf = 'wss://servicepro-chat.humanagro.ru/ws/ws-chat?authorization='
+
 export const TicketDrawer = () => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
+  // const { auth } = useAuth()
   const params = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -50,6 +53,11 @@ export const TicketDrawer = () => {
     refetchOnWindowFocus: false,
     enabled: open,
   })
+
+  // const { readyState } = useWebSocket(`wss://servicepro-chat.humanagro.ru/ws/ws-chat?authorization=${auth?.accessToken}`, {
+  //
+  // })
+  //
 
   const handleClose = () => {
     if (params.ticketID) {

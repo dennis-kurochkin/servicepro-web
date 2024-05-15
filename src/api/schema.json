@@ -1508,10 +1508,11 @@
                             "enum": [
                                 "client",
                                 "coordinator",
-                                "engineer"
+                                "engineer",
+                                "server"
                             ]
                         },
-                        "description": "* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
+                        "description": "* `server` - server\n* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
                     },
                     {
                         "in": "query",
@@ -2942,24 +2943,24 @@
                 }
             }
         },
-        "/api/v1/vehicle/orgs/{org_id}/catalog-cache/{version}/": {
+        "/api/v1/vehicle/orgs/{org_id}/catalog-cache/{format_version}/": {
             "get": {
                 "operationId": "vehicle_orgs_catalog_cache_retrieve",
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "format_version",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    },
                     {
                         "in": "path",
                         "name": "org_id",
                         "schema": {
                             "type": "string",
                             "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "version",
-                        "schema": {
-                            "type": "string"
                         },
                         "required": true
                     }
@@ -4659,7 +4660,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PaginatedVehicleList"
+                                    "$ref": "#/components/schemas/PaginatedSerVehicleList"
                                 }
                             }
                         },
@@ -6298,6 +6299,160 @@
                 }
             }
         },
+        "/api/v1/work/m2m/chat-button/": {
+            "post": {
+                "operationId": "work_m2m_chat_button_create",
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatButton"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatButton"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatButton"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "tokenAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatButton"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/m2m/chat-status/": {
+            "post": {
+                "operationId": "work_m2m_chat_status_create",
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatStatus"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatStatus"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatStatus"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "tokenAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatStatus"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/chat-tokens/": {
+            "post": {
+                "operationId": "work_orgs_chat_tokens_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatToken"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatToken"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatToken"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatToken"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/work/orgs/{org_id}/my-geo/": {
             "get": {
                 "operationId": "work_orgs_my_geo_list",
@@ -6630,10 +6785,11 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer"
+                                "type": "string"
                             }
                         },
-                        "explode": true,
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
                         "style": "form"
                     },
                     {
@@ -6649,16 +6805,21 @@
                         "in": "query",
                         "name": "mark",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "archived",
-                                "delete",
-                                "draft",
-                                "posted",
-                                "reject"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "archived",
+                                    "delete",
+                                    "draft",
+                                    "posted",
+                                    "reject"
+                                ]
+                            }
                         },
-                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+                        "description": "Multiple values may be separated by commas.\n\n* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -6710,18 +6871,23 @@
                         "in": "query",
                         "name": "status",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "approval",
-                                "done",
-                                "on_way",
-                                "pause",
-                                "search",
-                                "wait",
-                                "work"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "approval",
+                                    "done",
+                                    "on_way",
+                                    "pause",
+                                    "search",
+                                    "wait",
+                                    "work"
+                                ]
+                            }
                         },
-                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -6811,7 +6977,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OrgWorkTaskEdit"
+                                    "$ref": "#/components/schemas/WorkTaskDetailed"
                                 }
                             }
                         },
@@ -7035,6 +7201,14 @@
                     },
                     {
                         "in": "query",
+                        "name": "message_uuid",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "in": "query",
                         "name": "o",
                         "schema": {
                             "type": "array",
@@ -7080,13 +7254,6 @@
                             "pattern": "^\\d+$"
                         },
                         "required": true
-                    },
-                    {
-                        "in": "query",
-                        "name": "text",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "tags": [
@@ -7155,7 +7322,8 @@
                                 "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
                             }
                         }
-                    }
+                    },
+                    "required": true
                 },
                 "security": [
                     {
@@ -7378,10 +7546,11 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer"
+                                "type": "string"
                             }
                         },
-                        "explode": true,
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
                         "style": "form"
                     },
                     {
@@ -7397,16 +7566,21 @@
                         "in": "query",
                         "name": "mark",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "archived",
-                                "delete",
-                                "draft",
-                                "posted",
-                                "reject"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "archived",
+                                    "delete",
+                                    "draft",
+                                    "posted",
+                                    "reject"
+                                ]
+                            }
                         },
-                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+                        "description": "Multiple values may be separated by commas.\n\n* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -7458,18 +7632,23 @@
                         "in": "query",
                         "name": "status",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "approval",
-                                "done",
-                                "on_way",
-                                "pause",
-                                "search",
-                                "wait",
-                                "work"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "approval",
+                                    "done",
+                                    "on_way",
+                                    "pause",
+                                    "search",
+                                    "wait",
+                                    "work"
+                                ]
+                            }
                         },
-                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -7528,10 +7707,11 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer"
+                                "type": "string"
                             }
                         },
-                        "explode": true,
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
                         "style": "form"
                     },
                     {
@@ -7547,16 +7727,21 @@
                         "in": "query",
                         "name": "mark",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "archived",
-                                "delete",
-                                "draft",
-                                "posted",
-                                "reject"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "archived",
+                                    "delete",
+                                    "draft",
+                                    "posted",
+                                    "reject"
+                                ]
+                            }
                         },
-                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+                        "description": "Multiple values may be separated by commas.\n\n* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -7608,18 +7793,23 @@
                         "in": "query",
                         "name": "status",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "approval",
-                                "done",
-                                "on_way",
-                                "pause",
-                                "search",
-                                "wait",
-                                "work"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "approval",
+                                    "done",
+                                    "on_way",
+                                    "pause",
+                                    "search",
+                                    "wait",
+                                    "work"
+                                ]
+                            }
                         },
-                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -7653,6 +7843,64 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PaginatedWorkTaskGeoList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/chat-tokens/": {
+            "post": {
+                "operationId": "work_sers_chat_tokens_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatToken"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatToken"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatToken"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatToken"
                                 }
                             }
                         },
@@ -7740,10 +7988,11 @@
                             "enum": [
                                 "client",
                                 "coordinator",
-                                "engineer"
+                                "engineer",
+                                "server"
                             ]
                         },
-                        "description": "* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
+                        "description": "* `server` - server\n* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
                     },
                     {
                         "in": "query",
@@ -8100,10 +8349,11 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer"
+                                "type": "string"
                             }
                         },
-                        "explode": true,
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
                         "style": "form"
                     },
                     {
@@ -8119,16 +8369,21 @@
                         "in": "query",
                         "name": "mark",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "archived",
-                                "delete",
-                                "draft",
-                                "posted",
-                                "reject"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "archived",
+                                    "delete",
+                                    "draft",
+                                    "posted",
+                                    "reject"
+                                ]
+                            }
                         },
-                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+                        "description": "Multiple values may be separated by commas.\n\n* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -8180,18 +8435,23 @@
                         "in": "query",
                         "name": "status",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "approval",
-                                "done",
-                                "on_way",
-                                "pause",
-                                "search",
-                                "wait",
-                                "work"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "approval",
+                                    "done",
+                                    "on_way",
+                                    "pause",
+                                    "search",
+                                    "wait",
+                                    "work"
+                                ]
+                            }
                         },
-                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -8364,18 +8624,23 @@
                         "in": "query",
                         "name": "state",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "cancel",
-                                "done",
-                                "prepare",
-                                "ready",
-                                "rebuilt",
-                                "start",
-                                "stop"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "cancel",
+                                    "done",
+                                    "prepare",
+                                    "ready",
+                                    "rebuilt",
+                                    "start",
+                                    "stop"
+                                ]
+                            }
                         },
-                        "description": "* `prepare` - prepare\n* `ready` - ready\n* `rebuilt` - rebuilt\n* `start` - start\n* `stop` - stop\n* `done` - done\n* `cancel` - cancel"
+                        "description": "Multiple values may be separated by commas.\n\n* `prepare` - prepare\n* `ready` - ready\n* `rebuilt` - rebuilt\n* `start` - start\n* `stop` - stop\n* `done` - done\n* `cancel` - cancel",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "path",
@@ -8551,6 +8816,14 @@
                     },
                     {
                         "in": "query",
+                        "name": "message_uuid",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "in": "query",
                         "name": "o",
                         "schema": {
                             "type": "array",
@@ -8596,13 +8869,6 @@
                             "pattern": "^\\d+$"
                         },
                         "required": true
-                    },
-                    {
-                        "in": "query",
-                        "name": "text",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "tags": [
@@ -8671,7 +8937,8 @@
                                 "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
                             }
                         }
-                    }
+                    },
+                    "required": true
                 },
                 "security": [
                     {
@@ -8894,10 +9161,11 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer"
+                                "type": "string"
                             }
                         },
-                        "explode": true,
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
                         "style": "form"
                     },
                     {
@@ -8913,16 +9181,21 @@
                         "in": "query",
                         "name": "mark",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "archived",
-                                "delete",
-                                "draft",
-                                "posted",
-                                "reject"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "archived",
+                                    "delete",
+                                    "draft",
+                                    "posted",
+                                    "reject"
+                                ]
+                            }
                         },
-                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+                        "description": "Multiple values may be separated by commas.\n\n* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -8974,18 +9247,23 @@
                         "in": "query",
                         "name": "status",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "approval",
-                                "done",
-                                "on_way",
-                                "pause",
-                                "search",
-                                "wait",
-                                "work"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "approval",
+                                    "done",
+                                    "on_way",
+                                    "pause",
+                                    "search",
+                                    "wait",
+                                    "work"
+                                ]
+                            }
                         },
-                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -9044,10 +9322,11 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer"
+                                "type": "string"
                             }
                         },
-                        "explode": true,
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
                         "style": "form"
                     },
                     {
@@ -9063,16 +9342,21 @@
                         "in": "query",
                         "name": "mark",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "archived",
-                                "delete",
-                                "draft",
-                                "posted",
-                                "reject"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "archived",
+                                    "delete",
+                                    "draft",
+                                    "posted",
+                                    "reject"
+                                ]
+                            }
                         },
-                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+                        "description": "Multiple values may be separated by commas.\n\n* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -9124,18 +9408,23 @@
                         "in": "query",
                         "name": "status",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "approval",
-                                "done",
-                                "on_way",
-                                "pause",
-                                "search",
-                                "wait",
-                                "work"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "approval",
+                                    "done",
+                                    "on_way",
+                                    "pause",
+                                    "search",
+                                    "wait",
+                                    "work"
+                                ]
+                            }
                         },
-                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -9194,10 +9483,11 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "integer"
+                                "type": "string"
                             }
                         },
-                        "explode": true,
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
                         "style": "form"
                     },
                     {
@@ -9213,16 +9503,21 @@
                         "in": "query",
                         "name": "mark",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "archived",
-                                "delete",
-                                "draft",
-                                "posted",
-                                "reject"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "archived",
+                                    "delete",
+                                    "draft",
+                                    "posted",
+                                    "reject"
+                                ]
+                            }
                         },
-                        "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+                        "description": "Multiple values may be separated by commas.\n\n* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -9274,18 +9569,23 @@
                         "in": "query",
                         "name": "status",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "approval",
-                                "done",
-                                "on_way",
-                                "pause",
-                                "search",
-                                "wait",
-                                "work"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "approval",
+                                    "done",
+                                    "on_way",
+                                    "pause",
+                                    "search",
+                                    "wait",
+                                    "work"
+                                ]
+                            }
                         },
-                        "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -9649,6 +9949,77 @@
                     "is_clean",
                     "is_final",
                     "region"
+                ]
+            },
+            "ChatButton": {
+                "type": "object",
+                "properties": {
+                    "task": {
+                        "type": "integer"
+                    },
+                    "employee": {
+                        "type": "integer"
+                    },
+                    "message_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "['rejected', 'applied', 'apply', 'reject']"
+                    },
+                    "button_uuid": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    }
+                },
+                "required": [
+                    "employee",
+                    "message_uuid",
+                    "name",
+                    "task"
+                ]
+            },
+            "ChatStatus": {
+                "type": "object",
+                "properties": {
+                    "task": {
+                        "type": "integer"
+                    },
+                    "employee": {
+                        "type": "integer"
+                    },
+                    "message_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "['search', 'approval', 'wait', 'on_way', 'pause', 'work', 'done']"
+                    },
+                    "edits": {}
+                },
+                "required": [
+                    "edits",
+                    "employee",
+                    "message_uuid",
+                    "status",
+                    "task"
+                ]
+            },
+            "ChatToken": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "token"
                 ]
             },
             "ControlPoint": {
@@ -10662,6 +11033,14 @@
                         ],
                         "readOnly": true
                     },
+                    "approval": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/WorkTaskApproval"
+                            }
+                        ],
+                        "readOnly": true
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -10719,6 +11098,7 @@
                     }
                 },
                 "required": [
+                    "approval",
                     "coordinator",
                     "created_at",
                     "executor",
@@ -11437,6 +11817,12 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Organization"
+                }
+            },
+            "PaginatedSerVehicleList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/SerVehicle"
                 }
             },
             "PaginatedSerWorkTaskList": {
@@ -12205,7 +12591,7 @@
                         "$ref": "#/components/schemas/MeaningEnum"
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VerdictEnum"
+                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
                     },
                     "author": {
                         "allOf": [
@@ -12284,7 +12670,7 @@
                         "$ref": "#/components/schemas/SolutionEnum"
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VerdictEnum"
+                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
                     },
                     "author": {
                         "allOf": [
@@ -12372,7 +12758,7 @@
                         "readOnly": true
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VerdictEnum"
+                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
                     },
                     "is_rejected": {
                         "type": "boolean",
@@ -12439,12 +12825,25 @@
                         "format": "uuid",
                         "readOnly": true
                     },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "verdict": {
+                        "$ref": "#/components/schemas/WorkTaskEventVerdict"
+                    },
                     "initiator": {
                         "allOf": [
                             {
                                 "$ref": "#/components/schemas/EmployeeDetailed"
                             }
                         ],
+                        "readOnly": true
+                    },
+                    "buttons": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskStatusChangeButton"
+                        },
                         "readOnly": true
                     },
                     "real_date": {
@@ -12455,9 +12854,12 @@
                         "format": "date-time",
                         "writeOnly": true
                     },
-                    "text": {
-                        "type": "string",
-                        "maxLength": 510
+                    "message_uuid": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
                     },
                     "longitude": {
                         "type": "number",
@@ -12466,6 +12868,9 @@
                     "latitude": {
                         "type": "number",
                         "format": "double"
+                    },
+                    "edits": {
+                        "readOnly": true
                     }
                 }
             },
@@ -12592,12 +12997,111 @@
             },
             "RoleEnum": {
                 "enum": [
+                    "server",
                     "client",
                     "engineer",
                     "coordinator"
                 ],
                 "type": "string",
-                "description": "* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
+                "description": "* `server` - server\n* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
+            },
+            "SerVehicle": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "is_hidden": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "summary": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/VehicleSummary"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "model": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/VehicleModelDetailed"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "gost_number": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "organization": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OrganizationPublic"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "sn": {
+                        "type": "string",
+                        "title": "Serial number",
+                        "maxLength": 254
+                    },
+                    "info": {
+                        "type": "string",
+                        "maxLength": 510
+                    },
+                    "manufacture_date": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "gos_number": {
+                        "type": "string",
+                        "maxLength": 15
+                    },
+                    "order": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "hide_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "gost_number",
+                    "hide_date",
+                    "id",
+                    "is_hidden",
+                    "model",
+                    "name",
+                    "organization",
+                    "summary",
+                    "updated_at"
+                ]
             },
             "SerWorkTask": {
                 "type": "object",
@@ -12632,6 +13136,14 @@
                         "allOf": [
                             {
                                 "$ref": "#/components/schemas/EmployeeDetailed"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "approval": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/WorkTaskApproval"
                             }
                         ],
                         "readOnly": true
@@ -12703,6 +13215,7 @@
                     }
                 },
                 "required": [
+                    "approval",
                     "created_at",
                     "customer",
                     "executor",
@@ -13526,6 +14039,15 @@
                     "updated_at"
                 ]
             },
+            "VehicleAdditionVerdict": {
+                "enum": [
+                    "no",
+                    "posted",
+                    "rejected"
+                ],
+                "type": "string",
+                "description": "* `no` - no\n* `posted` - posted\n* `rejected` - rejected"
+            },
             "VehicleBrand": {
                 "type": "object",
                 "properties": {
@@ -13625,6 +14147,14 @@
                         },
                         "readOnly": true
                     },
+                    "organization": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OrganizationPublic"
+                            }
+                        ],
+                        "readOnly": true
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -13664,10 +14194,6 @@
                             "null"
                         ],
                         "format": "date-time"
-                    },
-                    "organization": {
-                        "type": "integer",
-                        "readOnly": true
                     }
                 },
                 "required": [
@@ -14052,7 +14578,7 @@
                         "$ref": "#/components/schemas/MeaningEnum"
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VerdictEnum"
+                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
                     },
                     "file": {
                         "type": [
@@ -14143,7 +14669,7 @@
                         "$ref": "#/components/schemas/MeaningEnum"
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VerdictEnum"
+                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
                     },
                     "author": {
                         "allOf": [
@@ -14236,7 +14762,7 @@
                         "$ref": "#/components/schemas/SolutionEnum"
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VerdictEnum"
+                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
                     },
                     "author": {
                         "allOf": [
@@ -14340,7 +14866,7 @@
                         "readOnly": true
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VerdictEnum"
+                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
                     },
                     "is_rejected": {
                         "type": "boolean",
@@ -14441,15 +14967,6 @@
                         "type": "integer"
                     }
                 }
-            },
-            "VerdictEnum": {
-                "enum": [
-                    "no",
-                    "posted",
-                    "rejected"
-                ],
-                "type": "string",
-                "description": "* `no` - no\n* `posted` - posted\n* `rejected` - rejected"
             },
             "WorkEmployee": {
                 "type": "object",
@@ -14741,10 +15258,6 @@
                         "maxLength": 510
                     },
                     "executor_note": {
-                        "type": "string",
-                        "maxLength": 510
-                    },
-                    "description": {
                         "type": "string",
                         "maxLength": 510
                     },
@@ -15083,6 +15596,16 @@
                     "updated_at",
                     "vehicle"
                 ]
+            },
+            "WorkTaskEventVerdict": {
+                "enum": [
+                    "discuss",
+                    "rejected",
+                    "applied",
+                    "removed"
+                ],
+                "type": "string",
+                "description": "* `discuss` - discuss\n* `rejected` - rejected\n* `applied` - applied\n* `removed` - removed"
             },
             "WorkTaskGeo": {
                 "type": "object",
@@ -15431,6 +15954,23 @@
                     "updated_at"
                 ]
             },
+            "WorkTaskStatusChangeButton": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "active",
+                    "name"
+                ]
+            },
             "WorkTaskStatusChangeDetailed": {
                 "type": "object",
                 "properties": {
@@ -15439,12 +15979,25 @@
                         "format": "uuid",
                         "readOnly": true
                     },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "verdict": {
+                        "$ref": "#/components/schemas/WorkTaskEventVerdict"
+                    },
                     "initiator": {
                         "allOf": [
                             {
                                 "$ref": "#/components/schemas/EmployeeDetailed"
                             }
                         ],
+                        "readOnly": true
+                    },
+                    "buttons": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskStatusChangeButton"
+                        },
                         "readOnly": true
                     },
                     "real_date": {
@@ -15455,9 +16008,12 @@
                         "format": "date-time",
                         "writeOnly": true
                     },
-                    "text": {
-                        "type": "string",
-                        "maxLength": 510
+                    "message_uuid": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
                     },
                     "longitude": {
                         "type": "number",
@@ -15466,11 +16022,18 @@
                     "latitude": {
                         "type": "number",
                         "format": "double"
+                    },
+                    "edits": {
+                        "readOnly": true
                     }
                 },
                 "required": [
+                    "buttons",
+                    "edits",
                     "initiator",
-                    "uuid"
+                    "status",
+                    "uuid",
+                    "verdict"
                 ]
             },
             "WorkTaskStatusChangeGeo": {
@@ -15485,7 +16048,7 @@
                         "$ref": "#/components/schemas/StatusEnum"
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VerdictEnum"
+                        "$ref": "#/components/schemas/WorkTaskEventVerdict"
                     },
                     "longitude": {
                         "type": "number",
@@ -15613,6 +16176,12 @@
                 "type": "http",
                 "scheme": "bearer",
                 "bearerFormat": "JWT"
+            },
+            "tokenAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "Authorization",
+                "description": "Token-based authentication with required prefix \"M2M-Chat\""
             }
         }
     }
