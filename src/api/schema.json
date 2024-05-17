@@ -7090,7 +7090,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OrgWorkTaskEdit"
+                                    "$ref": "#/components/schemas/WorkTaskDetailed"
                                 }
                             }
                         },
@@ -7182,6 +7182,344 @@
                             }
                         },
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/{task_id}/attachments/": {
+            "get": {
+                "operationId": "work_orgs_tasks_attachments_list",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-id",
+                                    "-updated_at",
+                                    "created_at",
+                                    "id",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `id` - Id\n* `-id` - Id (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedWorkTaskAttachmentList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "work_orgs_tasks_attachments_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkTaskAttachment"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkTaskAttachment"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkTaskAttachment"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskAttachment"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/{task_id}/attachments/{id}/": {
+            "get": {
+                "operationId": "work_orgs_tasks_attachments_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task attachment.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskAttachment"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "work_orgs_tasks_attachments_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task attachment.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskAttachment"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskAttachment"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskAttachment"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskAttachment"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "work_orgs_tasks_attachments_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task attachment.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
                     }
                 }
             }
@@ -7279,72 +7617,6 @@
                         "description": ""
                     }
                 }
-            },
-            "post": {
-                "operationId": "work_orgs_tasks_statuses_create",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "org_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "task_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "work"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
             }
         },
         "/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/{uuid}/": {
@@ -7401,130 +7673,6 @@
                             }
                         },
                         "description": ""
-                    }
-                }
-            },
-            "patch": {
-                "operationId": "work_orgs_tasks_statuses_partial_update",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "org_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "task_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "uuid",
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "description": "A UUID string identifying this work task status change.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "work"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedWorkTaskStatusChangeDetailed"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedWorkTaskStatusChangeDetailed"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedWorkTaskStatusChangeDetailed"
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "delete": {
-                "operationId": "work_orgs_tasks_statuses_destroy",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "org_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "task_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "uuid",
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "description": "A UUID string identifying this work task status change.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "work"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No response body"
                     }
                 }
             }
@@ -8541,6 +8689,73 @@
                 }
             }
         },
+        "/api/v1/work/sers/{org_id}/tasks/{id}/executors/": {
+            "patch": {
+                "operationId": "work_sers_tasks_executors_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskExecutor"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskExecutor"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskExecutor"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskDetailed"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/work/sers/{org_id}/tasks/{id}/geo/": {
             "get": {
                 "operationId": "work_sers_tasks_geo_retrieve",
@@ -8585,6 +8800,459 @@
                             }
                         },
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/{id}/result/": {
+            "patch": {
+                "operationId": "work_sers_tasks_result_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskResult"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskResult"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskResult"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskDetailed"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/{id}/result-apply/": {
+            "patch": {
+                "operationId": "work_sers_tasks_result_apply_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskDetailed"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/{task_id}/attachments/": {
+            "get": {
+                "operationId": "work_sers_tasks_attachments_list",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-id",
+                                    "-updated_at",
+                                    "created_at",
+                                    "id",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `id` - Id\n* `-id` - Id (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedWorkTaskAttachmentList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "work_sers_tasks_attachments_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkTaskAttachment"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkTaskAttachment"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkTaskAttachment"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskAttachment"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/{task_id}/attachments/{id}/": {
+            "get": {
+                "operationId": "work_sers_tasks_attachments_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task attachment.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskAttachment"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "work_sers_tasks_attachments_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task attachment.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskAttachment"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskAttachment"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskAttachment"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskAttachment"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "work_sers_tasks_attachments_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task attachment.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
                     }
                 }
             }
@@ -8894,72 +9562,6 @@
                         "description": ""
                     }
                 }
-            },
-            "post": {
-                "operationId": "work_sers_tasks_statuses_create",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "org_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "task_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "work"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
             }
         },
         "/api/v1/work/sers/{org_id}/tasks/{task_id}/statuses/{uuid}/": {
@@ -9016,130 +9618,6 @@
                             }
                         },
                         "description": ""
-                    }
-                }
-            },
-            "patch": {
-                "operationId": "work_sers_tasks_statuses_partial_update",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "org_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "task_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "uuid",
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "description": "A UUID string identifying this work task status change.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "work"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedWorkTaskStatusChangeDetailed"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedWorkTaskStatusChangeDetailed"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedWorkTaskStatusChangeDetailed"
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WorkTaskStatusChangeDetailed"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "delete": {
-                "operationId": "work_sers_tasks_statuses_destroy",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "org_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "task_id",
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^\\d+$"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "path",
-                        "name": "uuid",
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "description": "A UUID string identifying this work task status change.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "work"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No response body"
                     }
                 }
             }
@@ -11095,6 +11573,18 @@
                             "null"
                         ],
                         "title": "Parent task"
+                    },
+                    "assistants": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "involved": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [
@@ -11115,20 +11605,15 @@
             "OrgWorkTaskEdit": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
                     "mark": {
                         "$ref": "#/components/schemas/MarkEnum"
                     },
-                    "status": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/StatusEnum"
-                            }
+                    "mark_date": {
+                        "type": [
+                            "string",
+                            "null"
                         ],
-                        "readOnly": true
+                        "format": "date-time"
                     },
                     "approval": {
                         "$ref": "#/components/schemas/WorkTaskCustomerApproval"
@@ -11156,16 +11641,6 @@
                         },
                         "writeOnly": true
                     },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
                     "longitude": {
                         "type": "number",
                         "format": "double"
@@ -11173,25 +11648,6 @@
                     "latitude": {
                         "type": "number",
                         "format": "double"
-                    },
-                    "status_date": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "mark_date": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "organization": {
-                        "type": "integer",
-                        "readOnly": true
                     },
                     "service_center": {
                         "type": [
@@ -11215,13 +11671,7 @@
                 },
                 "required": [
                     "approval",
-                    "created_at",
-                    "id",
-                    "mark",
-                    "organization",
-                    "status",
-                    "status_date",
-                    "updated_at"
+                    "mark"
                 ]
             },
             "Organization": {
@@ -11921,6 +12371,12 @@
                     "$ref": "#/components/schemas/WorkServiceCenter"
                 }
             },
+            "PaginatedWorkTaskAttachmentList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/WorkTaskAttachment"
+                }
+            },
             "PaginatedWorkTaskDetailedList": {
                 "type": "array",
                 "items": {
@@ -12039,20 +12495,15 @@
             "PatchedOrgWorkTaskEdit": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
                     "mark": {
                         "$ref": "#/components/schemas/MarkEnum"
                     },
-                    "status": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/StatusEnum"
-                            }
+                    "mark_date": {
+                        "type": [
+                            "string",
+                            "null"
                         ],
-                        "readOnly": true
+                        "format": "date-time"
                     },
                     "approval": {
                         "$ref": "#/components/schemas/WorkTaskCustomerApproval"
@@ -12080,16 +12531,6 @@
                         },
                         "writeOnly": true
                     },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
                     "longitude": {
                         "type": "number",
                         "format": "double"
@@ -12097,25 +12538,6 @@
                     "latitude": {
                         "type": "number",
                         "format": "double"
-                    },
-                    "status_date": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "mark_date": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "organization": {
-                        "type": "integer",
-                        "readOnly": true
                     },
                     "service_center": {
                         "type": [
@@ -12817,60 +13239,93 @@
                     }
                 }
             },
-            "PatchedWorkTaskStatusChangeDetailed": {
+            "PatchedWorkTaskAttachment": {
                 "type": "object",
                 "properties": {
-                    "uuid": {
-                        "type": "string",
-                        "format": "uuid",
+                    "id": {
+                        "type": "integer",
                         "readOnly": true
                     },
-                    "status": {
-                        "$ref": "#/components/schemas/StatusEnum"
+                    "file": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
                     },
-                    "verdict": {
-                        "$ref": "#/components/schemas/WorkTaskEventVerdict"
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
                     },
-                    "initiator": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/EmployeeDetailed"
-                            }
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "task": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "author": {
+                        "type": [
+                            "integer",
+                            "null"
                         ],
                         "readOnly": true
+                    }
+                }
+            },
+            "PatchedWorkTaskExecutor": {
+                "type": "object",
+                "properties": {
+                    "coordinator": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
                     },
-                    "buttons": {
+                    "executor": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "assistants": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            },
+            "PatchedWorkTaskResult": {
+                "type": "object",
+                "properties": {
+                    "runtime": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/WorkTaskStatusChangeButton"
-                        },
-                        "readOnly": true
+                            "$ref": "#/components/schemas/VehicleRuntimeResult"
+                        }
                     },
-                    "real_date": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time",
-                        "writeOnly": true
+                    "recommendations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VehicleRecommendationResult"
+                        }
                     },
-                    "message_uuid": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "uuid"
-                    },
-                    "longitude": {
-                        "type": "number",
-                        "format": "double"
-                    },
-                    "latitude": {
-                        "type": "number",
-                        "format": "double"
-                    },
-                    "edits": {
-                        "readOnly": true
+                    "photos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VehiclePhotoResult"
+                        }
                     }
                 }
             },
@@ -13212,6 +13667,18 @@
                             "null"
                         ],
                         "title": "Parent task"
+                    },
+                    "assistants": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "involved": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [
@@ -13339,6 +13806,18 @@
                             "null"
                         ],
                         "title": "Parent task"
+                    },
+                    "assistants": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "involved": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [
@@ -14658,6 +15137,34 @@
                     "verdict"
                 ]
             },
+            "VehiclePhotoResult": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "meaning": {
+                        "$ref": "#/components/schemas/MeaningEnum"
+                    },
+                    "recommendation_index": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "file": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    }
+                },
+                "required": [
+                    "meaning"
+                ]
+            },
             "VehiclePhotoUpdate": {
                 "type": "object",
                 "properties": {
@@ -14858,6 +15365,25 @@
                     "verdict"
                 ]
             },
+            "VehicleRecommendationResult": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "text": {
+                        "type": "string",
+                        "maxLength": 510
+                    },
+                    "level": {
+                        "$ref": "#/components/schemas/LevelEnum"
+                    }
+                },
+                "required": [
+                    "level"
+                ]
+            },
             "VehicleRuntime": {
                 "type": "object",
                 "properties": {
@@ -14936,6 +15462,17 @@
                     "value",
                     "vehicle",
                     "verdict"
+                ]
+            },
+            "VehicleRuntimeResult": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "value"
                 ]
             },
             "VehicleSummary": {
@@ -15350,6 +15887,54 @@
                     "updated_at"
                 ]
             },
+            "WorkTaskAttachment": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "file": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "task": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "author": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "author",
+                    "created_at",
+                    "id",
+                    "task",
+                    "updated_at"
+                ]
+            },
             "WorkTaskCheck": {
                 "type": "object",
                 "properties": {
@@ -15438,17 +16023,6 @@
                         "format": "date-time"
                     },
                     "want_complete_date": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "reject_text": {
-                        "type": "string",
-                        "maxLength": 510
-                    },
-                    "reject_date": {
                         "type": [
                             "string",
                             "null"
@@ -15578,6 +16152,18 @@
                             "null"
                         ],
                         "title": "Parent task"
+                    },
+                    "assistants": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "involved": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [
@@ -15854,6 +16440,18 @@
                             "null"
                         ],
                         "readOnly": true
+                    },
+                    "assistants": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "involved": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [
@@ -15941,6 +16539,18 @@
                             "integer",
                             "null"
                         ]
+                    },
+                    "assistants": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "involved": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [

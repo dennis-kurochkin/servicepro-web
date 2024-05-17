@@ -39,7 +39,7 @@ export const NotFoundRoute = () => {
         sx={{
           marginTop: '32px',
         }}
-        onClick={() => navigate('/tickets')}
+        onClick={() => navigate('/')}
       >
         На главную
       </Button>

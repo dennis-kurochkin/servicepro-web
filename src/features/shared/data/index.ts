@@ -1,5 +1,7 @@
 export enum QueryKey {
-  Tickets = 'tickets',
+  TicketsGeos = 'tickets-geos',
+  TicketsEngineers = 'tickets-engineers',
   Engineers = 'engineers',
   Clients = 'clients',
+  Ticket = 'ticket',
 }

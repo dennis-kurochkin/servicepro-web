@@ -1,14 +1,16 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ButtonContextActions } from '@components/ButtonContextActions'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { TableCellActions } from '@components/TableCellActions'
+import { TooltipNew } from '@components/TooltipNew'
 import { DATE_FORMAT_TIME_AHEAD, EMPTY_VALUE_DASH } from '@constants/index'
+import { TooltipId } from '@data/tooltips'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { getEngineerLabel } from '@features/engineers/helpers'
+import { DialogEngineerAssign } from '@features/shared/components/DialogEngineerAssign'
 import { useOrganizationID } from '@hooks/useOrganizationID'
-import { GpsFixedOutlined, GpsNotFixed } from '@mui/icons-material'
+import { GpsFixedOutlined, GpsNotFixed, ManageAccounts } from '@mui/icons-material'
 import { TableCell, TableRow } from '@mui/material'
 import { format } from 'date-fns'
 import { SerWorkTaskVerbose } from '~/api/servicepro.generated'
@@ -29,6 +31,7 @@ export const TicketRow = ({ task, selected, onSelect }: TicketRowProps) => {
   const navigate = useNavigate()
   const { organizationID } = useOrganizationID()
 
+  const [open, setOpen] = useState(false)
   const requisites = useMemo(() => task.organization?.requisites ?? null, [task.organization?.requisites])
   const vehicle = useMemo(() => task.vehicle ?? null, [task.vehicle])
 
@@ -80,24 +83,39 @@ export const TicketRow = ({ task, selected, onSelect }: TicketRowProps) => {
         </TableCell>
         <TableCell>
           <EngineerAvatar
-            profile={task.executor?.profile}
+            profile={task.executor?.profile ?? null}
           />
         </TableCell>
         <TableCellActions>
           <ButtonIcon
             Icon={selected ? GpsFixedOutlined : GpsNotFixed}
+            fontSize={'18px'}
             onClick={(e) => {
               e.stopPropagation()
               onSelect()
             }}
           />
-          <ButtonContextActions
-            onClick={(e) => {
-              e.stopPropagation()
-            }}
+          <TooltipNew
+            id={TooltipId.TicketsCellAssignButton}
+            content={'Назначить инженера'}
+            target={(
+              <ButtonIcon
+                Icon={ManageAccounts}
+                fontSize={'18px'}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setOpen(true)
+                }}
+              />
+            )}
           />
         </TableCellActions>
       </TableRow>
+      <DialogEngineerAssign
+        open={open}
+        selectedTaskID={task.id}
+        onClose={() => setOpen(false)}
+      />
     </>
   )
 }

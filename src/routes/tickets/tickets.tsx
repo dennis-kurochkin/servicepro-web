@@ -18,7 +18,7 @@ export const TicketsRoute = () => {
   const [selected, setSelected] = useState<number | null>(null)
 
   const { data, isSuccess } = useQuery({
-    queryKey: [QueryKey.Tickets, organizationID],
+    queryKey: [QueryKey.TicketsGeos, organizationID],
     queryFn: async () => {
       const { data: tasks } = await api.workSersTasksVerboseList({
         orgId: organizationID.toString(),

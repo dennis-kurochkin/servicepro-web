@@ -103,7 +103,7 @@ export const OrganizationRoute = () => {
                   sx={{
                     padding: '12px 28px',
                   }}
-                  onClick={() => navigate('/tickets')}
+                  onClick={() => navigate('/')}
                 >
                   <ListItemAvatar
                     sx={{

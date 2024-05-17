@@ -4,6 +4,7 @@ import Truck1 from '@assets/truck-1.png'
 import Truck2 from '@assets/truck-2.png'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH } from '@constants/index'
+import { QueryKey } from '@features/shared/data'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
 import { TicketChatMessage } from '@features/tickets/components/TicketChatMessage'
 import { TicketDrawerEngineerSection } from '@features/tickets/components/TicketDrawerEngineerSection'
@@ -45,7 +46,7 @@ export const TicketDrawer = () => {
   const ticketID = useMemo(() => params.ticketID ? +params.ticketID : searchParams.get('ticketID') ? +searchParams.get('ticketID')! : null, [params, searchParams])
 
   const { data, isFetching } = useQuery({
-    queryKey: ['ticket', organizationID],
+    queryKey: [QueryKey.Ticket, organizationID],
     queryFn: async () => {
       const { data } = await api.workSersTasksRetrieve(ticketID!, organizationID.toString())
       return data
@@ -250,9 +251,12 @@ export const TicketDrawer = () => {
             />
           </TicketChatContainer>
           <TicketDrawerFormsContainer>
-            <TicketDrawerEngineerSection
-              profile={data?.executor?.profile ?? null}
-            />
+            {typeof ticketID === 'number' && (
+              <TicketDrawerEngineerSection
+                ticketID={ticketID}
+                profile={data?.executor?.profile ?? null}
+              />
+            )}
             <TicketDrawerForm
               title={'Условия для выполнения заявки'}
             />

@@ -1,19 +1,13 @@
+import { Fragment } from 'react'
 import useInfiniteScroll from 'react-infinite-scroll-hook'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
-import { PAGINATION_DEFAULT_LIMIT, TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
+import { PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { ClientRow } from '@features/clients/components/ClientRow'
 import { QueryKey } from '@features/shared/data'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
-import {
-  Box, CircularProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow, TableSortLabel,
-} from '@mui/material'
+import { Box, CircularProgress, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
 export const ClientsRoute = () => {
@@ -87,7 +81,7 @@ export const ClientsRoute = () => {
                 <TableCell
                   size={'small'}
                 >
-                Район
+                  Район
                   <TableSortLabel
                     direction={'desc'}
                     active
@@ -109,28 +103,27 @@ export const ClientsRoute = () => {
                   Рекомендации
                   <TableSortLabel
                     direction={'desc'}
-                    sx={{ marginRight: '-20px' }}
                     active
                   />
                 </TableCell>
-                <TableCell
-                  size={'small'}
-                  sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}
-                />
+                {/*<TableCell*/}
+                {/*  size={'small'}*/}
+                {/*  sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}*/}
+                {/*/>*/}
               </TableRow>
             </TableHead>
             <TableBody>
               {status === 'success' && (
                 <>
                   {data.pages.map((page, index) => (
-                    <>
+                    <Fragment key={index}>
                       {page.map((client) => (
                         <ClientRow
-                          key={index}
+                          key={client.id}
                           data={client}
                         />
                       ))}
-                    </>
+                    </Fragment>
                   ))}
                 </>
               )}

@@ -26,7 +26,7 @@ export const AuthRoute = () => {
 
   useEffect(() => {
     if (auth?.accessToken) {
-      navigate('/tickets', { replace: true })
+      navigate('/', { replace: true })
     }
   }, [])
 

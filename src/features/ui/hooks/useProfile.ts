@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useApi } from '@hooks/useApi'
 import { useAuth } from '@hooks/useAuth'
 import { useOrganizationIDNullable } from '@hooks/useOrganizationIDNullable'
@@ -27,9 +27,12 @@ export const useProfile = (onSuccess?: (data: MyUserAll) => void) => {
     enabled: !!auth?.accessToken,
   })
 
+  const getEmployment = useCallback(() => employment, [employment])
+
   return {
     query,
     employment,
     setEmployment,
+    getEmployment,
   }
 }

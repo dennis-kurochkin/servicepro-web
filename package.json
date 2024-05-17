@@ -38,6 +38,7 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.18.0",
     "react-scroll": "^1.9.0",
+    "react-tooltip": "^5.26.4",
     "react-use-websocket": "^4.8.1",
     "swagger-typescript-api": "^13.0.3"
   },

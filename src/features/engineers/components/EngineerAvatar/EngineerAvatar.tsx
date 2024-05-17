@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 import { theme } from '@data/theme'
 import { getEngineerLabel } from '@features/engineers/helpers'
-import { Person } from '@mui/icons-material'
+import { Person, PersonOff } from '@mui/icons-material'
 import { Avatar, Box, Chip, SxProps, Typography } from '@mui/material'
 
 interface EngineerAvatarProps {
-  profile: {
+  profile: null | {
     last_name?: string
     first_name?: string
     photo?: string | null
@@ -21,7 +21,7 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', l
   const avatar = (
     <Avatar
       alt={fullName}
-      src={profile.photo ?? undefined}
+      src={profile?.photo ?? undefined}
       sx={{
         width: '24px !important',
         height: '24px !important',
@@ -38,7 +38,14 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', l
           textTransform: 'uppercase',
         }}
       >
-        <Person sx={{ fontSize: '1rem' }} />
+        {profile ? <Person sx={{ fontSize: '1rem' }} /> : (
+          <PersonOff
+            sx={{
+              marginBottom: '-2px',
+              fontSize: '20px',
+            }}
+          />
+        )}
       </Box>
     </Avatar>
   )
@@ -58,18 +65,20 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', l
           avatar={avatar}
           label={(
             <>
-              {getEngineerLabel(profile)}
-              <Typography
-                component={'span'}
-                variant={'body2'}
-                fontWeight={700}
-                color={theme.palette.success.main}
-                sx={{
-                  marginLeft: '6px',
-                }}
-              >
-                4.3
-              </Typography>
+              {profile ? getEngineerLabel(profile) : 'Не назначен'}
+              {profile && (
+                <Typography
+                  component={'span'}
+                  variant={'body2'}
+                  fontWeight={700}
+                  color={theme.palette.success.main}
+                  sx={{
+                    marginLeft: '6px',
+                  }}
+                >
+                  4.3
+                </Typography>
+              )}
             </>
           )}
           onClick={onClick ? async (e) => {

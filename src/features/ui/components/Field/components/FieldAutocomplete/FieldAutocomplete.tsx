@@ -52,7 +52,7 @@ export const FieldAutocomplete = forwardRef(<T extends FieldAutocompleteCommonVa
       value={value}
       isOptionEqualToValue={(option, value) => option.id ? option.id === value.id : option.name === value.name}
       getOptionLabel={(option) => option.name}
-      noOptionsText={'Не найдено'}
+      noOptionsText={'По вашему запросу ничего не найдено'}
       closeText={'Закрыть'}
       loadingText={'Загрука...'}
       options={options}

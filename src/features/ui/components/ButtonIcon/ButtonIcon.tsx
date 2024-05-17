@@ -1,12 +1,12 @@
 import { MoreVert } from '@mui/icons-material'
 import { Button, IconButtonProps } from '@mui/material'
 
-interface ButtonContextActionsProps extends Pick<IconButtonProps, 'onClick'> {
+interface ButtonContextActionsProps extends Pick<IconButtonProps, 'disabled' | 'onClick'> {
   Icon: typeof MoreVert
   fontSize?: string
 }
 
-export const ButtonIcon = ({ Icon, fontSize, onClick }: ButtonContextActionsProps) => {
+export const ButtonIcon = ({ Icon, fontSize, disabled, onClick }: ButtonContextActionsProps) => {
   return (
     <Button
       size={'small'}
@@ -26,6 +26,7 @@ export const ButtonIcon = ({ Icon, fontSize, onClick }: ButtonContextActionsProp
           background: 'rgba(0, 0, 0, 0.12)',
         },
       }}
+      disabled={disabled}
       disableElevation
       onClick={onClick}
     >

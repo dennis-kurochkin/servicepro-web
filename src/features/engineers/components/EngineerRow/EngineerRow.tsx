@@ -1,11 +1,8 @@
 import { useState } from 'react'
-import { ButtonContextActions } from '@components/ButtonContextActions'
-import { ButtonIcon } from '@components/ButtonIcon'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
-import { TableCellActions } from '@components/TableCellActions'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
+import { DialogTicketAssign } from '@features/shared/components/DialogTicketAssign'
 import { TableCellTickets } from '@features/shared/components/TableCellTickets'
-import { GpsFixedOutlined } from '@mui/icons-material'
 import { TableCell, TableRow } from '@mui/material'
 import { WorkEmployee } from '~/api/servicepro.generated'
 
@@ -14,7 +11,8 @@ export interface EngineerRow {
 }
 
 export const EngineerRow = ({ data }: EngineerRow) => {
-  const [selectedTaskID, setSelectedTaskID] = useState<number | null>(data.tasks?.[0]?.number ?? null)
+  const [open, setOpen] = useState(false)
+  const [selectedTaskID, setSelectedTaskID] = useState<number | null>(data.tasks?.[0]?.id ?? null)
 
   return (
     <TableRow
@@ -32,28 +30,34 @@ export const EngineerRow = ({ data }: EngineerRow) => {
       </TableCell>
       <TableCell>
         <TableCellTickets
-          selectedTaskID={selectedTaskID}
+          selectedTaskID={selectedTaskID ?? null}
           tasks={data.tasks}
-          onClickAdd={() => {}}
+          onClickAssign={() => setOpen(true)}
           onChangeSelectedTaskID={setSelectedTaskID}
         />
       </TableCell>
       <TableCell>
         <ChipStatus />
       </TableCell>
-      <TableCellActions>
-        <ButtonIcon
-          Icon={GpsFixedOutlined}
-          onClick={(e) => {
-            e.stopPropagation()
-          }}
-        />
-        <ButtonContextActions
-          onClick={(e) => {
-            e.stopPropagation()
-          }}
-        />
-      </TableCellActions>
+      {/*<TableCellActions>*/}
+      {/*  <ButtonIcon*/}
+      {/*    Icon={GpsFixedOutlined}*/}
+      {/*    onClick={(e) => {*/}
+      {/*      e.stopPropagation()*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*  <ButtonContextActions*/}
+      {/*    onClick={(e) => {*/}
+      {/*      e.stopPropagation()*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*</TableCellActions>*/}
+      <DialogTicketAssign
+        open={open}
+        engineer={data}
+        onClose={() => setOpen(false)}
+        onSelectTaskID={setSelectedTaskID}
+      />
     </TableRow>
   )
 }

@@ -558,10 +558,11 @@ export interface OrgWorkTask {
   customer?: number | null;
   /** Parent task */
   parent?: number | null;
+  assistants?: number[];
+  involved?: number[];
 }
 
 export interface OrgWorkTaskEdit {
-  readonly id: number;
   /**
    * * `draft` - draft
    * * `posted` - posted
@@ -570,24 +571,16 @@ export interface OrgWorkTaskEdit {
    * * `archived` - archived
    */
   mark: MarkEnum;
-  readonly status: StatusEnum;
+  /** @format date-time */
+  mark_date?: string | null;
   approval: WorkTaskCustomerApproval;
   new_photos?: VehiclePhotoDetailed[];
   add_photos?: number[];
   remove_photos?: number[];
-  /** @format date-time */
-  readonly created_at: string;
-  /** @format date-time */
-  readonly updated_at: string;
   /** @format double */
   longitude?: number;
   /** @format double */
   latitude?: number;
-  /** @format date-time */
-  readonly status_date: string | null;
-  /** @format date-time */
-  mark_date?: string | null;
-  readonly organization: number;
   service_center?: number | null;
   vehicle?: number | null;
   /** Parent task */
@@ -811,6 +804,8 @@ export type PaginatedWorkOrganizationList = WorkOrganization[];
 
 export type PaginatedWorkServiceCenterList = WorkServiceCenter[];
 
+export type PaginatedWorkTaskAttachmentList = WorkTaskAttachment[];
+
 export type PaginatedWorkTaskDetailedList = WorkTaskDetailed[];
 
 export type PaginatedWorkTaskGeoList = WorkTaskGeo[];
@@ -859,7 +854,6 @@ export interface PatchedEmployee {
 }
 
 export interface PatchedOrgWorkTaskEdit {
-  readonly id?: number;
   /**
    * * `draft` - draft
    * * `posted` - posted
@@ -868,24 +862,16 @@ export interface PatchedOrgWorkTaskEdit {
    * * `archived` - archived
    */
   mark?: MarkEnum;
-  readonly status?: StatusEnum;
+  /** @format date-time */
+  mark_date?: string | null;
   approval?: WorkTaskCustomerApproval;
   new_photos?: VehiclePhotoDetailed[];
   add_photos?: number[];
   remove_photos?: number[];
-  /** @format date-time */
-  readonly created_at?: string;
-  /** @format date-time */
-  readonly updated_at?: string;
   /** @format double */
   longitude?: number;
   /** @format double */
   latitude?: number;
-  /** @format date-time */
-  readonly status_date?: string | null;
-  /** @format date-time */
-  mark_date?: string | null;
-  readonly organization?: number;
   service_center?: number | null;
   vehicle?: number | null;
   /** Parent task */
@@ -1164,37 +1150,30 @@ export interface PatchedVehicleRuntime {
   readonly service_center?: number | null;
 }
 
-export interface PatchedWorkTaskStatusChangeDetailed {
-  /** @format uuid */
-  readonly uuid?: string;
-  /**
-   * * `search` - search
-   * * `approval` - approval
-   * * `wait` - wait
-   * * `on_way` - on_way
-   * * `pause` - pause
-   * * `work` - work
-   * * `done` - done
-   */
-  status?: StatusEnum;
-  /**
-   * * `discuss` - discuss
-   * * `rejected` - rejected
-   * * `applied` - applied
-   * * `removed` - removed
-   */
-  verdict?: WorkTaskEventVerdict;
-  readonly initiator?: EmployeeDetailed;
-  readonly buttons?: WorkTaskStatusChangeButton[];
+export interface PatchedWorkTaskAttachment {
+  readonly id?: number;
+  /** @format uri */
+  file?: string | null;
   /** @format date-time */
-  real_date?: string | null;
-  /** @format uuid */
-  message_uuid?: string | null;
-  /** @format double */
-  longitude?: number;
-  /** @format double */
-  latitude?: number;
-  readonly edits?: any;
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /** @maxLength 120 */
+  title?: string;
+  readonly task?: number;
+  readonly author?: number | null;
+}
+
+export interface PatchedWorkTaskExecutor {
+  coordinator?: number | null;
+  executor?: number | null;
+  assistants?: any[] | null;
+}
+
+export interface PatchedWorkTaskResult {
+  runtime?: VehicleRuntimeResult[];
+  recommendations?: VehicleRecommendationResult[];
+  photos?: VehiclePhotoResult[];
 }
 
 export interface PointRadius {
@@ -1358,6 +1337,8 @@ export interface SerWorkTask {
   readonly executor: number | null;
   /** Parent task */
   parent?: number | null;
+  assistants?: number[];
+  involved?: number[];
 }
 
 export interface SerWorkTaskVerbose {
@@ -1404,6 +1385,8 @@ export interface SerWorkTaskVerbose {
   coordinator?: number | null;
   /** Parent task */
   parent?: number | null;
+  assistants?: number[];
+  involved?: number[];
 }
 
 export interface ServiceCenter {
@@ -1874,6 +1857,20 @@ export interface VehiclePhotoDetailed {
   readonly recommendation: number | null;
 }
 
+export interface VehiclePhotoResult {
+  /** @maxLength 120 */
+  title?: string;
+  /**
+   * * `info` - info
+   * * `problem` - problem
+   * * `recommendation` - recommendation
+   */
+  meaning: MeaningEnum;
+  recommendation_index?: number | null;
+  /** @format uri */
+  file?: string | null;
+}
+
 export interface VehiclePhotoUpdate {
   readonly id: number;
   /**
@@ -1948,6 +1945,19 @@ export interface VehicleRecommendationDetailed {
   readonly service_center: number | null;
 }
 
+export interface VehicleRecommendationResult {
+  /** @maxLength 120 */
+  title?: string;
+  /** @maxLength 510 */
+  text?: string;
+  /**
+   * * `info` - info
+   * * `warning` - warning
+   * * `critical` - critical
+   */
+  level: LevelEnum;
+}
+
 export interface VehicleRuntime {
   readonly id: number;
   /**
@@ -1969,6 +1979,10 @@ export interface VehicleRuntime {
   verdict_date?: string | null;
   readonly vehicle: number;
   readonly service_center: number | null;
+}
+
+export interface VehicleRuntimeResult {
+  value: number;
 }
 
 export interface VehicleSummary {
@@ -2104,6 +2118,20 @@ export interface WorkTaskApproval {
   readonly reject_initiator: number | null;
 }
 
+export interface WorkTaskAttachment {
+  readonly id: number;
+  /** @format uri */
+  file?: string | null;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 120 */
+  title?: string;
+  readonly task: number;
+  readonly author: number | null;
+}
+
 export interface WorkTaskCheck {
   readonly id: number;
   control_point: ControlPoint;
@@ -2133,10 +2161,6 @@ export interface WorkTaskCustomerApproval {
   want_start_date?: string | null;
   /** @format date-time */
   want_complete_date?: string | null;
-  /** @maxLength 510 */
-  reject_text?: string;
-  /** @format date-time */
-  reject_date?: string | null;
 }
 
 export interface WorkTaskDetailed {
@@ -2184,6 +2208,8 @@ export interface WorkTaskDetailed {
   mark_date?: string | null;
   /** Parent task */
   parent?: number | null;
+  assistants?: number[];
+  involved?: number[];
 }
 
 /**
@@ -2283,6 +2309,8 @@ export interface WorkTaskShort {
   customer?: number | null;
   coordinator?: number | null;
   readonly executor: number | null;
+  assistants?: number[];
+  involved?: number[];
 }
 
 export interface WorkTaskShortWithExecutor {
@@ -2324,6 +2352,8 @@ export interface WorkTaskShortWithExecutor {
   organization: number;
   customer?: number | null;
   coordinator?: number | null;
+  assistants?: number[];
+  involved?: number[];
 }
 
 export interface WorkTaskStatusChangeButton {
@@ -3149,11 +3179,44 @@ export type WorkOrgsTasksCreateData = WorkTaskDetailed;
 
 export type WorkOrgsTasksRetrieveData = WorkTaskDetailed;
 
-export type WorkOrgsTasksPartialUpdateData = OrgWorkTaskEdit;
+export type WorkOrgsTasksPartialUpdateData = WorkTaskDetailed;
 
 export type WorkOrgsTasksDestroyData = any;
 
 export type WorkOrgsTasksGeoRetrieveData = WorkTaskGeo;
+
+export interface WorkOrgsTasksAttachmentsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `id` - Id
+   * * `-id` - Id (descending)
+   */
+  o?: ("-created_at" | "-id" | "-updated_at" | "created_at" | "id" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  title?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  taskId: string;
+}
+
+export type WorkOrgsTasksAttachmentsListData = PaginatedWorkTaskAttachmentList;
+
+export type WorkOrgsTasksAttachmentsCreateData = WorkTaskAttachment;
+
+export type WorkOrgsTasksAttachmentsRetrieveData = WorkTaskAttachment;
+
+export type WorkOrgsTasksAttachmentsPartialUpdateData = WorkTaskAttachment;
+
+export type WorkOrgsTasksAttachmentsDestroyData = any;
 
 export interface WorkOrgsTasksStatusesListParams {
   /** Number of results to return per page. */
@@ -3181,13 +3244,7 @@ export interface WorkOrgsTasksStatusesListParams {
 
 export type WorkOrgsTasksStatusesListData = PaginatedWorkTaskStatusChangeDetailedList;
 
-export type WorkOrgsTasksStatusesCreateData = WorkTaskStatusChangeDetailed;
-
 export type WorkOrgsTasksStatusesRetrieveData = WorkTaskStatusChangeDetailed;
-
-export type WorkOrgsTasksStatusesPartialUpdateData = WorkTaskStatusChangeDetailed;
-
-export type WorkOrgsTasksStatusesDestroyData = any;
 
 export interface WorkOrgsTasksFullListParams {
   executor?: number;
@@ -3420,7 +3477,46 @@ export type WorkSersTasksListData = PaginatedSerWorkTaskList;
 
 export type WorkSersTasksRetrieveData = WorkTaskDetailed;
 
+export type WorkSersTasksExecutorsPartialUpdateData = WorkTaskDetailed;
+
 export type WorkSersTasksGeoRetrieveData = WorkTaskGeo;
+
+export type WorkSersTasksResultPartialUpdateData = WorkTaskDetailed;
+
+export type WorkSersTasksResultApplyPartialUpdateData = WorkTaskDetailed;
+
+export interface WorkSersTasksAttachmentsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `id` - Id
+   * * `-id` - Id (descending)
+   */
+  o?: ("-created_at" | "-id" | "-updated_at" | "created_at" | "id" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  title?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  taskId: string;
+}
+
+export type WorkSersTasksAttachmentsListData = PaginatedWorkTaskAttachmentList;
+
+export type WorkSersTasksAttachmentsCreateData = WorkTaskAttachment;
+
+export type WorkSersTasksAttachmentsRetrieveData = WorkTaskAttachment;
+
+export type WorkSersTasksAttachmentsPartialUpdateData = WorkTaskAttachment;
+
+export type WorkSersTasksAttachmentsDestroyData = any;
 
 export interface WorkSersTasksRoutesListParams {
   /** Number of results to return per page. */
@@ -3477,13 +3573,7 @@ export interface WorkSersTasksStatusesListParams {
 
 export type WorkSersTasksStatusesListData = PaginatedWorkTaskStatusChangeDetailedList;
 
-export type WorkSersTasksStatusesCreateData = WorkTaskStatusChangeDetailed;
-
 export type WorkSersTasksStatusesRetrieveData = WorkTaskStatusChangeDetailed;
-
-export type WorkSersTasksStatusesPartialUpdateData = WorkTaskStatusChangeDetailed;
-
-export type WorkSersTasksStatusesDestroyData = any;
 
 export interface WorkSersTasksFullListParams {
   executor?: number;
@@ -6009,6 +6099,105 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
+     * @name WorkOrgsTasksAttachmentsList
+     * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/attachments/
+     * @secure
+     */
+    workOrgsTasksAttachmentsList: (
+      { orgId, taskId, ...query }: WorkOrgsTasksAttachmentsListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkOrgsTasksAttachmentsListData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/attachments/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksAttachmentsCreate
+     * @request POST:/api/v1/work/orgs/{org_id}/tasks/{task_id}/attachments/
+     * @secure
+     */
+    workOrgsTasksAttachmentsCreate: (
+      orgId: string,
+      taskId: string,
+      data: WorkTaskAttachment,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkOrgsTasksAttachmentsCreateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/attachments/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksAttachmentsRetrieve
+     * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/attachments/{id}/
+     * @secure
+     */
+    workOrgsTasksAttachmentsRetrieve: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksAttachmentsRetrieveData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/attachments/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksAttachmentsPartialUpdate
+     * @request PATCH:/api/v1/work/orgs/{org_id}/tasks/{task_id}/attachments/{id}/
+     * @secure
+     */
+    workOrgsTasksAttachmentsPartialUpdate: (
+      id: number,
+      orgId: string,
+      taskId: string,
+      data: PatchedWorkTaskAttachment,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkOrgsTasksAttachmentsPartialUpdateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/attachments/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksAttachmentsDestroy
+     * @request DELETE:/api/v1/work/orgs/{org_id}/tasks/{task_id}/attachments/{id}/
+     * @secure
+     */
+    workOrgsTasksAttachmentsDestroy: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksAttachmentsDestroyData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/attachments/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
      * @name WorkOrgsTasksStatusesList
      * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/
      * @secure
@@ -6029,29 +6218,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
-     * @name WorkOrgsTasksStatusesCreate
-     * @request POST:/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/
-     * @secure
-     */
-    workOrgsTasksStatusesCreate: (
-      orgId: string,
-      taskId: string,
-      data: WorkTaskStatusChangeDetailed,
-      params: RequestParams = {},
-    ) =>
-      this.request<WorkOrgsTasksStatusesCreateData, any>({
-        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/statuses/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
      * @name WorkOrgsTasksStatusesRetrieve
      * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/{uuid}/
      * @secure
@@ -6060,46 +6226,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<WorkOrgsTasksStatusesRetrieveData, any>({
         path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/statuses/${uuid}/`,
         method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name WorkOrgsTasksStatusesPartialUpdate
-     * @request PATCH:/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/{uuid}/
-     * @secure
-     */
-    workOrgsTasksStatusesPartialUpdate: (
-      orgId: string,
-      taskId: string,
-      uuid: string,
-      data: PatchedWorkTaskStatusChangeDetailed,
-      params: RequestParams = {},
-    ) =>
-      this.request<WorkOrgsTasksStatusesPartialUpdateData, any>({
-        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/statuses/${uuid}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name WorkOrgsTasksStatusesDestroy
-     * @request DELETE:/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/{uuid}/
-     * @secure
-     */
-    workOrgsTasksStatusesDestroy: (orgId: string, taskId: string, uuid: string, params: RequestParams = {}) =>
-      this.request<WorkOrgsTasksStatusesDestroyData, any>({
-        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/statuses/${uuid}/`,
-        method: "DELETE",
         secure: true,
         ...params,
       }),
@@ -6294,6 +6420,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
+     * @name WorkSersTasksExecutorsPartialUpdate
+     * @request PATCH:/api/v1/work/sers/{org_id}/tasks/{id}/executors/
+     * @secure
+     */
+    workSersTasksExecutorsPartialUpdate: (
+      id: number,
+      orgId: string,
+      data: PatchedWorkTaskExecutor,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksExecutorsPartialUpdateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${id}/executors/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
      * @name WorkSersTasksGeoRetrieve
      * @request GET:/api/v1/work/sers/{org_id}/tasks/{id}/geo/
      * @secure
@@ -6302,6 +6451,144 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<WorkSersTasksGeoRetrieveData, any>({
         path: `/api/v1/work/sers/${orgId}/tasks/${id}/geo/`,
         method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksResultPartialUpdate
+     * @request PATCH:/api/v1/work/sers/{org_id}/tasks/{id}/result/
+     * @secure
+     */
+    workSersTasksResultPartialUpdate: (
+      id: number,
+      orgId: string,
+      data: PatchedWorkTaskResult,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksResultPartialUpdateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${id}/result/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksResultApplyPartialUpdate
+     * @request PATCH:/api/v1/work/sers/{org_id}/tasks/{id}/result-apply/
+     * @secure
+     */
+    workSersTasksResultApplyPartialUpdate: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkSersTasksResultApplyPartialUpdateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${id}/result-apply/`,
+        method: "PATCH",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksAttachmentsList
+     * @request GET:/api/v1/work/sers/{org_id}/tasks/{task_id}/attachments/
+     * @secure
+     */
+    workSersTasksAttachmentsList: (
+      { orgId, taskId, ...query }: WorkSersTasksAttachmentsListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksAttachmentsListData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/attachments/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksAttachmentsCreate
+     * @request POST:/api/v1/work/sers/{org_id}/tasks/{task_id}/attachments/
+     * @secure
+     */
+    workSersTasksAttachmentsCreate: (
+      orgId: string,
+      taskId: string,
+      data: WorkTaskAttachment,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksAttachmentsCreateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/attachments/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksAttachmentsRetrieve
+     * @request GET:/api/v1/work/sers/{org_id}/tasks/{task_id}/attachments/{id}/
+     * @secure
+     */
+    workSersTasksAttachmentsRetrieve: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
+      this.request<WorkSersTasksAttachmentsRetrieveData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/attachments/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksAttachmentsPartialUpdate
+     * @request PATCH:/api/v1/work/sers/{org_id}/tasks/{task_id}/attachments/{id}/
+     * @secure
+     */
+    workSersTasksAttachmentsPartialUpdate: (
+      id: number,
+      orgId: string,
+      taskId: string,
+      data: PatchedWorkTaskAttachment,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksAttachmentsPartialUpdateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/attachments/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksAttachmentsDestroy
+     * @request DELETE:/api/v1/work/sers/{org_id}/tasks/{task_id}/attachments/{id}/
+     * @secure
+     */
+    workSersTasksAttachmentsDestroy: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
+      this.request<WorkSersTasksAttachmentsDestroyData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/attachments/${id}/`,
+        method: "DELETE",
         secure: true,
         ...params,
       }),
@@ -6381,29 +6668,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
-     * @name WorkSersTasksStatusesCreate
-     * @request POST:/api/v1/work/sers/{org_id}/tasks/{task_id}/statuses/
-     * @secure
-     */
-    workSersTasksStatusesCreate: (
-      orgId: string,
-      taskId: string,
-      data: WorkTaskStatusChangeDetailed,
-      params: RequestParams = {},
-    ) =>
-      this.request<WorkSersTasksStatusesCreateData, any>({
-        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/statuses/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
      * @name WorkSersTasksStatusesRetrieve
      * @request GET:/api/v1/work/sers/{org_id}/tasks/{task_id}/statuses/{uuid}/
      * @secure
@@ -6412,46 +6676,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<WorkSersTasksStatusesRetrieveData, any>({
         path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/statuses/${uuid}/`,
         method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name WorkSersTasksStatusesPartialUpdate
-     * @request PATCH:/api/v1/work/sers/{org_id}/tasks/{task_id}/statuses/{uuid}/
-     * @secure
-     */
-    workSersTasksStatusesPartialUpdate: (
-      orgId: string,
-      taskId: string,
-      uuid: string,
-      data: PatchedWorkTaskStatusChangeDetailed,
-      params: RequestParams = {},
-    ) =>
-      this.request<WorkSersTasksStatusesPartialUpdateData, any>({
-        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/statuses/${uuid}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags work
-     * @name WorkSersTasksStatusesDestroy
-     * @request DELETE:/api/v1/work/sers/{org_id}/tasks/{task_id}/statuses/{uuid}/
-     * @secure
-     */
-    workSersTasksStatusesDestroy: (orgId: string, taskId: string, uuid: string, params: RequestParams = {}) =>
-      this.request<WorkSersTasksStatusesDestroyData, any>({
-        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/statuses/${uuid}/`,
-        method: "DELETE",
         secure: true,
         ...params,
       }),

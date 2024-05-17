@@ -1,8 +1,13 @@
-import { useState } from 'react'
-import { ButtonContextActions } from '@components/ButtonContextActions'
-import { EMPTY_VALUE_DASH, TABLE_CELL_DENSE_PADDING } from '@constants/index'
+import { useCallback, useMemo, useState } from 'react'
+import { EMPTY_VALUE_DASH } from '@constants/index'
 import { TableCellTickets } from '@features/shared/components/TableCellTickets'
+import { QueryKey } from '@features/shared/data'
+import { useApi } from '@hooks/useApi'
+import { useEmployment } from '@hooks/useEmployment'
+import { useNotify } from '@hooks/useNotify'
+import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Box, Chip, TableCell, TableRow, Typography } from '@mui/material'
+import { queryClient } from '~/api'
 import { WorkOrganization } from '~/api/servicepro.generated'
 
 export interface ClientRowProps {
@@ -10,7 +15,41 @@ export interface ClientRowProps {
 }
 
 export const ClientRow = ({ data }: ClientRowProps) => {
-  const [selectedTaskID, setSelectedTaskID] = useState<number | null>(data.tasks?.[0]?.number ?? null)
+  const { organizationID } = useOrganizationID()
+  const { notify } = useNotify()
+  const { api } = useApi()
+  const { data: employment } = useEmployment()
+  const [selectedTaskID, setSelectedTaskID] = useState<number | null>(data.tasks?.[0]?.id ?? null)
+  const selectedTask = useMemo(() => data.tasks.find(({ id }) => id === selectedTaskID) ?? null, [selectedTaskID, data.tasks])
+
+  const handleChangeCoordinator = useCallback(async () => {
+    if (!selectedTaskID || !employment?.profile.id) {
+      notify({
+        message: 'Произошла ошибка при попытка назначить вас координатором заявки',
+        variant: 'error',
+      })
+
+      return
+    }
+
+    try {
+      await api.workSersTasksExecutorsPartialUpdate(selectedTaskID, organizationID.toString(), {
+        coordinator: employment.profile.id,
+      })
+
+      notify({
+        message: `Вы назначены координатором заявки "${selectedTask?.title ?? 'Без названия'}"`,
+        variant: 'success',
+      })
+    } catch (error) {
+      notify({
+        message: 'Произошла ошибка при попытка назначить вас координатором заявки',
+        variant: 'error',
+      })
+    } finally {
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.Clients] })
+    }
+  }, [selectedTaskID, organizationID])
 
   return (
     <TableRow
@@ -39,6 +78,7 @@ export const ClientRow = ({ data }: ClientRowProps) => {
           selectedTaskID={selectedTaskID}
           tasks={data.tasks}
           onChangeSelectedTaskID={setSelectedTaskID}
+          onClickAccept={handleChangeCoordinator}
         />
       </TableCell>
       <TableCell align={'center'}>
@@ -66,15 +106,15 @@ export const ClientRow = ({ data }: ClientRowProps) => {
           />
         </Box>
       </TableCell>
-      <TableCell
-        sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}
-      >
-        <ButtonContextActions
-          onClick={(e) => {
-            e.stopPropagation()
-          }}
-        />
-      </TableCell>
+      {/*<TableCell*/}
+      {/*  sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}*/}
+      {/*>*/}
+      {/*  <ButtonContextActions*/}
+      {/*    onClick={(e) => {*/}
+      {/*      e.stopPropagation()*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*</TableCell>*/}
     </TableRow>
   )
 }
