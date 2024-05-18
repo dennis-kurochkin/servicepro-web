@@ -20,12 +20,7 @@ export const EngineersRoute = () => {
       >
         Инженеры
       </TableHeader>
-      <TableWrapper
-        pagination={{
-          page: 0,
-          count: data?.length ?? 0,
-        }}
-      >
+      <TableWrapper>
         <Table
           sx={{ minHeight: 200 }}
           size={'small'}

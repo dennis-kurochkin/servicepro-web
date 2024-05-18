@@ -1,9 +1,9 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Map, MapRef } from '@components/Map'
 import { TableCellHeadFilter } from '@components/TableCellHeadFilter/TableCellHeadFilter'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
-import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
+import { PAGINATION_DEFAULT_LIMIT, TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { getGeoInfoBounds } from '@features/shared/helpers'
 import { TicketRow } from '@features/tickets/components/TicketRow'
@@ -17,17 +17,22 @@ export const TicketsRoute = () => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
   const mapRef = useRef<MapRef | null>(null)
+  const [count, setCount] = useState(0)
+  const [page, setPage] = useState(0)
 
   const { data, isSuccess } = useQuery({
-    queryKey: [QueryKey.TicketsGeos, organizationID],
+    queryKey: [QueryKey.TicketsGeos, page, organizationID],
     queryFn: async () => {
-      const { data: tasks } = await api.workSersTasksVerboseList({
+      const options = {
         orgId: organizationID.toString(),
-      })
+        offset: page * PAGINATION_DEFAULT_LIMIT,
+        limit: PAGINATION_DEFAULT_LIMIT,
+      }
 
-      const { data: geos } = await api.workSersTasksGeosList({
-        orgId: organizationID.toString(),
-      })
+      const { data: tasks, headers } = await api.workSersTasksVerboseList(options)
+      const { data: geos } = await api.workSersTasksGeosList(options)
+
+      setCount(headers['x-count'] ? +headers['x-count'] : 0)
 
       return tasks.length > 0 ? tasks.map((task) => ({
         task,
@@ -64,13 +69,15 @@ export const TicketsRoute = () => {
       >
         <TableHeader
           sx={{ marginTop: '8px' }}
+          amount={count}
         >
           Заявки
         </TableHeader>
         <TableWrapper
           pagination={{
-            page: 0,
-            count: data?.length ?? 0,
+            page,
+            count,
+            onPageChange: setPage,
           }}
         >
           <Table
