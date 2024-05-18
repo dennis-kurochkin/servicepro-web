@@ -1,21 +1,22 @@
-import { useState } from 'react'
-import { Map } from '@components/Map'
+import { useRef } from 'react'
+import { Map, MapRef } from '@components/Map'
 import { TableCellHeadFilter } from '@components/TableCellHeadFilter/TableCellHeadFilter'
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
+import { getGeoInfoBounds } from '@features/shared/helpers'
 import { TicketRow } from '@features/tickets/components/TicketRow'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Container, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
+import { WorkTaskGeo } from '~/api/servicepro.generated'
 
 export const TicketsRoute = () => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
-
-  const [selected, setSelected] = useState<number | null>(null)
+  const mapRef = useRef<MapRef | null>(null)
 
   const { data, isSuccess } = useQuery({
     queryKey: [QueryKey.TicketsGeos, organizationID],
@@ -28,21 +29,27 @@ export const TicketsRoute = () => {
         orgId: organizationID.toString(),
       })
 
-      const result = tasks.length > 0 ? tasks.map((task) => ({
+      return tasks.length > 0 ? tasks.map((task) => ({
         task,
         geo: geos.find(({ id }) => id == task.id),
       })) : []
-
-      setSelected(result[0].task.id)
-      return result
     },
     refetchOnWindowFocus: false,
   })
 
+  const handleSelectTask = (geo: WorkTaskGeo | undefined) => {
+    if (!geo) {
+      return
+    }
+
+    mapRef.current?.flyToBounds(getGeoInfoBounds(geo))
+  }
+
   return (
     <>
       <Map
-        geo={data?.find((task) => task.task?.id === selected)?.geo}
+        ref={mapRef}
+        geos={data?.map(({ geo }) => geo).filter((geo): geo is WorkTaskGeo => !!geo) ?? []}
         sx={{
           height: '45vh',
           minHeight: '328px',
@@ -115,8 +122,7 @@ export const TicketsRoute = () => {
                     <TicketRow
                       key={task.task.id}
                       task={task.task}
-                      selected={selected === task.task?.id}
-                      onSelect={() => setSelected(task.task?.id)}
+                      onSelect={() => handleSelectTask(task.geo)}
                     />
                   ))}
                 </>

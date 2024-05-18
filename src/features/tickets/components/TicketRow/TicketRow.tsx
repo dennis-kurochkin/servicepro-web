@@ -10,14 +10,13 @@ import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { DialogEngineerAssign } from '@features/shared/components/DialogEngineerAssign'
 import { useOrganizationID } from '@hooks/useOrganizationID'
-import { GpsFixedOutlined, GpsNotFixed, ManageAccounts } from '@mui/icons-material'
+import { GpsFixedOutlined, ManageAccounts } from '@mui/icons-material'
 import { TableCell, TableRow } from '@mui/material'
 import { format } from 'date-fns'
 import { SerWorkTaskVerbose } from '~/api/servicepro.generated'
 
 export interface TicketRowProps {
   task: SerWorkTaskVerbose
-  selected: boolean
   onSelect: () => void
 }
 
@@ -27,7 +26,7 @@ export interface TicketRowProps {
  * что описание было отредактировано координатором
  */
 
-export const TicketRow = ({ task, selected, onSelect }: TicketRowProps) => {
+export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
   const navigate = useNavigate()
   const { organizationID } = useOrganizationID()
 
@@ -88,7 +87,7 @@ export const TicketRow = ({ task, selected, onSelect }: TicketRowProps) => {
         </TableCell>
         <TableCellActions>
           <ButtonIcon
-            Icon={selected ? GpsFixedOutlined : GpsNotFixed}
+            Icon={GpsFixedOutlined}
             fontSize={'18px'}
             onClick={(e) => {
               e.stopPropagation()

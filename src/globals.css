@@ -37,3 +37,19 @@
 body {
     min-height: 100vh;
 }
+
+.leaflet-tooltip {
+    font-family: TTLakesNeue,Roboto,Helvetica,Arial,sans-serif !important;
+    font-size: 12px;
+}
+
+.leaflet-tooltip.arrowlessTooltip {
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: #E6E6E6;
+    border: 0;
+}
+
+.leaflet-tooltip.arrowlessTooltip::before {
+    content: none;
+}

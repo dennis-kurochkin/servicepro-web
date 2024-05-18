@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
 import { useGeolocated } from 'react-geolocated'
-import { LayersControl, TileLayer, useMapEvent } from 'react-leaflet'
+import { LayersControl, TileLayer, useMap, useMapEvent } from 'react-leaflet'
+import { MapRouteInfo } from '@components/Map/components/MapRouteInfo'
+import { getGeoInfoBounds } from '@features/shared/helpers'
 import { MarkerData } from '@features/ui/components/Map'
 import { MapAddressSearch } from '@features/ui/components/Map/components/MapAddressSearch'
 import { MapMarker, MapMarkerProps } from '@features/ui/components/Map/components/MapMarker'
@@ -11,21 +14,34 @@ import { useNotify } from '@hooks/useNotify'
 import { MyLocation } from '@mui/icons-material'
 import { Button, Typography } from '@mui/material'
 import { LatLng, LeafletMouseEvent } from 'leaflet'
+import { WorkTaskGeo } from '~/api/servicepro.generated'
 
 export interface MapInnerProps extends Pick<MapMarkerProps, 'initiallyOpen'> {
+  geos: WorkTaskGeo[],
   coords?: LatLng
   markers?: MarkerData[]
   addressSearch?: boolean
   onChange?: (coords: LatLng) => void
 }
 
-export const MapInner = ({ coords, markers, addressSearch = false, initiallyOpen, onChange }: MapInnerProps) => {
+export const MapInner = ({ geos, coords, markers, addressSearch = false, initiallyOpen, onChange }: MapInnerProps) => {
   const { notify } = useNotify()
-  const map = useMapEvent('click', (e: LeafletMouseEvent) => {
+  const map = useMap()
+
+  useMapEvent('click', (e: LeafletMouseEvent) => {
     if (onChange && (e.originalEvent.target as HTMLDivElement).classList.contains('leaflet-container')) {
       onChange(e.latlng)
     }
   })
+
+  useEffect(() => {
+    if (geos.length === 0) {
+      return
+    }
+
+    map.flyToBounds(getGeoInfoBounds(geos[0]))
+  }, [geos, map])
+
   const { coords: geolocation, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
     positionOptions: { enableHighAccuracy: false },
     userDecisionTimeout: 100,
@@ -79,14 +95,6 @@ export const MapInner = ({ coords, markers, addressSearch = false, initiallyOpen
           />
         </LayersControl.BaseLayer>
       </LayersControl>
-      {typeof coords !== 'undefined' && (
-        <MapMarker
-          coords={coords}
-          initiallyOpen={initiallyOpen}
-          onChangeCoords={onChange}
-        />
-      )}
-      <MapMarkers markers={markers} />
       {!coords && (
         <Tooltip
           placement={'left'}
@@ -116,6 +124,20 @@ export const MapInner = ({ coords, markers, addressSearch = false, initiallyOpen
         </Tooltip>
       )}
       {addressSearch && <MapAddressSearch onSelect={handleAddressSelect} />}
+      {typeof coords !== 'undefined' && (
+        <MapMarker
+          coords={coords}
+          initiallyOpen={initiallyOpen}
+          onChangeCoords={onChange}
+        />
+      )}
+      <MapMarkers markers={markers} />
+      {geos.map((geo) => (
+        <MapRouteInfo
+          key={geo.id}
+          geo={geo}
+        />
+      ))}
     </>
   )
 }

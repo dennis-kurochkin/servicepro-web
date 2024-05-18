@@ -1,31 +1,41 @@
-import { ReactElement } from 'react'
-import { MapContainer, Marker, Polyline, Tooltip } from 'react-leaflet'
+import { forwardRef, ReactElement, useImperativeHandle, useState } from 'react'
+import { MapContainer } from 'react-leaflet'
 import { MapInner, MapInnerProps } from '@components/Map/components/MapInner'
 import { MapMarkerProps } from '@components/Map/components/MapMarker'
 import { MAP_ZOOM_DEFAULT } from '@components/Map/constants'
 import { LAT_LNG_INITIAL, MAP_OVERLAY_Z_INDEX } from '@constants/index'
 import { theme } from '@data/theme'
 import { Box, SxProps, Typography } from '@mui/material'
-import { LatLng } from 'leaflet'
-import { omit } from 'ramda'
+import { LatLng, LatLngBoundsExpression, Map as LeafletMap } from 'leaflet'
 import { WorkTaskGeo } from '~/api/servicepro.generated'
+
+export type MapRef = { flyToBounds: (bounds: LatLngBoundsExpression) => void }
 
 export interface MarkerData {
   coords: LatLng
   color: MapMarkerProps['color']
   taskID?: number
   content: ReactElement | string
+  onSetMap: () => void
 }
 
 export interface MapProps extends MapInnerProps {
-  geo?: WorkTaskGeo,
+  geos: WorkTaskGeo[],
   sx?: SxProps
 }
 
-export const Map = (props: MapProps) => {
-  const { coords, markers, sx, geo } = props
+export const Map = forwardRef<MapRef, MapProps>((props: MapProps, ref) => {
+  const { coords, markers, sx } = props
 
-  const route = geo?.routes?.[4]
+  const [map, setMap] = useState<LeafletMap | null>(null)
+
+  useImperativeHandle(ref, () => {
+    return {
+      flyToBounds: (bounds: LatLngBoundsExpression) => {
+        map?.flyToBounds(bounds)
+      },
+    }
+  }, [map])
 
   return (
     <Box
@@ -61,6 +71,7 @@ export const Map = (props: MapProps) => {
         </Box>
       )}
       <MapContainer
+        ref={setMap}
         center={coords ?? markers?.[0]?.coords ?? LAT_LNG_INITIAL}
         zoom={MAP_ZOOM_DEFAULT}
         style={{ height: '100%' }}
@@ -68,68 +79,15 @@ export const Map = (props: MapProps) => {
         bounceAtZoomLimits
         scrollWheelZoom
       >
-        {route && (
-          <>
-            <Polyline
-              pathOptions={{
-                lineJoin: 'round',
-                color: '#4787F3',
-                weight: 5,
-              }}
-              positions={route.points.map((point) => ([
-                point.lat,
-                point.lon,
-              ]))}
-            >
-              <Tooltip
-                direction="bottom"
-                offset={[0, 10]}
-                opacity={1}
-                sticky
-              >
-                Маршрут
-              </Tooltip>
-            </Polyline>
-            <Polyline
-              pathOptions={{
-                lineJoin: 'round',
-                color: 'green',
-                weight: 5,
-              }}
-              positions={route.geolocation.map((point) => ([
-                point.lat,
-                point.lon,
-              ]))}
-            >
-              <Tooltip
-                direction="bottom"
-                offset={[0, 10]}
-                opacity={1}
-                sticky
-              >
-                Маршрут
-              </Tooltip>
-            </Polyline>
-            {geo?.executor.geolocation?.[0] && (
-              <Marker
-                position={{
-                  lat: geo.executor.geolocation[0].lat,
-                  lng: geo.executor.geolocation[0].lon,
-                }}
-              />
-            )}
-            {route.geolocation?.[0] && (
-              <Marker
-                position={{
-                  lat: route.geolocation[0].lat,
-                  lng: route.geolocation[0].lon,
-                }}
-              />
-            )}
-          </>
-        )}
-        <MapInner {...omit(['height, minHeight, sx'], props)} />
+        <MapInner
+          coords={props.coords}
+          geos={props.geos}
+          initiallyOpen={props.initiallyOpen}
+          markers={props.markers}
+          addressSearch={props.addressSearch}
+          onChange={props.onChange}
+        />
       </MapContainer>
     </Box>
   )
-}
+})
