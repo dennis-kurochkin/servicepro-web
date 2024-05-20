@@ -4,4 +4,5 @@ export enum QueryKey {
   Engineers = 'engineers',
   Clients = 'clients',
   Ticket = 'ticket',
+  Chats = 'chats',
 }

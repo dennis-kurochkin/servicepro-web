@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import useWebSocket, { ReadyState } from 'react-use-websocket'
 import Truck1 from '@assets/truck-1.png'
 import Truck2 from '@assets/truck-2.png'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
@@ -18,8 +19,17 @@ import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Send } from '@mui/icons-material'
 import { Box, BoxProps, Button, Drawer, InputAdornment, styled } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import { format } from 'date-fns'
 import { StatusEnum } from '~/api/servicepro.generated'
+
+// const connectionStatus = {
+//   [ReadyState.CONNECTING]: 'Connecting',
+//   [ReadyState.OPEN]: 'Open',
+//   [ReadyState.CLOSING]: 'Closing',
+//   [ReadyState.CLOSED]: 'Closed',
+//   [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+// }
 
 const ContentWrapper = styled(Box)<BoxProps>(() => ({
   flexGrow: 1,
@@ -37,9 +47,9 @@ const ContentWrapper = styled(Box)<BoxProps>(() => ({
 export const TicketDrawer = () => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
-  // const { auth } = useAuth()
   const params = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
+  const [token, setToken] = useState('')
   const navigate = useNavigate()
 
   const open = useMemo(() => !!params.ticketID || !!searchParams.get('ticketID'), [params, searchParams])
@@ -55,10 +65,27 @@ export const TicketDrawer = () => {
     enabled: open,
   })
 
-  // const { readyState } = useWebSocket(`wss://servicepro-chat.humanagro.ru/ws/ws-chat?authorization=${auth?.accessToken}`, {
-  //
-  // })
-  //
+  const getSocketUrl = useCallback(async () => {
+    const { data: tokenData } = await api.workSersChatTokensCreate(organizationID.toString(), { token: '' })
+    setToken(tokenData.token)
+    return `wss://servicepro-chat.humanagro.ru/ws/ws-chat?authorization=${tokenData.token}`
+  }, [api, organizationID])
+
+  const { readyState } = useWebSocket(getSocketUrl, {
+
+  })
+
+  const chatsQuery = useQuery({
+    queryKey: [QueryKey.Chats, organizationID],
+    queryFn: async () => {
+      const { data } = await axios.get(`https://servicepro-chat.humanagro.ru/api/active-chats?authorization=${token}`)
+      return data
+    },
+    refetchOnWindowFocus: false,
+    enabled: readyState === ReadyState.OPEN,
+  })
+
+  console.log(chatsQuery)
 
   const handleClose = () => {
     if (params.ticketID) {
