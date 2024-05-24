@@ -3,15 +3,16 @@ import { ButtonIcon } from '@components/ButtonIcon'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { DialogEngineerAssign } from '@features/shared/components/DialogEngineerAssign'
 import { ManageAccounts } from '@mui/icons-material'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { Profile } from '~/api/servicepro.generated'
 
 interface TicketDrawerEngineerSectionProps {
   ticketID: number
-  profile: Profile | null
+  engineer: Profile | null
+  coordinator: Profile | null
 }
 
-export const TicketDrawerEngineerSection = ({ profile, ticketID }: TicketDrawerEngineerSectionProps) => {
+export const TicketDrawerParticipantsSection = ({ engineer, coordinator, ticketID }: TicketDrawerEngineerSectionProps) => {
   const [open, setOpen] = useState(false)
 
   const handleOpenDialog = () => {
@@ -25,17 +26,29 @@ export const TicketDrawerEngineerSection = ({ profile, ticketID }: TicketDrawerE
   return (
     <Box
       sx={{
+        display: 'grid',
+        gap: '12px',
         padding: '16px 16px 16px',
         background: (theme) => theme.palette.grey['100'],
       }}
     >
       <Typography
         variant={'h6'}
-        sx={{ marginBottom: '8px' }}
+        sx={{ marginBottom: '-4px' }}
       >
-        Инженер
+        Участники
       </Typography>
-      {profile ? (
+      <Box
+        sx={{
+          display: 'grid',
+          gap: '4px',
+        }}
+      >
+        <Typography
+          variant={'subtitle2'}
+        >
+          Инженер
+        </Typography>
         <Box
           sx={{
             display: 'flex',
@@ -43,7 +56,7 @@ export const TicketDrawerEngineerSection = ({ profile, ticketID }: TicketDrawerE
           }}
         >
           <EngineerAvatar
-            profile={profile}
+            profile={engineer ?? null}
           />
           <ButtonIcon
             Icon={ManageAccounts}
@@ -51,18 +64,34 @@ export const TicketDrawerEngineerSection = ({ profile, ticketID }: TicketDrawerE
             onClick={handleOpenDialog}
           />
         </Box>
-      ) : (
-        <Button
-          variant={'contained'}
-          size={'small'}
-          color={'info'}
-          endIcon={<ManageAccounts fontSize={'small'} />}
-          disableElevation
-          onClick={handleOpenDialog}
+      </Box>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: '4px',
+        }}
+      >
+        <Typography
+          variant={'subtitle2'}
         >
-          Назначить
-        </Button>
-      )}
+          Координатор
+        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: '4px',
+          }}
+        >
+          <EngineerAvatar
+            profile={coordinator ?? null}
+          />
+          <ButtonIcon
+            Icon={ManageAccounts}
+            fontSize={'18px'}
+            onClick={handleOpenDialog}
+          />
+        </Box>
+      </Box>
       <DialogEngineerAssign
         open={open}
         selectedTaskID={ticketID}

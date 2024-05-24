@@ -1,20 +1,25 @@
 import { ReactNode } from 'react'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
+import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_DAY } from '@constants/index'
 import { theme } from '@data/theme'
+import { RoleLabel } from '@features/shared/data'
 import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
 import { DisplaySettings, Person } from '@mui/icons-material'
 import { Avatar, Box, Card, Typography } from '@mui/material'
-import { StatusEnum } from '~/api/servicepro.generated'
+import { format } from 'date-fns'
+import { ru } from 'date-fns/locale'
+import { RoleEnum, StatusEnum } from '~/api/servicepro.generated'
 
 export interface TicketChatMessageProps {
   author: null | {
     name: string
-    role: string
+    role: RoleEnum
+    photo?: string
   }
   content: ReactNode | string
   pictures?: string[]
   status?: StatusEnum
-  date?: ReactNode
+  date: string
   actions?: ReactNode
 }
 
@@ -48,13 +53,9 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
           wordSpacing: '4px',
         }}
       >
-        {date ?? (
-          <>
-            26.02.2024
-            <br/>
-            14:00, вторник
-          </>
-        )}
+        {format(new Date(date), DATE_FORMAT_DEFAULT)}
+        <br/>
+        {format(new Date(date), DATE_FORMAT_TIME_DAY, { locale: ru })}
       </Typography>
       <Box
         sx={{
@@ -85,6 +86,7 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
               width: '24px',
               height: '24px',
             }}
+            src={author?.photo}
             alt={author?.name ?? 'Система'}
           >
             {!author ? <DisplaySettings fontSize={'small'} /> : <Person fontSize={'small'} />}
@@ -100,7 +102,7 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
                   color: (theme) => theme.palette.grey['700'],
                 }}
               >
-                {`  • ${author.role}`}
+                {`  •  ${RoleLabel[author.role]}`}
               </Box>
             )}
           </Typography>

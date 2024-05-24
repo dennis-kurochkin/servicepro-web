@@ -1,27 +1,29 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
-import Truck1 from '@assets/truck-1.png'
-import Truck2 from '@assets/truck-2.png'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
-import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH } from '@constants/index'
+import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
+import { getEngineerLabel } from '@features/engineers/helpers'
 import { QueryKey } from '@features/shared/data'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
 import { TicketChatMessage } from '@features/tickets/components/TicketChatMessage'
-import { TicketDrawerEngineerSection } from '@features/tickets/components/TicketDrawerEngineerSection'
 import { TicketDrawerFooter } from '@features/tickets/components/TicketDrawerFooter'
 import { TicketDrawerForm } from '@features/tickets/components/TicketDrawerForm'
 import { TicketDrawerFormsContainer } from '@features/tickets/components/TicketDrawerFormsContainer'
 import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHeader'
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
+import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
 import { useApi } from '@hooks/useApi'
+import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Send } from '@mui/icons-material'
-import { Box, BoxProps, Button, Drawer, InputAdornment, styled } from '@mui/material'
+import { Box, BoxProps, Drawer, InputAdornment, styled } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { format } from 'date-fns'
-import { StatusEnum } from '~/api/servicepro.generated'
+import { queryClient } from '~/api'
+import { Message } from '~/api/servicepro-chat.generated'
+import { Profile, RoleEnum, StatusEnum } from '~/api/servicepro.generated'
 
 // const connectionStatus = {
 //   [ReadyState.CONNECTING]: 'Connecting',
@@ -30,6 +32,17 @@ import { StatusEnum } from '~/api/servicepro.generated'
 //   [ReadyState.CLOSED]: 'Closed',
 //   [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
 // }
+
+type WSData = {
+  payload_model: 'NewMessage',
+  payload: {
+    task_id: number,
+    message: Message
+  }
+} | {
+  payload_model: 'Other',
+  payload: undefined
+}
 
 const ContentWrapper = styled(Box)<BoxProps>(() => ({
   flexGrow: 1,
@@ -42,73 +55,107 @@ const ContentWrapper = styled(Box)<BoxProps>(() => ({
   height: '100vh',
 }))
 
-// const sdf = 'wss://servicepro-chat.humanagro.ru/ws/ws-chat?authorization='
-
 export const TicketDrawer = () => {
   const { organizationID } = useOrganizationID()
-  const { api } = useApi()
-  const params = useParams()
+  const { api, chatApi } = useApi()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [token, setToken] = useState('')
+  const params = useParams()
   const navigate = useNavigate()
+  const { notify } = useNotify()
 
   const open = useMemo(() => !!params.ticketID || !!searchParams.get('ticketID'), [params, searchParams])
   const ticketID = useMemo(() => params.ticketID ? +params.ticketID : searchParams.get('ticketID') ? +searchParams.get('ticketID')! : null, [params, searchParams])
+  const [authorization, setAuthorization] = useState('')
+  const [members, setMembers] = useState<{ [key: number]: { profile: Profile, role: RoleEnum } }>({})
+  const [message, setMessage] = useState<string>('')
+
+  const getSocketUrl = useCallback(async () => {
+    const { data: tokenData } = await api.workSersChatTokensCreate(organizationID.toString(), { token: '' })
+    setAuthorization(tokenData.token)
+    return `wss://servicepro-chat.humanagro.ru/ws/ws-chat?authorization=${tokenData.token}`
+  }, [api, organizationID])
+
+  const { readyState } = useWebSocket(getSocketUrl, {
+    onMessage: (event) => {
+      const data = JSON.parse(event.data) as WSData
+
+      if (data.payload_model === 'NewMessage') {
+        queryClient.setQueryData([QueryKey.Chats, organizationID], (oldData) => [
+          data.payload.message,
+          ...oldData as Message[],
+        ])
+      }
+    },
+  })
 
   const { data, isFetching } = useQuery({
     queryKey: [QueryKey.Ticket, organizationID],
     queryFn: async () => {
       const { data } = await api.workSersTasksRetrieve(ticketID!, organizationID.toString())
+
+      setMembers({
+        ...(data.executor.id ? {
+          [data.executor.id]: {
+            profile: data.executor.profile,
+            role: RoleEnum.Engineer,
+          },
+        } : {}),
+        ...(data.coordinator.id ? {
+          [data.coordinator.id]: {
+            profile: data.coordinator.profile,
+            role: RoleEnum.Coordinator,
+          },
+        } : {}),
+        ...(data.customer.id ? {
+          [data.customer.id]: {
+            profile: data.customer.profile,
+            role: RoleEnum.Client,
+          },
+        } : {}),
+      })
+
       return data
     },
     refetchOnWindowFocus: false,
     enabled: open,
   })
 
-  const getSocketUrl = useCallback(async () => {
-    const { data: tokenData } = await api.workSersChatTokensCreate(organizationID.toString(), { token: '' })
-    setToken(tokenData.token)
-    return `wss://servicepro-chat.humanagro.ru/ws/ws-chat?authorization=${tokenData.token}`
-  }, [api, organizationID])
-
-  const { readyState, sendJsonMessage } = useWebSocket(getSocketUrl, {
-
-  })
-
   const chatsQuery = useQuery({
     queryKey: [QueryKey.Chats, organizationID],
     queryFn: async () => {
-      const { data: statuses } = await api.workSersTasksStatusesList({
-        orgId: organizationID.toString(),
-        taskId: ticketID!.toString(),
+      // const { data: statuses } = await api.workSersTasksStatusesList({
+      //   orgId: organizationID.toString(),
+      //   taskId: ticketID!.toString(),
+      // })
+      // console.log(statuses)
+      // const { data: activechats } = await axios.get(`https://servicepro-chat.humanagro.ru/api/active-chats?authorization=${token}`)
+      // console.log(activechats)
+      const { data } = await chatApi.getMessagesApiChatsTaskIdMessagesGet({
+        taskId: ticketID!,
+        authorization,
+        offset: 0,
+        limit: PAGINATION_DEFAULT_LIMIT,
       })
-      console.log(statuses)
-      const { data: activechats } = await axios.get(`https://servicepro-chat.humanagro.ru/api/active-chats?authorization=${token}`)
-      console.log(activechats)
-      const { data } = await axios.get(`https://servicepro-chat.humanagro.ru/api/chats/${ticketID!}/messages?offset=0&limit=20&authorization=${token}`)
+
       return data
     },
     refetchOnWindowFocus: false,
     enabled: readyState === ReadyState.OPEN && !!ticketID,
   })
 
-  console.log('chatsQuery', chatsQuery)
-
   const handleSendMessage = async () => {
-    await axios.post(`https://servicepro-chat.humanagro.ru/api/chats/${ticketID!}/messages?authorization=${token}`, {
-      text: 'hello',
-    })
-    sendJsonMessage({
-      'task_id':1,
-      'message':{
-        'uuid':'00028e3a-b583-b31c-38f4-efd789418865',
-      },
-      'employee_id':4,
-      'text':'Я Денис',
-      'status':'',
-      'client_time':'2024-05-06T22:55:36.483000Z',
-      'server_time':'2024-05-06T22:55:46.819139Z',
-    })
+    try {
+      await axios.post(`https://servicepro-chat.humanagro.ru/api/chats/${ticketID!}/messages?authorization=${authorization}`, {
+        text: message,
+      })
+
+      setMessage('')
+    } catch (error) {
+      notify({
+        message: 'Произошла ошибка при отправке сообщения',
+        variant: 'error',
+      })
+    }
   }
 
   const handleClose = () => {
@@ -164,148 +211,47 @@ export const TicketDrawer = () => {
           }}
         >
           <TicketChatContainer>
-            <TicketChatMessage
-              author={{
-                name: 'Сергей Сергеевич',
-                role: 'Координатор',
-              }}
-              pictures={[
-                Truck1,
-                Truck2,
-              ]}
-              content={'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation'}
-              status={StatusEnum.Work}
-              date={(
-                <>
-                  16.06.2023
-                  <br/>
-                  16:00, пн
-                </>
-              )}
-              actions={(
-                <>
-                  <Button
-                    variant={'contained'}
-                    size={'small'}
-                    color={'success'}
-                    disableElevation
-                  >
-                    Принять
-                  </Button>
-                  <Button
-                    variant={'contained'}
-                    size={'small'}
-                    color={'error'}
-                    disableElevation
-                  >
-                    Отклонить
-                  </Button>
-                </>
-              )}
-            />
-            <TicketChatMessage
-              author={{
-                name: 'Евгений Евгеньевич',
-                role: 'ИСО',
-              }}
-              content={'ИСО приступил'}
-              status={StatusEnum.Work}
-              date={(
-                <>
-                  16.06.2023
-                  <br/>
-                  10:30, вт
-                </>
-              )}
-            />
-            <TicketChatMessage
-              author={{
-                name: 'Сергей Сергеевич',
-                role: 'Координатор',
-              }}
-              content={'Просим предоставить кран 25т'}
-              status={StatusEnum.Work}
-              date={(
-                <>
-                  16.06.2023
-                  <br/>
-                  9:15, вт
-                </>
-              )}
-            />
-            <TicketChatMessage
-              author={{
-                name: 'Евгений Евгеньевич',
-                role: 'ИСО',
-              }}
-              content={'Кран отсутствует'}
-              status={StatusEnum.Work}
-              date={(
-                <>
-                  16.06.2023
-                  <br/>
-                  09:00, вт
-                </>
-              )}
-            />
-            <TicketChatMessage
-              author={{
-                name: 'Сергей Сергеевич',
-                role: 'Координатор',
-              }}
-              content={'Условия: необходим кран 25т на 9:00 16.06.2023'}
-              status={StatusEnum.Work}
-              date={(
-                <>
-                  15.06.2023
-                  <br/>
-                  11:00, пн
-                </>
-              )}
-              actions={(
-                <Button
-                  variant={'contained'}
-                  size={'small'}
-                  color={'success'}
-                  disableElevation
-                  disabled
-                >
-                  Принято
-                </Button>
-              )}
-            />
-            <TicketChatMessage
-              author={{
-                name: 'Сергей Сергеевич',
-                role: 'Координатор',
-              }}
-              content={'Ближайшая возможная дата и время 16.06.2023 9:00'}
-              status={StatusEnum.Work}
-              date={(
-                <>
-                  15.06.2023
-                  <br/>
-                  09:00, пн
-                </>
-              )}
-              actions={(
-                <Button
-                  variant={'contained'}
-                  size={'small'}
-                  color={'success'}
-                  disableElevation
-                  disabled
-                >
-                  Принято
-                </Button>
-              )}
-            />
+            {chatsQuery.data?.map((message) => (
+              <TicketChatMessage
+                key={message.uuid}
+                author={members[message.employee_id] ? {
+                  name: getEngineerLabel(members[message.employee_id].profile),
+                  photo: members[message.employee_id].profile.photo ?? undefined,
+                  role: members[message.employee_id].role,
+                } : null}
+                pictures={message.media_files?.map((media) => media.path)}
+                content={message.text}
+                status={StatusEnum.Work}
+                date={message.server_time}
+                // actions={(
+                //   <>
+                //     <Button
+                //       variant={'contained'}
+                //       size={'small'}
+                //       color={'success'}
+                //       disableElevation
+                //     >
+                //       Принять
+                //     </Button>
+                //     <Button
+                //       variant={'contained'}
+                //       size={'small'}
+                //       color={'error'}
+                //       disableElevation
+                //     >
+                //       Отклонить
+                //     </Button>
+                //   </>
+                // )}
+              />
+            ))}
           </TicketChatContainer>
           <TicketDrawerFormsContainer>
             {typeof ticketID === 'number' && (
-              <TicketDrawerEngineerSection
+              <TicketDrawerParticipantsSection
                 ticketID={ticketID}
-                profile={data?.executor?.profile ?? null}
+                engineer={data?.executor?.profile ?? null}
+                coordinator={data?.coordinator?.profile ?? null}
               />
             )}
             <TicketDrawerForm
@@ -357,7 +303,7 @@ export const TicketDrawer = () => {
               onChange={() => {}}
             />
             <FieldInput
-              value={''}
+              value={message}
               name={'message'}
               placeholder={'Введите сообщение'}
               sx={{ width: '100%', maxWidth: '100%' }}
@@ -371,6 +317,7 @@ export const TicketDrawer = () => {
                   </InputAdornment>
                 ),
               }}
+              onChange={(e) => setMessage(e.target.value)}
             />
           </Box>
         </TicketDrawerFooter>

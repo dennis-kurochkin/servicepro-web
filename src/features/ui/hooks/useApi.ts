@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '@hooks/useAuth'
 import { useRefreshToken } from '@hooks/useRefreshToken'
 import { AxiosError } from 'axios'
-import { privateClient } from '~/api'
+import { chatClient, privateClient } from '~/api'
 
 export const useApi = () => {
   const { auth, setAuth } = useAuth()
@@ -59,6 +59,7 @@ export const useApi = () => {
 
   return {
     api: privateClient.api,
+    chatApi: chatClient.api,
     instance: privateClient.instance,
   }
 }
