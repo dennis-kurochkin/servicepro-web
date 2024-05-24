@@ -78,11 +78,12 @@ export const TicketDrawer = () => {
   const chatsQuery = useQuery({
     queryKey: [QueryKey.Chats, organizationID],
     queryFn: async () => {
-      const { data } = await axios.get(`https://servicepro-chat.humanagro.ru/api/active-chats?authorization=${token}`)
+      // const { data } = await axios.get(`https://servicepro-chat.humanagro.ru/api/active-chats?authorization=${token}`)
+      const { data } = await axios.get(`https://servicepro-chat.humanagro.ru/api/chats/${ticketID!}/messages?offset=0&limit=20&authorization=${token}`)
       return data
     },
     refetchOnWindowFocus: false,
-    enabled: readyState === ReadyState.OPEN,
+    enabled: readyState === ReadyState.OPEN && !!ticketID,
   })
 
   console.log(chatsQuery)
