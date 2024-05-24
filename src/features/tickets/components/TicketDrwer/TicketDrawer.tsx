@@ -71,14 +71,20 @@ export const TicketDrawer = () => {
     return `wss://servicepro-chat.humanagro.ru/ws/ws-chat?authorization=${tokenData.token}`
   }, [api, organizationID])
 
-  const { readyState } = useWebSocket(getSocketUrl, {
+  const { readyState, sendJsonMessage } = useWebSocket(getSocketUrl, {
 
   })
 
   const chatsQuery = useQuery({
     queryKey: [QueryKey.Chats, organizationID],
     queryFn: async () => {
-      // const { data } = await axios.get(`https://servicepro-chat.humanagro.ru/api/active-chats?authorization=${token}`)
+      const { data: statuses } = await api.workSersTasksStatusesList({
+        orgId: organizationID.toString(),
+        taskId: ticketID!.toString(),
+      })
+      console.log(statuses)
+      const { data: activechats } = await axios.get(`https://servicepro-chat.humanagro.ru/api/active-chats?authorization=${token}`)
+      console.log(activechats)
       const { data } = await axios.get(`https://servicepro-chat.humanagro.ru/api/chats/${ticketID!}/messages?offset=0&limit=20&authorization=${token}`)
       return data
     },
@@ -86,7 +92,21 @@ export const TicketDrawer = () => {
     enabled: readyState === ReadyState.OPEN && !!ticketID,
   })
 
-  console.log(chatsQuery)
+  console.log('chatsQuery', chatsQuery)
+
+  const handleSendMessage = async () => {
+    sendJsonMessage({
+      'task_id':1,
+      'message':{
+        'uuid':'00028e3a-b583-b31c-38f4-efd789418865',
+      },
+      'employee_id':4,
+      'text':'Я Денис',
+      'status':'',
+      'client_time':'2024-05-06T22:55:36.483000Z',
+      'server_time':'2024-05-06T22:55:46.819139Z',
+    })
+  }
 
   const handleClose = () => {
     if (params.ticketID) {
@@ -340,7 +360,10 @@ export const TicketDrawer = () => {
               sx={{ width: '100%', maxWidth: '100%' }}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment
+                    position="end"
+                    onClick={handleSendMessage}
+                  >
                     <Send fontSize={'small'} />
                   </InputAdornment>
                 ),
