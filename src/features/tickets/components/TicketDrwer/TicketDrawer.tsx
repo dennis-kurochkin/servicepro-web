@@ -95,6 +95,9 @@ export const TicketDrawer = () => {
   console.log('chatsQuery', chatsQuery)
 
   const handleSendMessage = async () => {
+    await axios.post(`https://servicepro-chat.humanagro.ru/api/chats/${ticketID!}/messages`, {
+      text: 'hello',
+    })
     sendJsonMessage({
       'task_id':1,
       'message':{
