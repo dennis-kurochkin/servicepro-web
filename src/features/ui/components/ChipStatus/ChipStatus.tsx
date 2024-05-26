@@ -1,7 +1,7 @@
 import { Chip, ChipProps } from '@mui/material'
 import { StatusEnum } from '~/api/servicepro.generated'
 
-const StatusEnumTitle: Record<StatusEnum, string> = {
+export const StatusEnumTitle: Record<StatusEnum, string> = {
   [StatusEnum.Done]: 'Выполнено',
   [StatusEnum.Approval]: 'В обработке',
   [StatusEnum.OnWay]: 'В пути',
@@ -32,7 +32,7 @@ export const ChipStatus = ({ status = StatusEnum.Wait, filled = false, size = 50
     <Chip
       variant={filled ? 'filled' : 'outlined'}
       color={StatusEnumColor[status]}
-      label={StatusEnumTitle[status]}
+      label={status ? StatusEnumTitle[status] : 'Не обновлялся'}
       size={size === 500 ? 'medium' : 'small'}
       sx={{
         paddingTop: '1px',

@@ -9,6 +9,11 @@ export enum QueryKey {
   Chats = 'chats',
 }
 
+export enum SearchParamsKey {
+  TicketID = 'ticketID',
+  PhotoSliderPhotoIndex = 'imageIndex',
+}
+
 export const RoleLabel: Record<RoleEnum, string> = {
   [RoleEnum.Client]: 'Клиент',
   [RoleEnum.Coordinator]: 'Координатор',
