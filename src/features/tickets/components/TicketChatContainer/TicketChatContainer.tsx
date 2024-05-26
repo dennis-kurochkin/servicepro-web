@@ -9,6 +9,7 @@ export const TicketChatContainer = ({ children }: TicketChatContainerProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
 
   useLayoutEffect(() => {
+    console.log(containerRef?.current?.scrollHeight)
     if (containerRef?.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight
     }
@@ -16,8 +17,6 @@ export const TicketChatContainer = ({ children }: TicketChatContainerProps) => {
 
   return (
     <Box
-      ref={containerRef}
-      id={'container'}
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -26,6 +25,8 @@ export const TicketChatContainer = ({ children }: TicketChatContainerProps) => {
       }}
     >
       <Box
+        ref={containerRef}
+        id={'container'}
         sx={{
           position: 'relative',
           display: 'flex',

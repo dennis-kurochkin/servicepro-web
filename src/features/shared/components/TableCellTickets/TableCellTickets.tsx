@@ -4,6 +4,7 @@ import { ButtonIcon } from '@components/ButtonIcon'
 import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { TooltipNew } from '@components/TooltipNew'
 import { TooltipId } from '@data/tooltips'
+import { SearchParamsKey } from '@features/shared/data'
 import { useProfile } from '@hooks/useProfile'
 import { ArrowDropDown, CheckCircle, ManageAccounts, Visibility } from '@mui/icons-material'
 import { Box, Button, Menu, MenuItem } from '@mui/material'
@@ -39,7 +40,7 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, o
       return
     }
 
-    searchParams.set('ticketID', selectedTaskID.toString())
+    searchParams.set(SearchParamsKey.TicketID, selectedTaskID.toString())
     setSearchParams(searchParams)
   }
 

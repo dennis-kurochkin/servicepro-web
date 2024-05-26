@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { StatusEnumTitle } from '@components/ChipStatus/ChipStatus'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { getEngineerLabel } from '@features/engineers/helpers'
-import { QueryKey } from '@features/shared/data'
+import { QueryKey, SearchParamsKey } from '@features/shared/data'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
 import { TicketChatMessage } from '@features/tickets/components/TicketChatMessage'
 import { TicketDrawerFooter } from '@features/tickets/components/TicketDrawerFooter'
@@ -162,7 +163,7 @@ export const TicketDrawer = () => {
     if (params.ticketID) {
       navigate(`/${organizationID}/tickets`)
     } else {
-      searchParams.delete('ticketID')
+      searchParams.delete(SearchParamsKey.TicketID)
       setSearchParams(searchParams)
     }
   }
@@ -211,7 +212,7 @@ export const TicketDrawer = () => {
           }}
         >
           <TicketChatContainer>
-            {chatsQuery.data?.map((message) => (
+            {chatsQuery.data?.map((message, index) => (
               <TicketChatMessage
                 key={message.uuid}
                 author={members[message.employee_id] ? {
@@ -221,7 +222,7 @@ export const TicketDrawer = () => {
                 } : null}
                 pictures={message.media_files?.map((media) => media.path)}
                 content={message.text}
-                status={StatusEnum.Work}
+                status={index === 0 ? (message.status as StatusEnum || data?.status) : message.status as StatusEnum}
                 date={message.server_time}
                 // actions={(
                 //   <>
@@ -280,24 +281,11 @@ export const TicketDrawer = () => {
                 name: 'Без изменений',
                 id: 0,
               }}
-              options={[
-                {
-                  name: 'Без изменений',
-                  id: 0,
-                },
-                {
-                  name: 'ИСО приступил',
-                  id: 1,
-                },
-                {
-                  name: 'Выполнена',
-                  id: 2,
-                },
-                {
-                  name: 'Ожидание ИСО',
-                  id: 3,
-                },
-              ]}
+              {...{} /* @ts-ignore */}
+              options={Object.values(StatusEnum).map((value) => ({
+                name: StatusEnumTitle[value as StatusEnum],
+                id: value.toString(),
+              }))}
               disableClearable
               labelInside
               onChange={() => {}}
