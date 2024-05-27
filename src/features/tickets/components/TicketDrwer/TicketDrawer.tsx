@@ -20,7 +20,6 @@ import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Send } from '@mui/icons-material'
 import { Box, BoxProps, Drawer, InputAdornment, styled } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import { format } from 'date-fns'
 import { queryClient } from '~/api'
 import { Message } from '~/api/servicepro-chat.generated'
@@ -131,7 +130,10 @@ export const TicketDrawer = () => {
 
   const handleSendMessage = async () => {
     try {
-      await axios.post(`https://servicepro-chat.humanagro.ru/api/chats/${ticketID!}/messages?authorization=${authorization}`, {
+      await chatApi.createMessageApiChatsTaskIdMessagesPost({
+        taskId: ticketID!,
+        authorization,
+      }, {
         text: message,
       })
 
@@ -198,7 +200,7 @@ export const TicketDrawer = () => {
           }}
         >
           <TicketChatContainer>
-            {chatsQuery.data?.map((message, index) => (
+            {chatsQuery.data?.map((message) => (
               <TicketChatMessage
                 key={message.uuid}
                 author={members[message.employee_id] ? {
@@ -209,7 +211,7 @@ export const TicketDrawer = () => {
                 } : message.employee_id}
                 pictures={message.media_files?.map((media) => media.path)}
                 content={message.text}
-                status={index === 0 ? (message.status as StatusEnum || data?.status) : message.status as StatusEnum}
+                status={message.status as StatusEnum}
                 date={message.server_time}
               />
             ))}
