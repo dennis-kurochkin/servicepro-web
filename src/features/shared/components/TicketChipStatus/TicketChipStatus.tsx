@@ -1,15 +1,6 @@
+import { StatusEnumTitle } from '@features/tickets/data'
 import { Chip, ChipProps } from '@mui/material'
 import { StatusEnum } from '~/api/servicepro.generated'
-
-export const StatusEnumTitle: Record<StatusEnum, string> = {
-  [StatusEnum.Done]: 'Выполнено',
-  [StatusEnum.Approval]: 'В обработке',
-  [StatusEnum.OnWay]: 'В пути',
-  [StatusEnum.Wait]: 'Ожидание ИСО',
-  [StatusEnum.Pause]: 'Пауза',
-  [StatusEnum.Search]: 'Поиск',
-  [StatusEnum.Work]: 'ИСО приступил',
-}
 
 const StatusEnumColor: Record<StatusEnum, ChipProps['color']> = {
   [StatusEnum.Done]: 'success',
@@ -27,7 +18,7 @@ export interface ChipStatusProps {
   size?: 300 | 400 | 500
 }
 
-export const ChipStatus = ({ status = StatusEnum.Wait, filled = false, size = 500 }: ChipStatusProps) => {
+export const TicketChipStatus = ({ status = StatusEnum.Wait, filled = false, size = 500 }: ChipStatusProps) => {
   return (
     <Chip
       variant={filled ? 'filled' : 'outlined'}

@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { DialogTicketAssign } from '@features/shared/components/DialogTicketAssign'
 import { TableCellTickets } from '@features/shared/components/TableCellTickets'
+import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { TableCell, TableRow } from '@mui/material'
 import { WorkEmployee } from '~/api/servicepro.generated'
 
@@ -37,7 +37,7 @@ export const EngineerRow = ({ data }: EngineerRow) => {
         />
       </TableCell>
       <TableCell>
-        <ChipStatus />
+        <TicketChipStatus />
       </TableCell>
       {/*<TableCellActions>*/}
       {/*  <ButtonIcon*/}

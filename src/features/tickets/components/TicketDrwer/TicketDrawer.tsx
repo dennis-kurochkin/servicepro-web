@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
-import { StatusEnumTitle } from '@components/ChipStatus/ChipStatus'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { getEngineerLabel } from '@features/engineers/helpers'
@@ -14,6 +13,7 @@ import { TicketDrawerFormsContainer } from '@features/tickets/components/TicketD
 import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHeader'
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
 import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
+import { StatusEnumTitle } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -95,19 +95,19 @@ export const TicketDrawer = () => {
       const { data } = await api.workSersTasksRetrieve(ticketID!, organizationID.toString())
 
       setMembers({
-        ...(data.executor.id ? {
+        ...(data.executor?.id ? {
           [data.executor.id]: {
             profile: data.executor.profile,
             role: RoleEnum.Engineer,
           },
         } : {}),
-        ...(data.coordinator.id ? {
+        ...(data.coordinator?.id ? {
           [data.coordinator.id]: {
             profile: data.coordinator.profile,
             role: RoleEnum.Coordinator,
           },
         } : {}),
-        ...(data.customer.id ? {
+        ...(data.customer?.id ? {
           [data.customer.id]: {
             profile: data.customer.profile,
             role: RoleEnum.Client,
@@ -177,6 +177,7 @@ export const TicketDrawer = () => {
       <ContentWrapper>
         <TicketDrawerHeader
           title={data?.title ?? ''}
+          status={data?.status ?? StatusEnum.Wait}
           loading={isFetching}
           renderChips={(
             <>
@@ -281,7 +282,7 @@ export const TicketDrawer = () => {
                 name: 'Без изменений',
                 id: 0,
               }}
-              {...{} /* @ts-ignore */}
+              {...{} /* @ts-expect-error ERROR */}
               options={Object.values(StatusEnum).map((value) => ({
                 name: StatusEnumTitle[value as StatusEnum],
                 id: value.toString(),

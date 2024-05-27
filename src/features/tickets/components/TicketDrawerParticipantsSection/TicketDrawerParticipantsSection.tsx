@@ -12,7 +12,7 @@ interface TicketDrawerEngineerSectionProps {
   coordinator: Profile | null
 }
 
-export const TicketDrawerParticipantsSection = ({ engineer, coordinator, ticketID }: TicketDrawerEngineerSectionProps) => {
+export const TicketDrawerParticipantsSection = ({ engineer, ticketID }: TicketDrawerEngineerSectionProps) => {
   const [open, setOpen] = useState(false)
 
   const handleOpenDialog = () => {
@@ -65,33 +65,33 @@ export const TicketDrawerParticipantsSection = ({ engineer, coordinator, ticketI
           />
         </Box>
       </Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gap: '4px',
-        }}
-      >
-        <Typography
-          variant={'subtitle2'}
-        >
-          Координатор
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            gap: '4px',
-          }}
-        >
-          <EngineerAvatar
-            profile={coordinator ?? null}
-          />
-          <ButtonIcon
-            Icon={ManageAccounts}
-            fontSize={'18px'}
-            onClick={handleOpenDialog}
-          />
-        </Box>
-      </Box>
+      {/*<Box*/}
+      {/*  sx={{*/}
+      {/*    display: 'grid',*/}
+      {/*    gap: '4px',*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <Typography*/}
+      {/*    variant={'subtitle2'}*/}
+      {/*  >*/}
+      {/*    Координатор*/}
+      {/*  </Typography>*/}
+      {/*  <Box*/}
+      {/*    sx={{*/}
+      {/*      display: 'flex',*/}
+      {/*      gap: '4px',*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    <EngineerAvatar*/}
+      {/*      profile={coordinator ?? null}*/}
+      {/*    />*/}
+      {/*    <ButtonIcon*/}
+      {/*      Icon={ManageAccounts}*/}
+      {/*      fontSize={'18px'}*/}
+      {/*      onClick={handleOpenDialog}*/}
+      {/*    />*/}
+      {/*  </Box>*/}
+      {/*</Box>*/}
       <DialogEngineerAssign
         open={open}
         selectedTaskID={ticketID}

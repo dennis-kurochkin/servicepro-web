@@ -1,9 +1,9 @@
 import { ReactNode, useState } from 'react'
-import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { DialogPhotoSlider } from '@components/DialogPhotoSlider'
 import { useDialogPhotoSliderUtils } from '@components/DialogPhotoSlider/hooks/useDialogPhotoSliderUtils'
 import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_DAY } from '@constants/index'
 import { theme } from '@data/theme'
+import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { RoleLabel } from '@features/shared/data'
 import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
 import { DisplaySettings, Person } from '@mui/icons-material'
@@ -72,7 +72,7 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
             marginTop: '36px',
           }}
         >
-          <ChipStatus
+          <TicketChipStatus
             status={status}
             size={300}
             filled
@@ -141,7 +141,14 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
               }}
             />
             <Typography variant={'body2'}>
-              {content}
+              {content ? content : (
+                <Box
+                  component={'span'}
+                  sx={{ color: (theme) => theme.palette.grey['700'] }}
+                >
+                  Текст отсутствует
+                </Box>
+              )}
             </Typography>
           </Card>
           {pictures && (
@@ -157,6 +164,7 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
                   key={index}
                   sx={{
                     aspectRatio: 1,
+                    backgroundColor: (theme) => theme.palette.grey['700'],
                     backgroundImage: `url(${picture})`,
                     backgroundSize: 'cover',
                     borderRadius: '4px',

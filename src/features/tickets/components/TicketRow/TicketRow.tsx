@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ButtonIcon } from '@components/ButtonIcon'
-import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { TableCellActions } from '@components/TableCellActions'
 import { TooltipNew } from '@components/TooltipNew'
 import { DATE_FORMAT_TIME_AHEAD, EMPTY_VALUE_DASH } from '@constants/index'
@@ -9,6 +8,7 @@ import { TooltipId } from '@data/tooltips'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { DialogEngineerAssign } from '@features/shared/components/DialogEngineerAssign'
+import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { GpsFixedOutlined, ManageAccounts } from '@mui/icons-material'
 import { TableCell, TableRow } from '@mui/material'
@@ -78,7 +78,7 @@ export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
           {task.approval.plan_start_date ? format(new Date(task.approval.plan_start_date), DATE_FORMAT_TIME_AHEAD) : EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          <ChipStatus status={task.status} />
+          <TicketChipStatus status={task.status} />
         </TableCell>
         <TableCell>
           <EngineerAvatar

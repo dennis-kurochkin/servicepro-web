@@ -1,9 +1,9 @@
 import { MouseEvent, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { ButtonIcon } from '@components/ButtonIcon'
-import { ChipStatus } from '@components/ChipStatus/ChipStatus'
 import { TooltipNew } from '@components/TooltipNew'
 import { TooltipId } from '@data/tooltips'
+import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { SearchParamsKey } from '@features/shared/data'
 import { useProfile } from '@hooks/useProfile'
 import { ArrowDropDown, CheckCircle, ManageAccounts, Visibility } from '@mui/icons-material'
@@ -92,7 +92,7 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, o
               >
                 {selectedTask.title}
               </Box>
-              <ChipStatus
+              <TicketChipStatus
                 size={300}
                 status={selectedTask.status}
               />
@@ -254,7 +254,7 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, o
               >
                 {task.title}
               </Box>
-              <ChipStatus
+              <TicketChipStatus
                 size={300}
                 status={task.status}
               />

@@ -1,15 +1,18 @@
 import { ReactNode } from 'react'
+import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { Close } from '@mui/icons-material'
 import { Box, IconButton, Skeleton, Typography } from '@mui/material'
+import { StatusEnum } from '~/api/servicepro.generated'
 
 interface TicketDrawerHeaderProps {
   title: string
+  status: StatusEnum
   loading?: boolean
   renderChips: ReactNode
   onClose: () => void
 }
 
-export const TicketDrawerHeader = ({ title, loading = false, renderChips, onClose }: TicketDrawerHeaderProps) => {
+export const TicketDrawerHeader = ({ title, status, loading = false, renderChips, onClose }: TicketDrawerHeaderProps) => {
   return (
     <Box
       sx={{
@@ -24,6 +27,7 @@ export const TicketDrawerHeader = ({ title, loading = false, renderChips, onClos
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: '12px',
         }}
       >
         {loading ? (
@@ -33,16 +37,24 @@ export const TicketDrawerHeader = ({ title, loading = false, renderChips, onClos
             width={'30%'}
           />
         ) : (
-          <Typography
-            variant={'h6'}
-            fontWeight={500}
-          >
-            {title}
-          </Typography>
+          <>
+            <TicketChipStatus
+              status={status}
+              size={400}
+              filled
+            />
+            <Typography
+              variant={'h6'}
+              fontWeight={500}
+            >
+              {title}
+            </Typography>
+          </>
         )}
         <IconButton
           size={'small'}
           aria-label="close"
+          sx={{ marginLeft: 'auto' }}
           onClick={onClose}
         >
           <Close />
