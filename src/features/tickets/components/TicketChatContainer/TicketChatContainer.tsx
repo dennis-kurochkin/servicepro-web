@@ -1,19 +1,32 @@
-import { PropsWithChildren, useLayoutEffect, useRef } from 'react'
+import { PropsWithChildren, useLayoutEffect, useRef, useState } from 'react'
 import { theme } from '@data/theme'
 import { TICKET_CHAT_INSET, TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
 import { Box } from '@mui/material'
+import useResizeObserver from '@react-hook/resize-observer'
 
 interface TicketChatContainerProps extends PropsWithChildren {}
 
 export const TicketChatContainer = ({ children }: TicketChatContainerProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
+  const [height, setHeight] = useState(0)
 
   useLayoutEffect(() => {
-    console.log(containerRef?.current?.scrollHeight)
-    if (containerRef?.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight
+    setHeight(containerRef.current?.getBoundingClientRect().height ?? 0)
+  }, [containerRef])
+
+  useResizeObserver(containerRef, (entry) => {
+    if (height === entry.contentRect.height) {
+      return
     }
-  }, [containerRef?.current?.scrollHeight])
+
+    setHeight(entry.contentRect.height)
+
+    if (containerRef?.current) {
+      containerRef.current.scrollIntoView({
+        block: 'end',
+      })
+    }
+  })
 
   return (
     <Box
