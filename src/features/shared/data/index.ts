@@ -1,3 +1,4 @@
+import { ReadyState } from 'react-use-websocket'
 import { RoleEnum } from '~/api/servicepro.generated'
 
 export enum QueryKey {
@@ -20,4 +21,12 @@ export const RoleLabel: Record<RoleEnum, string> = {
   [RoleEnum.Coordinator]: 'Координатор',
   [RoleEnum.Engineer]: 'Инженер',
   [RoleEnum.Server]: 'Система',
+}
+
+export const ConnectionStatus = {
+  [ReadyState.CONNECTING]: 'Connecting',
+  [ReadyState.OPEN]: 'Open',
+  [ReadyState.CLOSING]: 'Closing',
+  [ReadyState.CLOSED]: 'Closed',
+  [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
 }

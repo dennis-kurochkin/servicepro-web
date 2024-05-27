@@ -26,14 +26,6 @@ import { queryClient } from '~/api'
 import { Message } from '~/api/servicepro-chat.generated'
 import { Profile, RoleEnum, StatusEnum } from '~/api/servicepro.generated'
 
-// const connectionStatus = {
-//   [ReadyState.CONNECTING]: 'Connecting',
-//   [ReadyState.OPEN]: 'Open',
-//   [ReadyState.CLOSING]: 'Closing',
-//   [ReadyState.CLOSED]: 'Closed',
-//   [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-// }
-
 type WSData = {
   payload_model: 'NewMessage',
   payload: {
@@ -124,13 +116,6 @@ export const TicketDrawer = () => {
   const chatsQuery = useQuery({
     queryKey: [QueryKey.Chats, organizationID],
     queryFn: async () => {
-      // const { data: statuses } = await api.workSersTasksStatusesList({
-      //   orgId: organizationID.toString(),
-      //   taskId: ticketID!.toString(),
-      // })
-      // console.log(statuses)
-      // const { data: activechats } = await axios.get(`https://servicepro-chat.humanagro.ru/api/active-chats?authorization=${token}`)
-      // console.log(activechats)
       const { data } = await chatApi.getMessagesApiChatsTaskIdMessagesGet({
         taskId: ticketID!,
         authorization,
@@ -226,28 +211,15 @@ export const TicketDrawer = () => {
                 content={message.text}
                 status={index === 0 ? (message.status as StatusEnum || data?.status) : message.status as StatusEnum}
                 date={message.server_time}
-                // actions={(
-                //   <>
-                //     <Button
-                //       variant={'contained'}
-                //       size={'small'}
-                //       color={'success'}
-                //       disableElevation
-                //     >
-                //       Принять
-                //     </Button>
-                //     <Button
-                //       variant={'contained'}
-                //       size={'small'}
-                //       color={'error'}
-                //       disableElevation
-                //     >
-                //       Отклонить
-                //     </Button>
-                //   </>
-                // )}
               />
             ))}
+            {data && (
+              <TicketChatMessage
+                author={null}
+                content={data.approval?.customer_description}
+                date={data.created_at ?? ''}
+              />
+            )}
           </TicketChatContainer>
           <TicketDrawerFormsContainer>
             {typeof ticketID === 'number' && (

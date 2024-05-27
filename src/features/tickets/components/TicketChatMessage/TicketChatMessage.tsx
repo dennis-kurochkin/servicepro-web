@@ -24,7 +24,7 @@ type TicketChatMessageAuthor = {
 }
 
 export interface TicketChatMessageProps {
-  author: number | TicketChatMessageAuthor
+  author: null | number | TicketChatMessageAuthor
   content: ReactNode | string
   pictures?: string[]
   status?: StatusEnum
@@ -77,7 +77,7 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
         sx={{
           position: 'relative',
           display: 'grid',
-          gridTemplateColumns: '116px 130px 1fr',
+          gridTemplateColumns: author ? '116px 130px 1fr' : '116px 1fr',
           alignItems: 'start',
         }}
       >
@@ -105,17 +105,19 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
           <br/>
           {format(new Date(date), DATE_FORMAT_TIME_DAY, { locale: ru })}
         </Typography>
-        <Box
-          sx={{
-            marginTop: '36px',
-          }}
-        >
-          <TicketChipStatus
-            status={status}
-            size={300}
-            filled
-          />
-        </Box>
+        {author && (
+          <Box
+            sx={{
+              marginTop: '36px',
+            }}
+          >
+            <TicketChipStatus
+              status={status}
+              size={300}
+              filled
+            />
+          </Box>
+        )}
         <Box
           sx={{
             display: 'grid',
@@ -129,30 +131,38 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
               gap: '8px',
             }}
           >
-            <Avatar
-              sx={{
-                width: '24px',
-                height: '24px',
-              }}
-              src={authorProfile?.photo}
-              alt={authorProfile?.name ?? 'Система'}
-            >
-              {!authorProfile ? <DisplaySettings fontSize={'small'} /> : <Person fontSize={'small'} />}
-            </Avatar>
+            {author && (
+              <Avatar
+                sx={{
+                  width: '24px',
+                  height: '24px',
+                }}
+                src={authorProfile?.photo}
+                alt={authorProfile?.name ?? 'Система'}
+              >
+                {!authorProfile ? <DisplaySettings fontSize={'small'} /> : <Person fontSize={'small'} />}
+              </Avatar>
+            )}
             <Typography
               variant={'body2'}
             >
-              {authorProfile?.name ?? 'Система'}{' '}
-              {authorProfile && (
-                <Box
-                  component={'span'}
-                  sx={{
-                    color: (theme) => theme.palette.grey['700'],
-                  }}
-                >
-                  {`  •  ${RoleLabel[authorProfile.role]}`}
-                </Box>
+              {author && (
+                <>
+                  {authorProfile?.name ?? 'Система'}{' '}
+                </>
               )}
+              <Box
+                component={'span'}
+                sx={{
+                  color: (theme) => theme.palette.grey['700'],
+                }}
+              >
+                {authorProfile ? (
+                  <>
+                    {`  •  ${RoleLabel[authorProfile.role]}`}
+                  </>
+                ) : 'Описание задачи'}
+              </Box>
             </Typography>
           </Box>
           <Card
@@ -162,22 +172,24 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
               overflow: 'visible',
               background: theme.palette.background.paper,
               padding: '8px 16px 12px 12px',
-              borderRadius: '8px 8px 8px 0',
+              borderRadius: author ? '8px 8px 8px 0' : '8px',
             }}
           >
-            <Box
-              sx={{
-                position: 'absolute',
-                left: '-10px',
-                bottom: 0,
-                width: 0,
-                height: 0,
-                borderStyle: 'solid',
-                borderWidth: '0 0 10px 10px',
-                borderColor: `transparent transparent ${theme.palette.background.paper} transparent`,
-                transform: 'rotate(0deg)',
-              }}
-            />
+            {author && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  left: '-10px',
+                  bottom: 0,
+                  width: 0,
+                  height: 0,
+                  borderStyle: 'solid',
+                  borderWidth: '0 0 10px 10px',
+                  borderColor: `transparent transparent ${theme.palette.background.paper} transparent`,
+                  transform: 'rotate(0deg)',
+                }}
+              />
+            )}
             <Typography variant={'body2'}>
               {content ? content : (
                 <Box
