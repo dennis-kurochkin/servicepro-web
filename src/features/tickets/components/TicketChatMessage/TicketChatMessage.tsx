@@ -1,23 +1,30 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 import { DialogPhotoSlider } from '@components/DialogPhotoSlider'
 import { useDialogPhotoSliderUtils } from '@components/DialogPhotoSlider/hooks/useDialogPhotoSliderUtils'
 import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_DAY } from '@constants/index'
 import { theme } from '@data/theme'
+import { getEngineerLabel } from '@features/engineers/helpers'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
-import { RoleLabel } from '@features/shared/data'
+import { QueryKey, RoleLabel } from '@features/shared/data'
 import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
+import { useApi } from '@hooks/useApi'
+import { useOrganizationID } from '@hooks/useOrganizationID'
 import { DisplaySettings, Person } from '@mui/icons-material'
 import { Avatar, Box, Card, Typography } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { RoleEnum, StatusEnum } from '~/api/servicepro.generated'
 
+type TicketChatMessageAuthor = {
+  id: number
+  name: string
+  role: RoleEnum
+  photo?: string
+}
+
 export interface TicketChatMessageProps {
-  author: null | {
-    name: string
-    role: RoleEnum
-    photo?: string
-  }
+  author: number | TicketChatMessageAuthor
   content: ReactNode | string
   pictures?: string[]
   status?: StatusEnum
@@ -27,7 +34,38 @@ export interface TicketChatMessageProps {
 
 export const TicketChatMessage = ({ author, content, pictures, status, date, actions }: TicketChatMessageProps) => {
   const { setCurrentPictureIndex } = useDialogPhotoSliderUtils()
+  const { api } = useApi()
+  const { organizationID } = useOrganizationID()
   const [isDialogPhotoSliderOpen, setDialogPhotoSliderOpen] = useState(false)
+
+  const { data: profile } = useQuery({
+    queryKey: [QueryKey.Employee, typeof author === 'number' ? author : -1],
+    queryFn: async (): Promise<TicketChatMessageAuthor> => {
+      if (typeof author !== 'number') {
+        return {
+          id: -1,
+          name: 'Система',
+          role: RoleEnum.Server,
+        }
+      }
+
+      const { data } = await api.workSersEmployeesRetrieve(author, organizationID.toString())
+
+      return {
+        id: data.id,
+        name: getEngineerLabel(data.profile),
+        role: data.role,
+        photo: data.profile.photo ?? undefined,
+      }
+    },
+    enabled: typeof author === 'number',
+  })
+
+  const authorProfile = useMemo(() => typeof author === 'number' ? (profile ?? {
+    id: -1,
+    name: 'Система',
+    role: RoleEnum.Server,
+  }) : author, [profile, author])
 
   const handleCloseDialogPhotoSlider = () => {
     setDialogPhotoSliderOpen(false)
@@ -96,23 +134,23 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
                 width: '24px',
                 height: '24px',
               }}
-              src={author?.photo}
-              alt={author?.name ?? 'Система'}
+              src={authorProfile?.photo}
+              alt={authorProfile?.name ?? 'Система'}
             >
-              {!author ? <DisplaySettings fontSize={'small'} /> : <Person fontSize={'small'} />}
+              {!authorProfile ? <DisplaySettings fontSize={'small'} /> : <Person fontSize={'small'} />}
             </Avatar>
             <Typography
               variant={'body2'}
             >
-              {author?.name ?? 'Система'}
-              {author && (
+              {authorProfile?.name ?? 'Система'}{' '}
+              {authorProfile && (
                 <Box
                   component={'span'}
                   sx={{
                     color: (theme) => theme.palette.grey['700'],
                   }}
                 >
-                  {`  •  ${RoleLabel[author.role]}`}
+                  {`  •  ${RoleLabel[authorProfile.role]}`}
                 </Box>
               )}
             </Typography>

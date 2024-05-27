@@ -217,10 +217,11 @@ export const TicketDrawer = () => {
               <TicketChatMessage
                 key={message.uuid}
                 author={members[message.employee_id] ? {
+                  id: message.employee_id,
                   name: getEngineerLabel(members[message.employee_id].profile),
                   photo: members[message.employee_id].profile.photo ?? undefined,
                   role: members[message.employee_id].role,
-                } : null}
+                } : message.employee_id}
                 pictures={message.media_files?.map((media) => media.path)}
                 content={message.text}
                 status={index === 0 ? (message.status as StatusEnum || data?.status) : message.status as StatusEnum}
