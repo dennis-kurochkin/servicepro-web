@@ -6,13 +6,14 @@ import { StatusEnum } from '~/api/servicepro.generated'
 
 interface TicketDrawerHeaderProps {
   title: string
+  subtitle: string
   status: StatusEnum
   loading?: boolean
   renderChips: ReactNode
   onClose: () => void
 }
 
-export const TicketDrawerHeader = ({ title, status, loading = false, renderChips, onClose }: TicketDrawerHeaderProps) => {
+export const TicketDrawerHeader = ({ title, subtitle, status, loading = false, renderChips, onClose }: TicketDrawerHeaderProps) => {
   return (
     <Box
       sx={{
@@ -48,6 +49,12 @@ export const TicketDrawerHeader = ({ title, status, loading = false, renderChips
               fontWeight={500}
             >
               {title}
+            </Typography>
+            <Typography
+              variant={'h6'}
+              fontWeight={400}
+            >
+              {subtitle}
             </Typography>
           </>
         )}

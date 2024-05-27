@@ -118,7 +118,7 @@ export const HeaderProfileMenu = () => {
                   >
                     {employment.profile.email}
                   </Typography>
-                  {employment.organization && (
+                  {employment.organization && !!anchorEl && (
                     <Chip
                       label={employment.organization.name}
                       color={'default'}

@@ -135,6 +135,7 @@ export const TicketDrawer = () => {
         authorization,
       }, {
         text: message,
+        edits: {},
       })
 
       setMessage('')
@@ -164,6 +165,7 @@ export const TicketDrawer = () => {
       <ContentWrapper>
         <TicketDrawerHeader
           title={data?.title ?? ''}
+          subtitle={getEngineerLabel(data?.customer?.profile ?? {})}
           status={data?.status ?? StatusEnum.Wait}
           loading={isFetching}
           renderChips={(
