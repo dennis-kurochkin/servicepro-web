@@ -1,6 +1,6 @@
 import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
-import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
+import { QueryKey } from '@features/shared/data'
 import { VehicleRow } from '@features/vehicles/components/VehicleRow'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -18,9 +18,9 @@ export const VehiclesRoute = () => {
   const { api } = useApi()
 
   const { data, isSuccess } = useQuery({
-    queryKey: ['vehicles', organizationID],
+    queryKey: [QueryKey.Vehicles, organizationID],
     queryFn: async () => {
-      const { data } = await api.vehicleSersVehiclesList({
+      const { data } = await api.workSersVehiclesList({
         orgId: organizationID.toString(),
       })
 
@@ -93,15 +93,6 @@ export const VehiclesRoute = () => {
               <TableCell
                 size={'small'}
               >
-                Клиент
-                <TableSortLabel
-                  direction={'desc'}
-                  active
-                />
-              </TableCell>
-              <TableCell
-                size={'small'}
-              >
                 Заявки
                 <TableSortLabel
                   direction={'desc'}
@@ -117,10 +108,6 @@ export const VehiclesRoute = () => {
                   active
                 />
               </TableCell>
-              <TableCell
-                size={'small'}
-                sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}
-              />
             </TableRow>
           </TableHead>
           <TableBody>
