@@ -2,13 +2,7 @@ import { TableHeader } from '@components/TableHeader'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { EngineerRow } from '@features/engineers/components/EngineerRow'
 import { useQueryEngineers } from '@features/shared/hooks/useQueryEngineers'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow, TableSortLabel,
-} from '@mui/material'
+import { Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
 
 export const EngineersRoute = () => {
   const { data } = useQueryEngineers()
@@ -57,10 +51,6 @@ export const EngineersRoute = () => {
                   active
                 />
               </TableCell>
-              {/*<TableCell*/}
-              {/*  size={'small'}*/}
-              {/*  sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}*/}
-              {/*/>*/}
             </TableRow>
           </TableHead>
           <TableBody>
