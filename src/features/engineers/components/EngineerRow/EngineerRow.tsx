@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { DialogTicketAssign } from '@features/shared/components/DialogTicketAssign'
 import { TableCellTickets } from '@features/shared/components/TableCellTickets'
@@ -13,6 +13,7 @@ export interface EngineerRow {
 export const EngineerRow = ({ data }: EngineerRow) => {
   const [open, setOpen] = useState(false)
   const [selectedTaskID, setSelectedTaskID] = useState<number | null>(data.tasks?.[0]?.id ?? null)
+  const selectedTask = useMemo(() => data.tasks.find(({ id }) => id === selectedTaskID) ?? null, [selectedTaskID, data.tasks])
 
   return (
     <TableRow
@@ -37,21 +38,10 @@ export const EngineerRow = ({ data }: EngineerRow) => {
         />
       </TableCell>
       <TableCell>
-        <TicketChipStatus />
+        <TicketChipStatus
+          status={selectedTask?.status}
+        />
       </TableCell>
-      {/*<TableCellActions>*/}
-      {/*  <ButtonIcon*/}
-      {/*    Icon={GpsFixedOutlined}*/}
-      {/*    onClick={(e) => {*/}
-      {/*      e.stopPropagation()*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*  <ButtonContextActions*/}
-      {/*    onClick={(e) => {*/}
-      {/*      e.stopPropagation()*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*</TableCellActions>*/}
       <DialogTicketAssign
         open={open}
         engineer={data}
