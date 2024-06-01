@@ -84,6 +84,7 @@ export const Header = () => {
                 sx={{
                   display: 'block',
                   paddingX: '16px',
+                  borderRadius: '16px',
                   pointerEvents: pathname === `/${organizationID}${url}` ? 'none' : undefined,
                 }}
                 disableElevation
