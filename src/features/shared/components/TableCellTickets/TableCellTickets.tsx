@@ -8,11 +8,11 @@ import { SearchParamsKey } from '@features/shared/data'
 import { useProfile } from '@hooks/useProfile'
 import { ArrowDropDown, CheckCircle, ManageAccounts, Visibility } from '@mui/icons-material'
 import { Box, Button, Menu, MenuItem } from '@mui/material'
-import { SerWorkTaskVerbose, WorkTaskShort } from '~/api/servicepro.generated'
+import { SerWorkTaskVerbose, WorkTaskShort, WorkTaskShortWithExecutor } from '~/api/servicepro.generated'
 
 export interface TableCellTicketsProps {
   selectedTaskID: number | null
-  tasks: (WorkTaskShort | SerWorkTaskVerbose)[]
+  tasks: (WorkTaskShort | SerWorkTaskVerbose | WorkTaskShortWithExecutor)[]
   disableView?: boolean
   onChangeSelectedTaskID: (id: number) => void
   onClickAssign?: () => void
@@ -24,7 +24,7 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, o
   const { employment } = useProfile()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const open = !!anchorEl
-  const selectedTask = useMemo<WorkTaskShort | SerWorkTaskVerbose | null>(() => tasks.find(({ id }) => id === selectedTaskID) ?? tasks[0] ?? null, [selectedTaskID, tasks])
+  const selectedTask = useMemo<WorkTaskShort | SerWorkTaskVerbose | WorkTaskShortWithExecutor | null>(() => tasks.find(({ id }) => id === selectedTaskID) ?? tasks[0] ?? null, [selectedTaskID, tasks])
   const isTaskAlreadyAssigned = employment?.profile?.id === selectedTask?.coordinator
 
   const handleClickTicketsMenu = (event: MouseEvent) => {

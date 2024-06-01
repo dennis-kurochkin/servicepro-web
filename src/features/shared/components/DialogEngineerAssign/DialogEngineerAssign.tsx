@@ -63,6 +63,7 @@ export const DialogEngineerAssign = ({ open, selectedTaskID, onClose }: DialogEn
       } finally {
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: [QueryKey.Ticket] }),
+          queryClient.invalidateQueries({ queryKey: [QueryKey.Vehicles] }),
           queryClient.invalidateQueries({ queryKey: [QueryKey.TicketsGeos] }),
         ])
       }
