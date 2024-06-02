@@ -63,6 +63,9 @@ export const DialogPhotoSlider = ({ open, images, onClose }: DialogPhotoSliderPr
         <Box
           sx={{
             overflow: 'hidden',
+            borderTop: 1,
+            borderBottom: 1,
+            borderColor: (theme) => theme.palette.grey['600'],
             background: (theme) => theme.palette.grey['900'],
           }}
         >
@@ -71,8 +74,8 @@ export const DialogPhotoSlider = ({ open, images, onClose }: DialogPhotoSliderPr
             alt={''}
             style={{
               display: 'block',
-              maxWidth: '100%',
-              maxHeight: '100%',
+              width: '100%',
+              height: '100%',
               objectFit: 'contain',
               margin: '0 auto',
             }}
