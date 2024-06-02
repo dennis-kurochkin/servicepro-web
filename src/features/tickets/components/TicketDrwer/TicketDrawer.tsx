@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { ButtonIconSquare } from '@components/ButtonIconSquare'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { getEngineerLabel } from '@features/engineers/helpers'
@@ -17,13 +18,14 @@ import { StatusEnumTitle } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
-import { Send } from '@mui/icons-material'
-import { Box, BoxProps, Drawer, InputAdornment, styled } from '@mui/material'
+import { Send, Update } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
+import { Box, BoxProps, Drawer, styled } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { queryClient } from '~/api'
 import { Message } from '~/api/servicepro-chat.generated'
-import { Profile, RoleEnum, StatusEnum } from '~/api/servicepro.generated'
+import { Profile, RoleEnum, StatusEnum, WorkTaskDetailed } from '~/api/servicepro.generated'
 
 type WSData = {
   payload_model: 'NewMessage',
@@ -60,6 +62,9 @@ export const TicketDrawer = () => {
   const [authorization, setAuthorization] = useState('')
   const [members, setMembers] = useState<{ [key: number]: { profile: Profile, role: RoleEnum } }>({})
   const [message, setMessage] = useState<string>('')
+  const [newStatus, setNewStatus] = useState<StatusEnum | null>(null)
+  const [showStatusField, setShowStatusField] = useState(false)
+  const [sendingMessage, setSendingMessage] = useState(false)
 
   const getSocketUrl = useCallback(async () => {
     const { data: tokenData } = await api.workSersChatTokensCreate(organizationID.toString(), { token: '' })
@@ -76,6 +81,13 @@ export const TicketDrawer = () => {
           data.payload.message,
           ...oldData as Message[],
         ])
+
+        if (data.payload.message.status) {
+          queryClient.setQueryData([QueryKey.Ticket, organizationID], (oldData) => ({
+            ...oldData as WorkTaskDetailed,
+            status: data.payload.message.status,
+          }))
+        }
       }
     },
   })
@@ -128,24 +140,40 @@ export const TicketDrawer = () => {
     enabled: readyState === ReadyState.OPEN && !!ticketID,
   })
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = useCallback(async () => {
+    if (!newStatus && !message) {
+      notify({
+        message: 'Для отправки сообщения необходимо ввести текст сообщения, либо изменить статус заявки',
+        variant: 'error',
+      })
+
+      return
+    }
+
     try {
+      setSendingMessage(true)
+
       await chatApi.createMessageApiChatsTaskIdMessagesPost({
         taskId: ticketID!,
         authorization,
       }, {
         text: message,
         edits: {},
+        ...(newStatus ? { status: newStatus } : {}),
       })
 
+      setNewStatus(null)
       setMessage('')
+      setShowStatusField(false)
     } catch (error) {
       notify({
         message: 'Произошла ошибка при отправке сообщения',
         variant: 'error',
       })
+    } finally {
+      setSendingMessage(false)
     }
-  }
+  }, [newStatus, message, chatApi, ticketID, authorization, notify])
 
   const handleClose = () => {
     if (params.ticketID) {
@@ -251,40 +279,50 @@ export const TicketDrawer = () => {
               gap: '8px',
             }}
           >
-            <FieldAutocomplete
-              name={'status'}
-              label={'Статус'}
-              sx={{ minWidth: '200px' }}
-              value={{
-                name: 'Без изменений',
-                id: 0,
-              }}
-              {...{} /* @ts-expect-error ERROR */}
-              options={Object.values(StatusEnum).map((value) => ({
-                name: StatusEnumTitle[value as StatusEnum],
-                id: value.toString(),
-              }))}
-              disableClearable
-              labelInside
-              onChange={() => {}}
-            />
+            {showStatusField ? (
+              <FieldAutocomplete
+                name={'status'}
+                label={'Статус'}
+                sx={{ minWidth: '200px' }}
+                value={newStatus ? {
+                  value: newStatus,
+                  label: StatusEnumTitle[newStatus],
+                } : null}
+                options={Object.values(StatusEnum).map((value) => ({
+                  value,
+                  label: StatusEnumTitle[value as StatusEnum],
+                }))}
+                disabled={sendingMessage}
+                labelInside
+                onChange={(data) => setNewStatus(data?.value as StatusEnum ?? null)}
+              />
+            ) : (
+              <ButtonIconSquare
+                color={'info'}
+                variant={'outlined'}
+                disabled={sendingMessage}
+                onClick={() => setShowStatusField(true)}
+              >
+                <Update fontSize={'medium'} />
+              </ButtonIconSquare>
+            )}
             <FieldInput
               value={message}
               name={'message'}
+              disabled={sendingMessage}
               placeholder={'Введите сообщение'}
               sx={{ width: '100%', maxWidth: '100%' }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment
-                    position="end"
-                    onClick={handleSendMessage}
-                  >
-                    <Send fontSize={'small'} />
-                  </InputAdornment>
-                ),
-              }}
               onChange={(e) => setMessage(e.target.value)}
             />
+            <LoadingButton
+              variant={'contained'}
+              color={'info'}
+              loading={sendingMessage}
+              disableElevation
+              onClick={handleSendMessage}
+            >
+              <Send fontSize={'small'} />
+            </LoadingButton>
           </Box>
         </TicketDrawerFooter>
       </ContentWrapper>

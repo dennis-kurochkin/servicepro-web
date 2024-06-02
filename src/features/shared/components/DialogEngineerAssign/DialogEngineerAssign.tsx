@@ -27,13 +27,13 @@ export const DialogEngineerAssign = ({ open, selectedTaskID, onClose }: DialogEn
   const { data, isLoading } = useQueryEngineers()
   const [value, setValue] = useState<FieldAutocompleteCommonValue | null>(null)
   const options = useMemo((): FieldAutocompleteCommonValue[] => data?.map((engineer) => ({
-    name: `${getEngineerLabel(engineer.profile, false)} (4.3)`,
-    id: engineer.id,
+    label: `${getEngineerLabel(engineer.profile, false)} (4.3)`,
+    value: engineer.id.toString(),
   })) ?? [], [data])
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const engineer = data?.find(({ id }) => id === value?.id)
+      const engineer = data?.find(({ id }) => id.toString() === value?.value)
 
       if (!selectedTaskID || !employment?.profile.id || !engineer) {
         notify({

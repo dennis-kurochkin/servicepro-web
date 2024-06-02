@@ -50,8 +50,8 @@ export const FieldAutocomplete = forwardRef(<T extends FieldAutocompleteCommonVa
       id={name}
       open={open}
       value={value}
-      isOptionEqualToValue={(option, value) => option.id ? option.id === value.id : option.name === value.name}
-      getOptionLabel={(option) => option.name}
+      isOptionEqualToValue={(option, value) => option.value === value.value}
+      getOptionLabel={(option) => option.label}
       noOptionsText={'По вашему запросу ничего не найдено'}
       closeText={'Закрыть'}
       loadingText={'Загрука...'}
@@ -64,7 +64,7 @@ export const FieldAutocomplete = forwardRef(<T extends FieldAutocompleteCommonVa
       sx={FieldAutocompleteSx(sx, fluid)}
       renderOption={(HTMLLIElementProps, option) => (
         <FieldAutocompleteOption
-          key={option.id + option.name}
+          key={option.value}
           HTMLLIElementProps={HTMLLIElementProps}
           option={option}
         />
@@ -98,7 +98,7 @@ export const FieldAutocomplete = forwardRef(<T extends FieldAutocompleteCommonVa
           />
           <FieldMessage
             show={error}
-            message={errorMessage ?? 'Ошибкац'}
+            message={errorMessage ?? 'Ошибка'}
           />
         </>
       )}
