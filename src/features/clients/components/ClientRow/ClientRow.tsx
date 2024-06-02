@@ -84,7 +84,9 @@ export const ClientRow = ({ data }: ClientRowProps) => {
       <TableCell>
         {data.requisites?.legal_address?.value ?? data.requisites?.physical_address?.value ?? data.requisites?.postal_address?.value ?? EMPTY_VALUE_DASH}
       </TableCell>
-      <TableCell>
+      <TableCell
+        onClick={(event) => event.stopPropagation()}
+      >
         <TableCellTickets
           selectedTaskID={selectedTaskID}
           tasks={data.tasks}
@@ -92,7 +94,9 @@ export const ClientRow = ({ data }: ClientRowProps) => {
           onClickAccept={handleChangeCoordinator}
         />
       </TableCell>
-      <TableCell align={'center'}>
+      <TableCell
+        align={'center'}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -117,15 +121,6 @@ export const ClientRow = ({ data }: ClientRowProps) => {
           />
         </Box>
       </TableCell>
-      {/*<TableCell*/}
-      {/*  sx={{ paddingRight: TABLE_CELL_DENSE_PADDING }}*/}
-      {/*>*/}
-      {/*  <ButtonContextActions*/}
-      {/*    onClick={(e) => {*/}
-      {/*      e.stopPropagation()*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*</TableCell>*/}
     </TableRow>
   )
 }
