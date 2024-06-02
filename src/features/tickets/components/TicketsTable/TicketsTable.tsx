@@ -2,7 +2,7 @@ import { TableCellHeadFilter } from '@components/TableCellHeadFilter'
 import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
 import { TicketRow } from '@features/tickets/components/TicketRow'
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+import { SxProps, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 import { SerWorkTaskVerbose } from '~/api/servicepro.generated'
 
 interface TicketsTableProps {
@@ -10,11 +10,12 @@ interface TicketsTableProps {
   count: number
   isSuccess: boolean
   data: SerWorkTaskVerbose[]
+  sx?: SxProps,
   onPageChange: (page: number) => void
   onSelectTask?: (id: number) => void
 }
 
-export const TicketsTable = ({ page, count, isSuccess, data, onPageChange, onSelectTask }: TicketsTableProps) => {
+export const TicketsTable = ({ page, count, isSuccess, data, sx, onPageChange, onSelectTask }: TicketsTableProps) => {
   return (
     <TableWrapper
       pagination={{
@@ -22,6 +23,7 @@ export const TicketsTable = ({ page, count, isSuccess, data, onPageChange, onSel
         count,
         onPageChange,
       }}
+      sx={sx}
     >
       <Table
         sx={{ minHeight: 200 }}

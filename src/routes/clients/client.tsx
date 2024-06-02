@@ -231,6 +231,7 @@ export const ClientRoute = () => {
               count={ticketsCount}
               isSuccess={ticketsQuery.isSuccess}
               data={ticketsQuery.data ?? []}
+              sx={{ margin: 0 }}
               onPageChange={setTicketsPage}
             />
           </TabPanel>
