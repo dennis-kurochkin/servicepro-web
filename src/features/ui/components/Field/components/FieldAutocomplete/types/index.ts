@@ -3,8 +3,8 @@ import { FieldCommonProps } from '@components/Field/types'
 import { SxProps } from '@mui/material'
 
 export interface FieldAutocompleteCommonValue {
-  id?: number
-  name: string
+  value: string
+  label: string
 }
 
 export interface FieldAutocompleteCommonProps<T extends FieldAutocompleteCommonValue> extends FieldCommonProps {
