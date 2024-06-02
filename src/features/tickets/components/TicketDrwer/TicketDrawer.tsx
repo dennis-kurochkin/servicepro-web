@@ -78,7 +78,7 @@ export const TicketDrawer = () => {
     onMessage: (event) => {
       const data = JSON.parse(event.data) as WSData
 
-      if (data.payload_model === 'NewMessage') {
+      if (data.payload_model === 'NewMessage' && data.payload.task_id === ticketID) {
         queryClient.setQueryData([QueryKey.Chats, organizationID], (oldData) => [
           data.payload.message,
           ...oldData as Message[],
