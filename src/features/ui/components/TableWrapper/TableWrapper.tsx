@@ -1,9 +1,10 @@
 import { PropsWithChildren } from 'react'
 import { PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { theme } from '@data/theme'
-import { Paper, TableContainer, TablePagination } from '@mui/material'
+import { Paper, SxProps, TableContainer, TablePagination } from '@mui/material'
 
 interface TableWrapperProps extends PropsWithChildren {
+  sx?: SxProps
   pagination?: {
     page: number,
     count: number,
@@ -12,7 +13,7 @@ interface TableWrapperProps extends PropsWithChildren {
   }
 }
 
-export const TableWrapper = ({ pagination, children }: TableWrapperProps) => {
+export const TableWrapper = ({ pagination, children, sx }: TableWrapperProps) => {
   return (
     <TableContainer
       component={Paper}
@@ -21,6 +22,7 @@ export const TableWrapper = ({ pagination, children }: TableWrapperProps) => {
         marginTop: '20px',
         background: 'none',
         border: `1px solid ${theme.palette.grey['300']}`,
+        ...(sx ?? {}),
       }}
     >
       {pagination && (

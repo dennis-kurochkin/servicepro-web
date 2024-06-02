@@ -1,15 +1,13 @@
 import { useRef, useState } from 'react'
 import { Map, MapRef } from '@components/Map'
-import { TableCellHeadFilter } from '@components/TableCellHeadFilter/TableCellHeadFilter'
 import { TableHeader } from '@components/TableHeader'
-import { TableWrapper } from '@components/TableWrapper/TableWrapper'
-import { PAGINATION_DEFAULT_LIMIT, TABLE_CELL_DENSE_PADDING, TABLE_CONTEXT_BUTTON_CELL_WIDTH } from '@constants/index'
+import { PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { getGeoInfoBounds } from '@features/shared/helpers'
-import { TicketRow } from '@features/tickets/components/TicketRow'
+import { TicketsTable } from '@features/tickets/components/TicketsTable'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
-import { Container, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+import { Container } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { WorkTaskGeo } from '~/api/servicepro.generated'
 
@@ -73,70 +71,14 @@ export const TicketsRoute = () => {
         >
           Заявки
         </TableHeader>
-        <TableWrapper
-          pagination={{
-            page,
-            count,
-            onPageChange: setPage,
-          }}
-        >
-          <Table
-            sx={{ minHeight: 200 }}
-            size={'small'}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  size={'small'}
-                />
-                <TableCellHeadFilter>
-                  Клиент
-                </TableCellHeadFilter>
-                <TableCellHeadFilter>
-                  Регион
-                </TableCellHeadFilter>
-                <TableCellHeadFilter>
-                  Район
-                </TableCellHeadFilter>
-                <TableCellHeadFilter>
-                  Бренд
-                </TableCellHeadFilter>
-                <TableCellHeadFilter>
-                  Модель
-                </TableCellHeadFilter>
-                <TableCellHeadFilter>
-                  Желаемое&nbsp;время
-                </TableCellHeadFilter>
-                <TableCellHeadFilter>
-                  Согласованное
-                </TableCellHeadFilter>
-                <TableCellHeadFilter>
-                  Статус
-                </TableCellHeadFilter>
-                <TableCellHeadFilter>
-                  Инженер
-                </TableCellHeadFilter>
-                <TableCell
-                  size={'small'}
-                  sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}
-                />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {isSuccess && (
-                <>
-                  {data.map((task) => (
-                    <TicketRow
-                      key={task.task.id}
-                      task={task.task}
-                      onSelect={() => handleSelectTask(task.geo)}
-                    />
-                  ))}
-                </>
-              )}
-            </TableBody>
-          </Table>
-        </TableWrapper>
+        <TicketsTable
+          page={page}
+          count={count}
+          isSuccess={isSuccess}
+          data={data?.map(({ task }) => task) ?? []}
+          onPageChange={setPage}
+          onSelectTask={(id) => handleSelectTask(data?.find(({ task }) => task.id === id)?.geo)}
+        />
       </Container>
     </>
   )
