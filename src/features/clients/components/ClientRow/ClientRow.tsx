@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { EMPTY_VALUE_DASH } from '@constants/index'
 import { TableCellTickets } from '@features/shared/components/TableCellTickets'
 import { QueryKey } from '@features/shared/data'
@@ -15,6 +16,7 @@ export interface ClientRowProps {
 }
 
 export const ClientRow = ({ data }: ClientRowProps) => {
+  const navigate = useNavigate()
   const { organizationID } = useOrganizationID()
   const { notify } = useNotify()
   const { api } = useApi()
@@ -51,9 +53,18 @@ export const ClientRow = ({ data }: ClientRowProps) => {
     }
   }, [selectedTaskID, organizationID])
 
+  const handleRowClick = useCallback(async () => {
+    navigate(`/${organizationID}/clients/${data.id}`)
+  }, [organizationID, data, navigate])
+
   return (
     <TableRow
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+      sx={{
+        cursor: 'pointer',
+        '&:last-child td, &:last-child th': { border: 0 },
+      }}
+      hover
+      onClick={handleRowClick}
     >
       <TableCell
         size={'small'}

@@ -7,6 +7,7 @@ import { PersistentLogin } from '@components/PersistentLogin'
 import { RequireAuth } from '@components/RequireAuth/RequireAuth'
 import { NotFoundRoute } from '@routes/404'
 import { AuthRoute } from '@routes/auth'
+import { ClientRoute } from '@routes/clients/client'
 import { ClientsRoute } from '@routes/clients/clients'
 import { EngineersRoute } from '@routes/engineers/engineers'
 import { OrganizationRoute } from '@routes/organization'
@@ -76,6 +77,10 @@ export const router = createBrowserRouter(getConfiguredRoutes([
               {
                 path: 'clients',
                 element: <ClientsRoute />,
+              },
+              {
+                path: 'clients/:clientID',
+                element: <ClientRoute />,
               },
             ],
           },

@@ -53,6 +53,7 @@ export const TicketDrawerHeader = ({ title, subtitle, status, loading = false, r
             <Typography
               variant={'h6'}
               fontWeight={400}
+              sx={{ marginLeft: '-4px' }}
             >
               {subtitle}
             </Typography>
