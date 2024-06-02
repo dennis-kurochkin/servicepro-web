@@ -86,17 +86,27 @@ export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
           />
         </TableCell>
         <TableCellActions>
-          <ButtonIcon
-            Icon={GpsFixedOutlined}
-            fontSize={'18px'}
-            onClick={(e) => {
-              e.stopPropagation()
-              onSelect()
-            }}
+          <TooltipNew
+            id={TooltipId.TicketsCellAssignButton}
+            content={'Показать на карте'}
+            strategy={'fixed'}
+            place={'left'}
+            target={(
+              <ButtonIcon
+                Icon={GpsFixedOutlined}
+                fontSize={'18px'}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSelect()
+                }}
+              />
+            )}
           />
           <TooltipNew
             id={TooltipId.TicketsCellAssignButton}
             content={'Назначить инженера'}
+            strategy={'fixed'}
+            place={'top'}
             target={(
               <ButtonIcon
                 Icon={ManageAccounts}

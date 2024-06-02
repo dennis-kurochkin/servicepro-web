@@ -3,7 +3,9 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { ButtonIconSquare } from '@components/ButtonIconSquare'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
+import { TooltipNew } from '@components/TooltipNew'
 import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
+import { TooltipId } from '@data/tooltips'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { QueryKey, SearchParamsKey } from '@features/shared/data'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
@@ -297,14 +299,23 @@ export const TicketDrawer = () => {
                 onChange={(data) => setNewStatus(data?.value as StatusEnum ?? null)}
               />
             ) : (
-              <ButtonIconSquare
-                color={'info'}
-                variant={'outlined'}
-                disabled={sendingMessage}
-                onClick={() => setShowStatusField(true)}
-              >
-                <Update fontSize={'medium'} />
-              </ButtonIconSquare>
+              <TooltipNew
+                id={TooltipId.TicketDrawerChangeStatus}
+                content={'Изменить статус заявки'}
+                strategy={'fixed'}
+                target={(
+                  <div>
+                    <ButtonIconSquare
+                      color={'info'}
+                      variant={'outlined'}
+                      disabled={sendingMessage}
+                      onClick={() => setShowStatusField(true)}
+                    >
+                      <Update fontSize={'medium'} />
+                    </ButtonIconSquare>
+                  </div>
+                )}
+              />
             )}
             <FieldInput
               value={message}
