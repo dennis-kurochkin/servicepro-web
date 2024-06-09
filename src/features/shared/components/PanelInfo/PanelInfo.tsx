@@ -14,7 +14,7 @@ export const PanelInfo = ({ info, icon, labelWidth = 150, sx, isFetching }: Pane
     <Box
       sx={{
         display: 'grid',
-        ...(!icon ? {} : { gridTemplateColumns: '150px 1fr' }),
+        ...(icon === 'string' ? {} : { gridTemplateColumns: '150px 1fr' }),
         gap: '32px',
         minWidth: '700px',
         padding: '24px 48px 24px 24px',
