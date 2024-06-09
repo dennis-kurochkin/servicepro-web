@@ -13,6 +13,7 @@ export enum QueryKey {
   Chats = 'chats',
   Employee = 'employee',
   Vehicles = 'vehicles',
+  Vehicle = 'vehicle',
 }
 
 export enum SearchParamsKey {

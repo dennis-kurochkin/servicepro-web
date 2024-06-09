@@ -12,6 +12,7 @@ import { ClientsRoute } from '@routes/clients/clients'
 import { EngineersRoute } from '@routes/engineers/engineers'
 import { OrganizationRoute } from '@routes/organization'
 import { TicketsRoute } from '@routes/tickets/tickets'
+import { VehicleRoute } from '@routes/vehicles/vehicle'
 import { VehiclesRoute } from '@routes/vehicles/vehicles'
 
 export const getConfiguredRoutes = (routes: RouteObject[]): RouteObject[] => ([
@@ -69,6 +70,10 @@ export const router = createBrowserRouter(getConfiguredRoutes([
               {
                 path: 'vehicles',
                 element: <VehiclesRoute />,
+              },
+              {
+                path: 'vehicles/:vehicleID',
+                element: <VehicleRoute />,
               },
               {
                 path: 'engineers',
