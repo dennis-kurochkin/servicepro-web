@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useLocation, useNavigate } from 'react-router-dom'
 import logoVertical from '@assets/logo-vertical.png'
@@ -7,8 +7,9 @@ import { theme } from '@data/theme'
 import { rr } from '@features/ui/types'
 import { useAuth } from '@hooks/useAuth'
 import { useNotify } from '@hooks/useNotify'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import { Box, Checkbox, FormControlLabel, Link } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, InputAdornment, Link } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 import { publicClient } from '~/api'
 
@@ -23,6 +24,7 @@ export const AuthRoute = () => {
   const from = location.state?.from?.pathname || '/'
   const { notify } = useNotify()
   const { auth, setAuth, persist, setPersist } = useAuth()
+  const [passwordVisible, setPasswordVisible] = useState(false)
 
   useEffect(() => {
     if (auth?.accessToken) {
@@ -116,11 +118,22 @@ export const AuthRoute = () => {
             name={'password'}
             control={control}
             disabled={authMutation.isPending}
-            type={'password'}
+            type={passwordVisible ? 'text' : 'password'}
             label={'Пароль'}
             rules={{ required: true }}
             placeholder={'Введите пароль'}
             sx={{ mt: '16px' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment
+                  position={'end'}
+                  sx={{ cursor: 'pointer' }}
+                  onClick={() => setPasswordVisible((value) => !value)}
+                >
+                  {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                </InputAdornment>
+              ),
+            }}
           />
           <Box
             sx={{
