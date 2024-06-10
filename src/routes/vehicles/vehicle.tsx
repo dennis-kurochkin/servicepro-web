@@ -7,6 +7,8 @@ import { PanelInfo } from '@features/shared/components/PanelInfo'
 import { QueryKey } from '@features/shared/data'
 import { LabelValue } from '@features/shared/types'
 import { TicketsTable } from '@features/tickets/components/TicketsTable'
+import { VehicleRecommendations } from '@features/vehicles/components/VehicleRecommendations'
+import { VehicleRecommendationsChips } from '@features/vehicles/components/VehicleRecommendationsChips'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
@@ -107,12 +109,40 @@ export const VehicleRoute = () => {
           title={'Данные по технике'}
           isFetching={false}
         />
-        <PanelInfo
-          info={info}
-          isFetching={isFetching}
-          sx={{ marginTop: '24px' }}
-          icon={data?.model.equipment?.icon ?? ''}
-        />
+        <Box
+          sx={{
+            position: 'relative',
+            marginTop: '24px',
+          }}
+        >
+          <PanelInfo
+            info={info}
+            isFetching={isFetching}
+            icon={data?.model.equipment?.icon ?? ''}
+          />
+          {data?.summary && (
+            <Box
+              sx={{
+                position: 'absolute',
+                left: 'calc(100% - 32px)',
+                bottom: 'calc(100% - 32px)',
+                padding: '8px',
+                borderRadius: '16px',
+                border: '1px solid',
+                borderColor: (theme) => theme.palette.grey['300'],
+                background: (theme) => theme.palette.common.white,
+              }}
+            >
+              <VehicleRecommendationsChips
+                count={{
+                  warning: data.summary.r_warning_count ?? 0,
+                  critical: data.summary.r_critical_count ?? 0,
+                  info: data.summary.r_info_count ?? 0,
+                }}
+              />
+            </Box>
+          )}
+        </Box>
         <TabContext value={tab}>
           <Box sx={{
             width: '100%',
@@ -137,7 +167,7 @@ export const VehicleRoute = () => {
             value={VehicleTab.Recommendations}
             sx={{ paddingX: 0, width: '100%' }}
           >
-
+            <VehicleRecommendations vehicleID={vehicleID} />
           </TabPanel>
           <TabPanel
             value={VehicleTab.Tickets}

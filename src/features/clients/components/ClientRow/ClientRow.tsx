@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { EMPTY_VALUE_DASH } from '@constants/index'
 import { TableCellTickets } from '@features/shared/components/TableCellTickets'
 import { QueryKey } from '@features/shared/data'
+import { VehicleRecommendationsChips } from '@features/vehicles/components/VehicleRecommendationsChips'
 import { useApi } from '@hooks/useApi'
 import { useEmployment } from '@hooks/useEmployment'
 import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
-import { Box, Chip, TableCell, TableRow, Typography } from '@mui/material'
+import { TableCell, TableRow, Typography } from '@mui/material'
 import { queryClient } from '~/api'
 import { WorkOrganization } from '~/api/servicepro.generated'
 
@@ -97,29 +98,14 @@ export const ClientRow = ({ data }: ClientRowProps) => {
       <TableCell
         align={'center'}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            gap: '4px',
-            paddingLeft: '8px',
+        <VehicleRecommendationsChips
+          count={{
+            warning: data.summaries[0]?.r_warning_count ?? 0,
+            critical: data.summaries[0]?.r_critical_count ?? 0,
+            info: data.summaries[0]?.r_info_count ?? 0,
           }}
-        >
-          <Chip
-            size={'medium'}
-            label="3"
-            color="primary"
-          />
-          <Chip
-            size={'medium'}
-            label="13"
-            color="warning"
-          />
-          <Chip
-            size={'medium'}
-            label="2"
-            color="info"
-          />
-        </Box>
+          sx={{ paddingLeft: '8px' }}
+        />
       </TableCell>
     </TableRow>
   )
