@@ -80,7 +80,6 @@ export const VehicleRoute = () => {
     queryFn: async () => {
       const options = {
         orgId: organizationID.toString(),
-        customer: vehicleID,
         offset: ticketsPage * PAGINATION_DEFAULT_LIMIT,
         limit: PAGINATION_DEFAULT_LIMIT,
       }
