@@ -2,7 +2,9 @@ import { MouseEvent, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { TooltipNew } from '@components/TooltipNew'
+import { EMPTY_VALUE_DASH } from '@constants/index'
 import { TooltipId } from '@data/tooltips'
+import { getEngineerLabel } from '@features/engineers/helpers'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { SearchParamsKey } from '@features/shared/data'
 import { useProfile } from '@hooks/useProfile'
@@ -14,12 +16,13 @@ export interface TableCellTicketsProps {
   selectedTaskID: number | null
   tasks: (WorkTaskShort | SerWorkTaskVerbose | WorkTaskShortWithExecutor)[]
   disableView?: boolean
+  showClient?: boolean
   onChangeSelectedTaskID: (id: number) => void
   onClickAssign?: () => void
   onClickAccept?: () => void
 }
 
-export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, onChangeSelectedTaskID, onClickAssign, onClickAccept }: TableCellTicketsProps) => {
+export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, showClient = false, onChangeSelectedTaskID, onClickAssign, onClickAccept }: TableCellTicketsProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { employment } = useProfile()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
@@ -226,7 +229,7 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, o
         id="client-row-menu"
         onClose={handleCloseTicketsMenu}
       >
-        {tasks.map((task) => (
+        {(tasks as SerWorkTaskVerbose[]).map((task) => (
           <MenuItem
             key={task.id}
             sx={{ paddingY: '8px' }}
@@ -253,6 +256,18 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, o
                 }}
               >
                 {task.title}
+                {showClient && (
+                  <>
+                    {' '}
+                    <span
+                      style={{
+                        fontWeight: 400,
+                      }}
+                    >
+                      {task.customer?.profile ? getEngineerLabel(task.customer?.profile) : EMPTY_VALUE_DASH}
+                    </span>
+                  </>
+                )}
               </Box>
               <TicketChipStatus
                 size={300}

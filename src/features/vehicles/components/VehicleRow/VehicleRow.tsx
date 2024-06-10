@@ -57,7 +57,9 @@ export const VehicleRow = ({ vehicle }: VehicleRow) => {
         <TableCell>
           {vehicle.summary?.runtime_sum ? `${vehicle.summary.runtime_sum}мч` : EMPTY_VALUE_DASH}
         </TableCell>
-        <TableCell >
+        <TableCell
+          onClick={(e) => e.stopPropagation()}
+        >
           <TableCellTickets
             selectedTaskID={selectedTaskID}
             tasks={vehicle.tasks ?? []}
@@ -65,7 +67,9 @@ export const VehicleRow = ({ vehicle }: VehicleRow) => {
             onChangeSelectedTaskID={setSelectedTaskID}
           />
         </TableCell>
-        <TableCell>
+        <TableCell
+          onClick={(e) => e.stopPropagation()}
+        >
           <EngineerAvatar
             profile={selectedTask?.executor?.profile ?? null}
           />

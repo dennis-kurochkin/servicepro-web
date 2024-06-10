@@ -117,6 +117,7 @@ export const DialogTicketAssign = ({ open, engineer, onClose, onSelectTaskID }: 
             selectedTaskID={selectedTaskID}
             tasks={data ?? []}
             disableView
+            showClient
             onChangeSelectedTaskID={setSelectedTaskID}
           />
         </Box>
