@@ -79,7 +79,7 @@ export interface ChatStatus {
   employee: number;
   /** @format uuid */
   message_uuid: string;
-  /** ['search', 'approval', 'wait', 'on_way', 'pause', 'work', 'done'] */
+  /** ['search', 'processing', 'approval', 'wait', 'on_way', 'pause', 'work', 'done'] */
   status: string;
   edits: any;
 }
@@ -300,21 +300,6 @@ export enum LevelEnum {
 }
 
 /**
- * * `draft` - draft
- * * `posted` - posted
- * * `reject` - reject
- * * `delete` - delete
- * * `archived` - archived
- */
-export enum MarkEnum {
-  Draft = "draft",
-  Posted = "posted",
-  Reject = "reject",
-  Delete = "delete",
-  Archived = "archived",
-}
-
-/**
  * * `info` - info
  * * `problem` - problem
  * * `recommendation` - recommendation
@@ -523,9 +508,10 @@ export interface OrgWorkTask {
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark: MarkEnum;
+  mark: WorkTaskMark;
   /**
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -570,13 +556,11 @@ export interface OrgWorkTaskEdit {
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark: MarkEnum;
+  mark: WorkTaskMark;
   /** @format date-time */
   mark_date?: string | null;
   approval: WorkTaskCustomerApproval;
-  new_photos?: VehiclePhotoDetailed[];
-  add_photos?: number[];
-  remove_photos?: number[];
+  new_photos?: WorkTaskAttachment[];
   /** @format double */
   longitude?: number;
   /** @format double */
@@ -802,6 +786,8 @@ export type PaginatedWorkEmployeeList = WorkEmployee[];
 
 export type PaginatedWorkOrganizationList = WorkOrganization[];
 
+export type PaginatedWorkReviewList = WorkReview[];
+
 export type PaginatedWorkServiceCenterList = WorkServiceCenter[];
 
 export type PaginatedWorkTaskAttachmentList = WorkTaskAttachment[];
@@ -861,13 +847,11 @@ export interface PatchedOrgWorkTaskEdit {
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark?: MarkEnum;
+  mark?: WorkTaskMark;
   /** @format date-time */
   mark_date?: string | null;
   approval?: WorkTaskCustomerApproval;
-  new_photos?: VehiclePhotoDetailed[];
-  add_photos?: number[];
-  remove_photos?: number[];
+  new_photos?: WorkTaskAttachment[];
   /** @format double */
   longitude?: number;
   /** @format double */
@@ -1081,6 +1065,8 @@ export interface PatchedVehiclePhotoUpdate {
   readonly file?: string;
   /** @format date-time */
   verdict_date?: string | null;
+  /** @format uuid */
+  client_uuid?: string | null;
   readonly vehicle?: number;
   readonly recommendation?: number | null;
 }
@@ -1150,6 +1136,24 @@ export interface PatchedVehicleRuntime {
   readonly service_center?: number | null;
 }
 
+export interface PatchedWorkReview {
+  readonly id?: number;
+  /**
+   * @min 1
+   * @max 5
+   */
+  value?: number;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /** @maxLength 510 */
+  text?: string;
+  readonly task?: number;
+  readonly author?: number | null;
+  readonly recipient?: number | null;
+}
+
 export interface PatchedWorkTaskAttachment {
   readonly id?: number;
   /** @format uri */
@@ -1160,8 +1164,18 @@ export interface PatchedWorkTaskAttachment {
   readonly updated_at?: string;
   /** @maxLength 120 */
   title?: string;
+  /** @format uuid */
+  client_uuid?: string | null;
   readonly task?: number;
   readonly author?: number | null;
+}
+
+export interface PatchedWorkTaskEditResult {
+  runtime?: VehicleRuntimeEditResult;
+  recommendations?: VehicleRecommendationEditResult;
+  photos?: WorkTaskAttachmentEditResult;
+  /** @maxLength 510 */
+  report?: string;
 }
 
 export interface PatchedWorkTaskExecutor {
@@ -1170,10 +1184,21 @@ export interface PatchedWorkTaskExecutor {
   assistants?: any[] | null;
 }
 
-export interface PatchedWorkTaskResult {
+export interface PatchedWorkTaskMarkResult {
+  /**
+   * * `no` - no
+   * * `rejected` - rejected
+   * * `applied` - applied
+   */
+  customer_mark?: WorkTaskResultMark;
+}
+
+export interface PatchedWorkTaskSaveResult {
   runtime?: VehicleRuntimeResult[];
   recommendations?: VehicleRecommendationResult[];
-  photos?: VehiclePhotoResult[];
+  photos?: WorkTaskAttachment[];
+  /** @maxLength 510 */
+  report?: string;
 }
 
 export interface PointRadius {
@@ -1302,9 +1327,10 @@ export interface SerWorkTask {
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark: MarkEnum;
+  mark: WorkTaskMark;
   /**
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -1350,9 +1376,10 @@ export interface SerWorkTaskVerbose {
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark: MarkEnum;
+  mark: WorkTaskMark;
   /**
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -1443,6 +1470,7 @@ export enum StateEnum {
 
 /**
  * * `search` - search
+ * * `processing` - processing
  * * `approval` - approval
  * * `wait` - wait
  * * `on_way` - on_way
@@ -1452,6 +1480,7 @@ export enum StateEnum {
  */
 export enum StatusEnum {
   Search = "search",
+  Processing = "processing",
   Approval = "approval",
   Wait = "wait",
   OnWay = "on_way",
@@ -1853,22 +1882,10 @@ export interface VehiclePhotoDetailed {
   title?: string;
   /** @format date-time */
   verdict_date?: string | null;
+  /** @format uuid */
+  client_uuid?: string | null;
   readonly vehicle: number;
   readonly recommendation: number | null;
-}
-
-export interface VehiclePhotoResult {
-  /** @maxLength 120 */
-  title?: string;
-  /**
-   * * `info` - info
-   * * `problem` - problem
-   * * `recommendation` - recommendation
-   */
-  meaning: MeaningEnum;
-  recommendation_index?: number | null;
-  /** @format uri */
-  file?: string | null;
 }
 
 export interface VehiclePhotoUpdate {
@@ -1899,8 +1916,52 @@ export interface VehiclePhotoUpdate {
   readonly file: string;
   /** @format date-time */
   verdict_date?: string | null;
+  /** @format uuid */
+  client_uuid?: string | null;
   readonly vehicle: number;
   readonly recommendation: number | null;
+}
+
+export interface VehicleRecommendation {
+  readonly id: number;
+  /**
+   * * `info` - info
+   * * `warning` - warning
+   * * `critical` - critical
+   */
+  level: LevelEnum;
+  /**
+   * * `no` - no
+   * * `complete` - complete
+   */
+  solution: SolutionEnum;
+  /**
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict: VehicleAdditionVerdict;
+  readonly author: EmployeeDetailed;
+  readonly is_approved: boolean;
+  readonly is_rejected: boolean;
+  readonly is_completed: boolean;
+  /** @format date-time */
+  readonly complete_date: string;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 120 */
+  title?: string;
+  /** @maxLength 510 */
+  text?: string;
+  /** @format date-time */
+  solution_date?: string | null;
+  /** @format date-time */
+  verdict_date?: string | null;
+  readonly vehicle: number;
+  readonly service_center: number | null;
+  readonly auditor: number | null;
 }
 
 export interface VehicleRecommendationDetailed {
@@ -1945,6 +2006,12 @@ export interface VehicleRecommendationDetailed {
   readonly service_center: number | null;
 }
 
+export interface VehicleRecommendationEditResult {
+  new?: VehicleRecommendationResult[];
+  edit?: Record<string, VehicleRecommendationResult>;
+  remove?: number[];
+}
+
 export interface VehicleRecommendationResult {
   /** @maxLength 120 */
   title?: string;
@@ -1979,6 +2046,12 @@ export interface VehicleRuntime {
   verdict_date?: string | null;
   readonly vehicle: number;
   readonly service_center: number | null;
+}
+
+export interface VehicleRuntimeEditResult {
+  new?: VehicleRuntimeResult[];
+  edit?: Record<string, VehicleRuntimeResult>;
+  remove?: number[];
 }
 
 export interface VehicleRuntimeResult {
@@ -2057,6 +2130,24 @@ export interface WorkOrganization {
   is_active?: boolean;
 }
 
+export interface WorkReview {
+  readonly id: number;
+  /**
+   * @min 1
+   * @max 5
+   */
+  value: number;
+  /** @format date-time */
+  readonly created_at: string;
+  /** @format date-time */
+  readonly updated_at: string;
+  /** @maxLength 510 */
+  text: string;
+  readonly task: number;
+  readonly author: number | null;
+  readonly recipient: number | null;
+}
+
 export interface WorkServiceCenter {
   readonly id: number;
   readonly is_service_center: boolean;
@@ -2128,22 +2219,22 @@ export interface WorkTaskAttachment {
   readonly updated_at: string;
   /** @maxLength 120 */
   title?: string;
+  /** @format uuid */
+  client_uuid?: string | null;
   readonly task: number;
   readonly author: number | null;
 }
 
-export interface WorkTaskCheck {
+export interface WorkTaskAttachmentEditResult {
+  new?: WorkTaskAttachment[];
+  edit?: Record<string, WorkTaskAttachment>;
+  remove?: number[];
+}
+
+export interface WorkTaskAttachmentShort {
   readonly id: number;
-  control_point: ControlPoint;
-  /** @format date-time */
-  readonly created_at: string;
-  /** @format date-time */
-  readonly updated_at: string;
-  readonly customer_mark: boolean;
-  readonly coordinator_mark: boolean;
-  readonly executor_mark: boolean;
-  /** @maxLength 510 */
-  text?: string;
+  /** @format uuid */
+  client_uuid?: string | null;
 }
 
 export interface WorkTaskCheckGeo {
@@ -2172,9 +2263,10 @@ export interface WorkTaskDetailed {
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark: MarkEnum;
+  mark: WorkTaskMark;
   /**
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -2187,7 +2279,6 @@ export interface WorkTaskDetailed {
   readonly organization: OrganizationPublic;
   readonly vehicle: Vehicle;
   readonly approval: WorkTaskApproval;
-  readonly checklist: WorkTaskCheck[];
   readonly customer: EmployeeDetailed;
   readonly coordinator: EmployeeDetailed;
   readonly executor: EmployeeDetailed;
@@ -2237,6 +2328,54 @@ export interface WorkTaskGeo {
   readonly executor: EmployeeGeo;
 }
 
+/**
+ * * `draft` - draft
+ * * `posted` - posted
+ * * `reject` - reject
+ * * `delete` - delete
+ * * `archived` - archived
+ */
+export enum WorkTaskMark {
+  Draft = "draft",
+  Posted = "posted",
+  Reject = "reject",
+  Delete = "delete",
+  Archived = "archived",
+}
+
+export interface WorkTaskResult {
+  readonly recommendations: VehicleRecommendation[];
+  readonly runtime: VehicleRuntime[];
+  readonly photos: WorkTaskAttachmentShort[];
+  /** @maxLength 510 */
+  executor_report?: string;
+  /**
+   * Executor report
+   * @maxLength 510
+   */
+  coordinator_report?: string;
+  /** @format date-time */
+  check_date?: string | null;
+  /** @format date-time */
+  posted_date?: string | null;
+  /** @format date-time */
+  customer_mark_date?: string | null;
+  readonly customer_mark: string;
+  /** @format date-time */
+  readonly updated_at: string;
+}
+
+/**
+ * * `no` - no
+ * * `rejected` - rejected
+ * * `applied` - applied
+ */
+export enum WorkTaskResultMark {
+  No = "no",
+  Rejected = "rejected",
+  Applied = "applied",
+}
+
 export interface WorkTaskRoute {
   /** @format uuid */
   readonly uuid: string;
@@ -2279,9 +2418,10 @@ export interface WorkTaskShort {
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark: MarkEnum;
+  mark: WorkTaskMark;
   /**
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -2322,9 +2462,10 @@ export interface WorkTaskShortWithExecutor {
    * * `delete` - delete
    * * `archived` - archived
    */
-  mark: MarkEnum;
+  mark: WorkTaskMark;
   /**
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -2366,6 +2507,7 @@ export interface WorkTaskStatusChangeDetailed {
   readonly uuid: string;
   /**
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -2399,6 +2541,7 @@ export interface WorkTaskStatusChangeGeo {
   readonly uuid: string;
   /**
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -2761,6 +2904,8 @@ export interface VehicleOrgsVehiclesListParams {
   gos_number?: string;
   /** Number of results to return per page. */
   limit?: number;
+  /** Multiple values may be separated by commas. */
+  model?: string[];
   name?: string;
   /**
    * Ordering
@@ -2775,6 +2920,10 @@ export interface VehicleOrgsVehiclesListParams {
   o?: ("-created_at" | "-order" | "-updated_at" | "created_at" | "order" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   sn?: string;
   /** @pattern ^\d+$ */
   orgId: string;
@@ -2901,6 +3050,8 @@ export interface VehicleSersVehiclesListParams {
   gos_number?: string;
   /** Number of results to return per page. */
   limit?: number;
+  /** Multiple values may be separated by commas. */
+  model?: string[];
   name?: string;
   /**
    * Ordering
@@ -2915,6 +3066,10 @@ export interface VehicleSersVehiclesListParams {
   o?: ("-created_at" | "-order" | "-updated_at" | "created_at" | "order" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   sn?: string;
   /** @pattern ^\d+$ */
   orgId: string;
@@ -3126,7 +3281,14 @@ export type WorkOrgsSersRetrieveData = WorkServiceCenter;
 export type WorkOrgsSersSearchCreateData = WorkServiceCenterSearch;
 
 export interface WorkOrgsTasksListParams {
-  executor?: number;
+  /** Multiple values may be separated by commas. */
+  assistants?: string[];
+  /** Multiple values may be separated by commas. */
+  coordinator?: string[];
+  /** Multiple values may be separated by commas. */
+  customer?: string[];
+  /** Multiple values may be separated by commas. */
+  executor?: string[];
   /** Multiple values may be separated by commas. */
   ids?: string[];
   /** Number of results to return per page. */
@@ -3155,10 +3317,15 @@ export interface WorkOrgsTasksListParams {
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   /**
    * Multiple values may be separated by commas.
    *
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -3166,9 +3333,10 @@ export interface WorkOrgsTasksListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
+  status?: ("approval" | "done" | "on_way" | "pause" | "processing" | "search" | "wait" | "work")[];
   title?: string;
-  vehicle?: number;
+  /** Multiple values may be separated by commas. */
+  vehicle?: string[];
   /** @pattern ^\d+$ */
   orgId: string;
 }
@@ -3184,6 +3352,10 @@ export type WorkOrgsTasksPartialUpdateData = WorkTaskDetailed;
 export type WorkOrgsTasksDestroyData = any;
 
 export type WorkOrgsTasksGeoRetrieveData = WorkTaskGeo;
+
+export type WorkOrgsTasksResultRetrieveData = WorkTaskResult;
+
+export type WorkOrgsTasksResultMarkPartialUpdateData = WorkTaskResult;
 
 export interface WorkOrgsTasksAttachmentsListParams {
   /** Number of results to return per page. */
@@ -3218,6 +3390,28 @@ export type WorkOrgsTasksAttachmentsPartialUpdateData = WorkTaskAttachment;
 
 export type WorkOrgsTasksAttachmentsDestroyData = any;
 
+export interface WorkOrgsTasksReviewsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /** The initial index from which to return the results. */
+  offset?: number;
+  value?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  taskId: string;
+}
+
+export type WorkOrgsTasksReviewsListData = PaginatedWorkReviewList;
+
+export type WorkOrgsTasksReviewsCreateData = WorkReview;
+
+export type WorkOrgsTasksReviewsRetrieveData = WorkReview;
+
+export type WorkOrgsTasksReviewsPartialUpdateData = WorkReview;
+
+export type WorkOrgsTasksReviewsDestroyData = any;
+
 export interface WorkOrgsTasksStatusesListParams {
   /** Number of results to return per page. */
   limit?: number;
@@ -3247,7 +3441,14 @@ export type WorkOrgsTasksStatusesListData = PaginatedWorkTaskStatusChangeDetaile
 export type WorkOrgsTasksStatusesRetrieveData = WorkTaskStatusChangeDetailed;
 
 export interface WorkOrgsTasksFullListParams {
-  executor?: number;
+  /** Multiple values may be separated by commas. */
+  assistants?: string[];
+  /** Multiple values may be separated by commas. */
+  coordinator?: string[];
+  /** Multiple values may be separated by commas. */
+  customer?: string[];
+  /** Multiple values may be separated by commas. */
+  executor?: string[];
   /** Multiple values may be separated by commas. */
   ids?: string[];
   /** Number of results to return per page. */
@@ -3276,10 +3477,15 @@ export interface WorkOrgsTasksFullListParams {
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   /**
    * Multiple values may be separated by commas.
    *
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -3287,9 +3493,10 @@ export interface WorkOrgsTasksFullListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
+  status?: ("approval" | "done" | "on_way" | "pause" | "processing" | "search" | "wait" | "work")[];
   title?: string;
-  vehicle?: number;
+  /** Multiple values may be separated by commas. */
+  vehicle?: string[];
   /** @pattern ^\d+$ */
   orgId: string;
 }
@@ -3297,7 +3504,14 @@ export interface WorkOrgsTasksFullListParams {
 export type WorkOrgsTasksFullListData = PaginatedWorkTaskDetailedList;
 
 export interface WorkOrgsTasksGeosListParams {
-  executor?: number;
+  /** Multiple values may be separated by commas. */
+  assistants?: string[];
+  /** Multiple values may be separated by commas. */
+  coordinator?: string[];
+  /** Multiple values may be separated by commas. */
+  customer?: string[];
+  /** Multiple values may be separated by commas. */
+  executor?: string[];
   /** Multiple values may be separated by commas. */
   ids?: string[];
   /** Number of results to return per page. */
@@ -3326,10 +3540,15 @@ export interface WorkOrgsTasksGeosListParams {
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   /**
    * Multiple values may be separated by commas.
    *
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -3337,9 +3556,10 @@ export interface WorkOrgsTasksGeosListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
+  status?: ("approval" | "done" | "on_way" | "pause" | "processing" | "search" | "wait" | "work")[];
   title?: string;
-  vehicle?: number;
+  /** Multiple values may be separated by commas. */
+  vehicle?: string[];
   /** @pattern ^\d+$ */
   orgId: string;
 }
@@ -3426,7 +3646,14 @@ export type WorkSersOrgsListData = PaginatedWorkOrganizationList;
 export type WorkSersOrgsRetrieveData = WorkOrganization;
 
 export interface WorkSersTasksListParams {
-  executor?: number;
+  /** Multiple values may be separated by commas. */
+  assistants?: string[];
+  /** Multiple values may be separated by commas. */
+  coordinator?: string[];
+  /** Multiple values may be separated by commas. */
+  customer?: string[];
+  /** Multiple values may be separated by commas. */
+  executor?: string[];
   /** Multiple values may be separated by commas. */
   ids?: string[];
   /** Number of results to return per page. */
@@ -3455,10 +3682,15 @@ export interface WorkSersTasksListParams {
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   /**
    * Multiple values may be separated by commas.
    *
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -3466,9 +3698,10 @@ export interface WorkSersTasksListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
+  status?: ("approval" | "done" | "on_way" | "pause" | "processing" | "search" | "wait" | "work")[];
   title?: string;
-  vehicle?: number;
+  /** Multiple values may be separated by commas. */
+  vehicle?: string[];
   /** @pattern ^\d+$ */
   orgId: string;
 }
@@ -3481,9 +3714,13 @@ export type WorkSersTasksExecutorsPartialUpdateData = WorkTaskDetailed;
 
 export type WorkSersTasksGeoRetrieveData = WorkTaskGeo;
 
-export type WorkSersTasksResultPartialUpdateData = WorkTaskDetailed;
+export type WorkSersTasksResultRetrieveData = WorkTaskResult;
 
-export type WorkSersTasksResultApplyPartialUpdateData = WorkTaskDetailed;
+export type WorkSersTasksResultPartialUpdateData = WorkTaskResult;
+
+export type WorkSersTasksResultApplyPartialUpdateData = WorkTaskResult;
+
+export type WorkSersTasksResultEditPartialUpdateData = WorkTaskResult;
 
 export interface WorkSersTasksAttachmentsListParams {
   /** Number of results to return per page. */
@@ -3517,6 +3754,28 @@ export type WorkSersTasksAttachmentsRetrieveData = WorkTaskAttachment;
 export type WorkSersTasksAttachmentsPartialUpdateData = WorkTaskAttachment;
 
 export type WorkSersTasksAttachmentsDestroyData = any;
+
+export interface WorkSersTasksReviewsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /** The initial index from which to return the results. */
+  offset?: number;
+  value?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  taskId: string;
+}
+
+export type WorkSersTasksReviewsListData = PaginatedWorkReviewList;
+
+export type WorkSersTasksReviewsCreateData = WorkReview;
+
+export type WorkSersTasksReviewsRetrieveData = WorkReview;
+
+export type WorkSersTasksReviewsPartialUpdateData = WorkReview;
+
+export type WorkSersTasksReviewsDestroyData = any;
 
 export interface WorkSersTasksRoutesListParams {
   /** Number of results to return per page. */
@@ -3576,7 +3835,14 @@ export type WorkSersTasksStatusesListData = PaginatedWorkTaskStatusChangeDetaile
 export type WorkSersTasksStatusesRetrieveData = WorkTaskStatusChangeDetailed;
 
 export interface WorkSersTasksFullListParams {
-  executor?: number;
+  /** Multiple values may be separated by commas. */
+  assistants?: string[];
+  /** Multiple values may be separated by commas. */
+  coordinator?: string[];
+  /** Multiple values may be separated by commas. */
+  customer?: string[];
+  /** Multiple values may be separated by commas. */
+  executor?: string[];
   /** Multiple values may be separated by commas. */
   ids?: string[];
   /** Number of results to return per page. */
@@ -3605,10 +3871,15 @@ export interface WorkSersTasksFullListParams {
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   /**
    * Multiple values may be separated by commas.
    *
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -3616,9 +3887,10 @@ export interface WorkSersTasksFullListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
+  status?: ("approval" | "done" | "on_way" | "pause" | "processing" | "search" | "wait" | "work")[];
   title?: string;
-  vehicle?: number;
+  /** Multiple values may be separated by commas. */
+  vehicle?: string[];
   /** @pattern ^\d+$ */
   orgId: string;
 }
@@ -3626,7 +3898,14 @@ export interface WorkSersTasksFullListParams {
 export type WorkSersTasksFullListData = PaginatedWorkTaskDetailedList;
 
 export interface WorkSersTasksGeosListParams {
-  executor?: number;
+  /** Multiple values may be separated by commas. */
+  assistants?: string[];
+  /** Multiple values may be separated by commas. */
+  coordinator?: string[];
+  /** Multiple values may be separated by commas. */
+  customer?: string[];
+  /** Multiple values may be separated by commas. */
+  executor?: string[];
   /** Multiple values may be separated by commas. */
   ids?: string[];
   /** Number of results to return per page. */
@@ -3655,10 +3934,15 @@ export interface WorkSersTasksGeosListParams {
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   /**
    * Multiple values may be separated by commas.
    *
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -3666,9 +3950,10 @@ export interface WorkSersTasksGeosListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
+  status?: ("approval" | "done" | "on_way" | "pause" | "processing" | "search" | "wait" | "work")[];
   title?: string;
-  vehicle?: number;
+  /** Multiple values may be separated by commas. */
+  vehicle?: string[];
   /** @pattern ^\d+$ */
   orgId: string;
 }
@@ -3676,7 +3961,14 @@ export interface WorkSersTasksGeosListParams {
 export type WorkSersTasksGeosListData = PaginatedWorkTaskGeoList;
 
 export interface WorkSersTasksVerboseListParams {
-  executor?: number;
+  /** Multiple values may be separated by commas. */
+  assistants?: string[];
+  /** Multiple values may be separated by commas. */
+  coordinator?: string[];
+  /** Multiple values may be separated by commas. */
+  customer?: string[];
+  /** Multiple values may be separated by commas. */
+  executor?: string[];
   /** Multiple values may be separated by commas. */
   ids?: string[];
   /** Number of results to return per page. */
@@ -3705,10 +3997,15 @@ export interface WorkSersTasksVerboseListParams {
   o?: ("-created_at" | "-status_date" | "-updated_at" | "created_at" | "status_date" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   /**
    * Multiple values may be separated by commas.
    *
    * * `search` - search
+   * * `processing` - processing
    * * `approval` - approval
    * * `wait` - wait
    * * `on_way` - on_way
@@ -3716,9 +4013,10 @@ export interface WorkSersTasksVerboseListParams {
    * * `work` - work
    * * `done` - done
    */
-  status?: ("approval" | "done" | "on_way" | "pause" | "search" | "wait" | "work")[];
+  status?: ("approval" | "done" | "on_way" | "pause" | "processing" | "search" | "wait" | "work")[];
   title?: string;
-  vehicle?: number;
+  /** Multiple values may be separated by commas. */
+  vehicle?: string[];
   /** @pattern ^\d+$ */
   orgId: string;
 }
@@ -3729,6 +4027,8 @@ export interface WorkSersVehiclesListParams {
   gos_number?: string;
   /** Number of results to return per page. */
   limit?: number;
+  /** Multiple values may be separated by commas. */
+  model?: string[];
   name?: string;
   /**
    * Ordering
@@ -3743,6 +4043,10 @@ export interface WorkSersVehiclesListParams {
   o?: ("-created_at" | "-order" | "-updated_at" | "created_at" | "order" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
   sn?: string;
   /** @pattern ^\d+$ */
   orgId: string;
@@ -6099,6 +6403,45 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
+     * @name WorkOrgsTasksResultRetrieve
+     * @request GET:/api/v1/work/orgs/{org_id}/tasks/{id}/result/
+     * @secure
+     */
+    workOrgsTasksResultRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksResultRetrieveData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${id}/result/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksResultMarkPartialUpdate
+     * @request PATCH:/api/v1/work/orgs/{org_id}/tasks/{id}/result-mark/
+     * @secure
+     */
+    workOrgsTasksResultMarkPartialUpdate: (
+      id: number,
+      orgId: string,
+      data: PatchedWorkTaskMarkResult,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkOrgsTasksResultMarkPartialUpdateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${id}/result-mark/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
      * @name WorkOrgsTasksAttachmentsList
      * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/attachments/
      * @secure
@@ -6189,6 +6532,100 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     workOrgsTasksAttachmentsDestroy: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
       this.request<WorkOrgsTasksAttachmentsDestroyData, any>({
         path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/attachments/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksReviewsList
+     * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/reviews/
+     * @secure
+     */
+    workOrgsTasksReviewsList: (
+      { orgId, taskId, ...query }: WorkOrgsTasksReviewsListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkOrgsTasksReviewsListData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/reviews/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksReviewsCreate
+     * @request POST:/api/v1/work/orgs/{org_id}/tasks/{task_id}/reviews/
+     * @secure
+     */
+    workOrgsTasksReviewsCreate: (orgId: string, taskId: string, data: WorkReview, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksReviewsCreateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/reviews/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksReviewsRetrieve
+     * @request GET:/api/v1/work/orgs/{org_id}/tasks/{task_id}/reviews/{id}/
+     * @secure
+     */
+    workOrgsTasksReviewsRetrieve: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksReviewsRetrieveData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/reviews/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksReviewsPartialUpdate
+     * @request PATCH:/api/v1/work/orgs/{org_id}/tasks/{task_id}/reviews/{id}/
+     * @secure
+     */
+    workOrgsTasksReviewsPartialUpdate: (
+      id: number,
+      orgId: string,
+      taskId: string,
+      data: PatchedWorkReview,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkOrgsTasksReviewsPartialUpdateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/reviews/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksReviewsDestroy
+     * @request DELETE:/api/v1/work/orgs/{org_id}/tasks/{task_id}/reviews/{id}/
+     * @secure
+     */
+    workOrgsTasksReviewsDestroy: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
+      this.request<WorkOrgsTasksReviewsDestroyData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${taskId}/reviews/${id}/`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -6459,6 +6896,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
+     * @name WorkSersTasksResultRetrieve
+     * @request GET:/api/v1/work/sers/{org_id}/tasks/{id}/result/
+     * @secure
+     */
+    workSersTasksResultRetrieve: (id: number, orgId: string, params: RequestParams = {}) =>
+      this.request<WorkSersTasksResultRetrieveData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${id}/result/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
      * @name WorkSersTasksResultPartialUpdate
      * @request PATCH:/api/v1/work/sers/{org_id}/tasks/{id}/result/
      * @secure
@@ -6466,7 +6919,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     workSersTasksResultPartialUpdate: (
       id: number,
       orgId: string,
-      data: PatchedWorkTaskResult,
+      data: PatchedWorkTaskSaveResult,
       params: RequestParams = {},
     ) =>
       this.request<WorkSersTasksResultPartialUpdateData, any>({
@@ -6491,6 +6944,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/v1/work/sers/${orgId}/tasks/${id}/result-apply/`,
         method: "PATCH",
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksResultEditPartialUpdate
+     * @request PATCH:/api/v1/work/sers/{org_id}/tasks/{id}/result-edit/
+     * @secure
+     */
+    workSersTasksResultEditPartialUpdate: (
+      id: number,
+      orgId: string,
+      data: PatchedWorkTaskEditResult,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksResultEditPartialUpdateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${id}/result-edit/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
 
@@ -6588,6 +7064,100 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     workSersTasksAttachmentsDestroy: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
       this.request<WorkSersTasksAttachmentsDestroyData, any>({
         path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/attachments/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksReviewsList
+     * @request GET:/api/v1/work/sers/{org_id}/tasks/{task_id}/reviews/
+     * @secure
+     */
+    workSersTasksReviewsList: (
+      { orgId, taskId, ...query }: WorkSersTasksReviewsListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksReviewsListData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/reviews/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksReviewsCreate
+     * @request POST:/api/v1/work/sers/{org_id}/tasks/{task_id}/reviews/
+     * @secure
+     */
+    workSersTasksReviewsCreate: (orgId: string, taskId: string, data: WorkReview, params: RequestParams = {}) =>
+      this.request<WorkSersTasksReviewsCreateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/reviews/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksReviewsRetrieve
+     * @request GET:/api/v1/work/sers/{org_id}/tasks/{task_id}/reviews/{id}/
+     * @secure
+     */
+    workSersTasksReviewsRetrieve: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
+      this.request<WorkSersTasksReviewsRetrieveData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/reviews/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksReviewsPartialUpdate
+     * @request PATCH:/api/v1/work/sers/{org_id}/tasks/{task_id}/reviews/{id}/
+     * @secure
+     */
+    workSersTasksReviewsPartialUpdate: (
+      id: number,
+      orgId: string,
+      taskId: string,
+      data: PatchedWorkReview,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSersTasksReviewsPartialUpdateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/reviews/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksReviewsDestroy
+     * @request DELETE:/api/v1/work/sers/{org_id}/tasks/{task_id}/reviews/{id}/
+     * @secure
+     */
+    workSersTasksReviewsDestroy: (id: number, orgId: string, taskId: string, params: RequestParams = {}) =>
+      this.request<WorkSersTasksReviewsDestroyData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/${taskId}/reviews/${id}/`,
         method: "DELETE",
         secure: true,
         ...params,

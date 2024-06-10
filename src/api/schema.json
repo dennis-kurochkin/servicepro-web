@@ -3408,6 +3408,19 @@
                     },
                     {
                         "in": "query",
+                        "name": "model",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "name",
                         "schema": {
                             "type": "string"
@@ -3451,6 +3464,32 @@
                             "pattern": "^\\d+$"
                         },
                         "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -4592,6 +4631,19 @@
                     },
                     {
                         "in": "query",
+                        "name": "model",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "name",
                         "schema": {
                             "type": "string"
@@ -4635,6 +4687,32 @@
                             "pattern": "^\\d+$"
                         },
                         "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -6774,10 +6852,55 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "assistants",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "coordinator",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "customer",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "executor",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -6869,6 +6992,32 @@
                     },
                     {
                         "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "status",
                         "schema": {
                             "type": "array",
@@ -6879,13 +7028,14 @@
                                     "done",
                                     "on_way",
                                     "pause",
+                                    "processing",
                                     "search",
                                     "wait",
                                     "work"
                                 ]
                             }
                         },
-                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `processing` - processing\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
                         "explode": false,
                         "style": "form"
                     },
@@ -6900,8 +7050,14 @@
                         "in": "query",
                         "name": "vehicle",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     }
                 ],
                 "tags": [
@@ -7178,6 +7334,121 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/WorkTaskGeo"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/{id}/result/": {
+            "get": {
+                "operationId": "work_orgs_tasks_result_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskResult"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/{id}/result-mark/": {
+            "patch": {
+                "operationId": "work_orgs_tasks_result_mark_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskMarkResult"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskMarkResult"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskMarkResult"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskResult"
                                 }
                             }
                         },
@@ -7524,6 +7795,324 @@
                 }
             }
         },
+        "/api/v1/work/orgs/{org_id}/tasks/{task_id}/reviews/": {
+            "get": {
+                "operationId": "work_orgs_tasks_reviews_list",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "value",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedWorkReviewList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "work_orgs_tasks_reviews_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkReview"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkReview"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkReview"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkReview"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/{task_id}/reviews/{id}/": {
+            "get": {
+                "operationId": "work_orgs_tasks_reviews_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work review.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkReview"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "work_orgs_tasks_reviews_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work review.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkReview"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkReview"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkReview"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkReview"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "work_orgs_tasks_reviews_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work review.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
         "/api/v1/work/orgs/{org_id}/tasks/{task_id}/statuses/": {
             "get": {
                 "operationId": "work_orgs_tasks_statuses_list",
@@ -7683,10 +8272,55 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "assistants",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "coordinator",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "customer",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "executor",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -7778,6 +8412,32 @@
                     },
                     {
                         "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "status",
                         "schema": {
                             "type": "array",
@@ -7788,13 +8448,14 @@
                                     "done",
                                     "on_way",
                                     "pause",
+                                    "processing",
                                     "search",
                                     "wait",
                                     "work"
                                 ]
                             }
                         },
-                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `processing` - processing\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
                         "explode": false,
                         "style": "form"
                     },
@@ -7809,8 +8470,14 @@
                         "in": "query",
                         "name": "vehicle",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     }
                 ],
                 "tags": [
@@ -7844,10 +8511,55 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "assistants",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "coordinator",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "customer",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "executor",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -7939,6 +8651,32 @@
                     },
                     {
                         "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "status",
                         "schema": {
                             "type": "array",
@@ -7949,13 +8687,14 @@
                                     "done",
                                     "on_way",
                                     "pause",
+                                    "processing",
                                     "search",
                                     "wait",
                                     "work"
                                 ]
                             }
                         },
-                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `processing` - processing\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
                         "explode": false,
                         "style": "form"
                     },
@@ -7970,8 +8709,14 @@
                         "in": "query",
                         "name": "vehicle",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     }
                 ],
                 "tags": [
@@ -8486,10 +9231,55 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "assistants",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "coordinator",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "customer",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "executor",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -8581,6 +9371,32 @@
                     },
                     {
                         "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "status",
                         "schema": {
                             "type": "array",
@@ -8591,13 +9407,14 @@
                                     "done",
                                     "on_way",
                                     "pause",
+                                    "processing",
                                     "search",
                                     "wait",
                                     "work"
                                 ]
                             }
                         },
-                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `processing` - processing\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
                         "explode": false,
                         "style": "form"
                     },
@@ -8612,8 +9429,14 @@
                         "in": "query",
                         "name": "vehicle",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     }
                 ],
                 "tags": [
@@ -8805,6 +9628,52 @@
             }
         },
         "/api/v1/work/sers/{org_id}/tasks/{id}/result/": {
+            "get": {
+                "operationId": "work_sers_tasks_result_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskResult"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
             "patch": {
                 "operationId": "work_sers_tasks_result_partial_update",
                 "parameters": [
@@ -8834,17 +9703,17 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PatchedWorkTaskResult"
+                                "$ref": "#/components/schemas/PatchedWorkTaskSaveResult"
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/PatchedWorkTaskResult"
+                                "$ref": "#/components/schemas/PatchedWorkTaskSaveResult"
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/PatchedWorkTaskResult"
+                                "$ref": "#/components/schemas/PatchedWorkTaskSaveResult"
                             }
                         }
                     }
@@ -8862,7 +9731,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WorkTaskDetailed"
+                                    "$ref": "#/components/schemas/WorkTaskResult"
                                 }
                             }
                         },
@@ -8910,7 +9779,74 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WorkTaskDetailed"
+                                    "$ref": "#/components/schemas/WorkTaskResult"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/{id}/result-edit/": {
+            "patch": {
+                "operationId": "work_sers_tasks_result_edit_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskEditResult"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskEditResult"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskEditResult"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskResult"
                                 }
                             }
                         },
@@ -9218,6 +10154,324 @@
                             "type": "integer"
                         },
                         "description": "A unique integer value identifying this work task attachment.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/{task_id}/reviews/": {
+            "get": {
+                "operationId": "work_sers_tasks_reviews_list",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "value",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedWorkReviewList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "work_sers_tasks_reviews_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkReview"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkReview"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkReview"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkReview"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/sers/{org_id}/tasks/{task_id}/reviews/{id}/": {
+            "get": {
+                "operationId": "work_sers_tasks_reviews_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work review.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkReview"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "work_sers_tasks_reviews_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work review.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkReview"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkReview"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkReview"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkReview"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "work_sers_tasks_reviews_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work review.",
                         "required": true
                     },
                     {
@@ -9628,10 +10882,55 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "assistants",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "coordinator",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "customer",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "executor",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -9723,6 +11022,32 @@
                     },
                     {
                         "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "status",
                         "schema": {
                             "type": "array",
@@ -9733,13 +11058,14 @@
                                     "done",
                                     "on_way",
                                     "pause",
+                                    "processing",
                                     "search",
                                     "wait",
                                     "work"
                                 ]
                             }
                         },
-                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `processing` - processing\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
                         "explode": false,
                         "style": "form"
                     },
@@ -9754,8 +11080,14 @@
                         "in": "query",
                         "name": "vehicle",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     }
                 ],
                 "tags": [
@@ -9789,10 +11121,55 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "assistants",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "coordinator",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "customer",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "executor",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -9884,6 +11261,32 @@
                     },
                     {
                         "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "status",
                         "schema": {
                             "type": "array",
@@ -9894,13 +11297,14 @@
                                     "done",
                                     "on_way",
                                     "pause",
+                                    "processing",
                                     "search",
                                     "wait",
                                     "work"
                                 ]
                             }
                         },
-                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `processing` - processing\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
                         "explode": false,
                         "style": "form"
                     },
@@ -9915,8 +11319,14 @@
                         "in": "query",
                         "name": "vehicle",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     }
                 ],
                 "tags": [
@@ -9950,10 +11360,55 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "assistants",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "coordinator",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "customer",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "executor",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -10045,6 +11500,32 @@
                     },
                     {
                         "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "status",
                         "schema": {
                             "type": "array",
@@ -10055,13 +11536,14 @@
                                     "done",
                                     "on_way",
                                     "pause",
+                                    "processing",
                                     "search",
                                     "wait",
                                     "work"
                                 ]
                             }
                         },
-                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
+                        "description": "Multiple values may be separated by commas.\n\n* `search` - search\n* `processing` - processing\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done",
                         "explode": false,
                         "style": "form"
                     },
@@ -10076,8 +11558,14 @@
                         "in": "query",
                         "name": "vehicle",
                         "schema": {
-                            "type": "integer"
-                        }
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     }
                 ],
                 "tags": [
@@ -10127,6 +11615,19 @@
                     },
                     {
                         "in": "query",
+                        "name": "model",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
                         "name": "name",
                         "schema": {
                             "type": "string"
@@ -10170,6 +11671,32 @@
                             "pattern": "^\\d+$"
                         },
                         "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
                     },
                     {
                         "in": "query",
@@ -10476,7 +12003,7 @@
                     },
                     "status": {
                         "type": "string",
-                        "description": "['search', 'approval', 'wait', 'on_way', 'pause', 'work', 'done']"
+                        "description": "['search', 'processing', 'approval', 'wait', 'on_way', 'pause', 'work', 'done']"
                     },
                     "edits": {}
                 },
@@ -10960,17 +12487,6 @@
                 ],
                 "type": "string",
                 "description": "* `info` - info\n* `warning` - warning\n* `critical` - critical"
-            },
-            "MarkEnum": {
-                "enum": [
-                    "draft",
-                    "posted",
-                    "reject",
-                    "delete",
-                    "archived"
-                ],
-                "type": "string",
-                "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
             },
             "MeaningEnum": {
                 "enum": [
@@ -11474,7 +12990,7 @@
                         "readOnly": true
                     },
                     "mark": {
-                        "$ref": "#/components/schemas/MarkEnum"
+                        "$ref": "#/components/schemas/WorkTaskMark"
                     },
                     "status": {
                         "$ref": "#/components/schemas/StatusEnum"
@@ -11606,7 +13122,7 @@
                 "type": "object",
                 "properties": {
                     "mark": {
-                        "$ref": "#/components/schemas/MarkEnum"
+                        "$ref": "#/components/schemas/WorkTaskMark"
                     },
                     "mark_date": {
                         "type": [
@@ -11621,23 +13137,7 @@
                     "new_photos": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/VehiclePhotoDetailed"
-                        },
-                        "writeOnly": true
-                    },
-                    "add_photos": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer",
-                            "writeOnly": true
-                        },
-                        "writeOnly": true
-                    },
-                    "remove_photos": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer",
-                            "writeOnly": true
+                            "$ref": "#/components/schemas/WorkTaskAttachment"
                         },
                         "writeOnly": true
                     },
@@ -12365,6 +13865,12 @@
                     "$ref": "#/components/schemas/WorkOrganization"
                 }
             },
+            "PaginatedWorkReviewList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/WorkReview"
+                }
+            },
             "PaginatedWorkServiceCenterList": {
                 "type": "array",
                 "items": {
@@ -12496,7 +14002,7 @@
                 "type": "object",
                 "properties": {
                     "mark": {
-                        "$ref": "#/components/schemas/MarkEnum"
+                        "$ref": "#/components/schemas/WorkTaskMark"
                     },
                     "mark_date": {
                         "type": [
@@ -12511,23 +14017,7 @@
                     "new_photos": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/VehiclePhotoDetailed"
-                        },
-                        "writeOnly": true
-                    },
-                    "add_photos": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer",
-                            "writeOnly": true
-                        },
-                        "writeOnly": true
-                    },
-                    "remove_photos": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer",
-                            "writeOnly": true
+                            "$ref": "#/components/schemas/WorkTaskAttachment"
                         },
                         "writeOnly": true
                     },
@@ -13065,6 +14555,13 @@
                         ],
                         "format": "date-time"
                     },
+                    "client_uuid": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
                     "vehicle": {
                         "type": "integer",
                         "readOnly": true
@@ -13239,6 +14736,52 @@
                     }
                 }
             },
+            "PatchedWorkReview": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "value": {
+                        "type": "integer",
+                        "maximum": 5,
+                        "minimum": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "text": {
+                        "type": "string",
+                        "maxLength": 510
+                    },
+                    "task": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "author": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true
+                    },
+                    "recipient": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true
+                    }
+                }
+            },
             "PatchedWorkTaskAttachment": {
                 "type": "object",
                 "properties": {
@@ -13267,6 +14810,13 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "client_uuid": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
                     "task": {
                         "type": "integer",
                         "readOnly": true
@@ -13277,6 +14827,24 @@
                             "null"
                         ],
                         "readOnly": true
+                    }
+                }
+            },
+            "PatchedWorkTaskEditResult": {
+                "type": "object",
+                "properties": {
+                    "runtime": {
+                        "$ref": "#/components/schemas/VehicleRuntimeEditResult"
+                    },
+                    "recommendations": {
+                        "$ref": "#/components/schemas/VehicleRecommendationEditResult"
+                    },
+                    "photos": {
+                        "$ref": "#/components/schemas/WorkTaskAttachmentEditResult"
+                    },
+                    "report": {
+                        "type": "string",
+                        "maxLength": 510
                     }
                 }
             },
@@ -13306,7 +14874,15 @@
                     }
                 }
             },
-            "PatchedWorkTaskResult": {
+            "PatchedWorkTaskMarkResult": {
+                "type": "object",
+                "properties": {
+                    "customer_mark": {
+                        "$ref": "#/components/schemas/WorkTaskResultMark"
+                    }
+                }
+            },
+            "PatchedWorkTaskSaveResult": {
                 "type": "object",
                 "properties": {
                     "runtime": {
@@ -13324,8 +14900,12 @@
                     "photos": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/VehiclePhotoResult"
+                            "$ref": "#/components/schemas/WorkTaskAttachment"
                         }
+                    },
+                    "report": {
+                        "type": "string",
+                        "maxLength": 510
                     }
                 }
             },
@@ -13566,7 +15146,7 @@
                         "readOnly": true
                     },
                     "mark": {
-                        "$ref": "#/components/schemas/MarkEnum"
+                        "$ref": "#/components/schemas/WorkTaskMark"
                     },
                     "status": {
                         "$ref": "#/components/schemas/StatusEnum"
@@ -13703,7 +15283,7 @@
                         "readOnly": true
                     },
                     "mark": {
-                        "$ref": "#/components/schemas/MarkEnum"
+                        "$ref": "#/components/schemas/WorkTaskMark"
                     },
                     "status": {
                         "$ref": "#/components/schemas/StatusEnum"
@@ -13909,6 +15489,7 @@
             "StatusEnum": {
                 "enum": [
                     "search",
+                    "processing",
                     "approval",
                     "wait",
                     "on_way",
@@ -13917,7 +15498,7 @@
                     "done"
                 ],
                 "type": "string",
-                "description": "* `search` - search\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
+                "description": "* `search` - search\n* `processing` - processing\n* `approval` - approval\n* `wait` - wait\n* `on_way` - on_way\n* `pause` - pause\n* `work` - work\n* `done` - done"
             },
             "TokenBlacklist": {
                 "type": "object",
@@ -15111,6 +16692,13 @@
                         ],
                         "format": "date-time"
                     },
+                    "client_uuid": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
                     "vehicle": {
                         "type": "integer",
                         "readOnly": true
@@ -15135,34 +16723,6 @@
                     "updated_at",
                     "vehicle",
                     "verdict"
-                ]
-            },
-            "VehiclePhotoResult": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "maxLength": 120
-                    },
-                    "meaning": {
-                        "$ref": "#/components/schemas/MeaningEnum"
-                    },
-                    "recommendation_index": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "file": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "uri"
-                    }
-                },
-                "required": [
-                    "meaning"
                 ]
             },
             "VehiclePhotoUpdate": {
@@ -15228,6 +16788,13 @@
                         ],
                         "format": "date-time"
                     },
+                    "client_uuid": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
                     "vehicle": {
                         "type": "integer",
                         "readOnly": true
@@ -15250,6 +16817,115 @@
                     "is_rejected",
                     "meaning",
                     "recommendation",
+                    "updated_at",
+                    "vehicle",
+                    "verdict"
+                ]
+            },
+            "VehicleRecommendation": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "level": {
+                        "$ref": "#/components/schemas/LevelEnum"
+                    },
+                    "solution": {
+                        "$ref": "#/components/schemas/SolutionEnum"
+                    },
+                    "verdict": {
+                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
+                    },
+                    "author": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/EmployeeDetailed"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "is_approved": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "is_rejected": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "is_completed": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "complete_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "text": {
+                        "type": "string",
+                        "maxLength": 510
+                    },
+                    "solution_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "verdict_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "vehicle": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "service_center": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true
+                    },
+                    "auditor": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "auditor",
+                    "author",
+                    "complete_date",
+                    "created_at",
+                    "id",
+                    "is_approved",
+                    "is_completed",
+                    "is_rejected",
+                    "level",
+                    "service_center",
+                    "solution",
                     "updated_at",
                     "vehicle",
                     "verdict"
@@ -15365,6 +17041,29 @@
                     "verdict"
                 ]
             },
+            "VehicleRecommendationEditResult": {
+                "type": "object",
+                "properties": {
+                    "new": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VehicleRecommendationResult"
+                        }
+                    },
+                    "edit": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/VehicleRecommendationResult"
+                        }
+                    },
+                    "remove": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            },
             "VehicleRecommendationResult": {
                 "type": "object",
                 "properties": {
@@ -15463,6 +17162,29 @@
                     "vehicle",
                     "verdict"
                 ]
+            },
+            "VehicleRuntimeEditResult": {
+                "type": "object",
+                "properties": {
+                    "new": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VehicleRuntimeResult"
+                        }
+                    },
+                    "edit": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/VehicleRuntimeResult"
+                        }
+                    },
+                    "remove": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                }
             },
             "VehicleRuntimeResult": {
                 "type": "object",
@@ -15675,6 +17397,62 @@
                     "summaries",
                     "tasks",
                     "updated_at"
+                ]
+            },
+            "WorkReview": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "value": {
+                        "type": "integer",
+                        "maximum": 5,
+                        "minimum": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "text": {
+                        "type": "string",
+                        "maxLength": 510
+                    },
+                    "task": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "author": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true
+                    },
+                    "recipient": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "author",
+                    "created_at",
+                    "id",
+                    "recipient",
+                    "task",
+                    "text",
+                    "updated_at",
+                    "value"
                 ]
             },
             "WorkServiceCenter": {
@@ -15915,6 +17693,13 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "client_uuid": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
                     "task": {
                         "type": "integer",
                         "readOnly": true
@@ -15935,51 +17720,46 @@
                     "updated_at"
                 ]
             },
-            "WorkTaskCheck": {
+            "WorkTaskAttachmentEditResult": {
+                "type": "object",
+                "properties": {
+                    "new": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskAttachment"
+                        }
+                    },
+                    "edit": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/WorkTaskAttachment"
+                        }
+                    },
+                    "remove": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            },
+            "WorkTaskAttachmentShort": {
                 "type": "object",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "readOnly": true
                     },
-                    "control_point": {
-                        "$ref": "#/components/schemas/ControlPoint"
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "customer_mark": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "coordinator_mark": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "executor_mark": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "text": {
-                        "type": "string",
-                        "maxLength": 510
+                    "client_uuid": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
                     }
                 },
                 "required": [
-                    "control_point",
-                    "coordinator_mark",
-                    "created_at",
-                    "customer_mark",
-                    "executor_mark",
-                    "id",
-                    "updated_at"
+                    "id"
                 ]
             },
             "WorkTaskCheckGeo": {
@@ -16039,7 +17819,7 @@
                         "readOnly": true
                     },
                     "mark": {
-                        "$ref": "#/components/schemas/MarkEnum"
+                        "$ref": "#/components/schemas/WorkTaskMark"
                     },
                     "status": {
                         "$ref": "#/components/schemas/StatusEnum"
@@ -16074,13 +17854,6 @@
                                 "$ref": "#/components/schemas/WorkTaskApproval"
                             }
                         ],
-                        "readOnly": true
-                    },
-                    "checklist": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/WorkTaskCheck"
-                        },
                         "readOnly": true
                     },
                     "customer": {
@@ -16168,7 +17941,6 @@
                 },
                 "required": [
                     "approval",
-                    "checklist",
                     "coordinator",
                     "created_at",
                     "customer",
@@ -16242,6 +18014,98 @@
                     "routes",
                     "status_changes"
                 ]
+            },
+            "WorkTaskMark": {
+                "enum": [
+                    "draft",
+                    "posted",
+                    "reject",
+                    "delete",
+                    "archived"
+                ],
+                "type": "string",
+                "description": "* `draft` - draft\n* `posted` - posted\n* `reject` - reject\n* `delete` - delete\n* `archived` - archived"
+            },
+            "WorkTaskResult": {
+                "type": "object",
+                "properties": {
+                    "recommendations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VehicleRecommendation"
+                        },
+                        "readOnly": true
+                    },
+                    "runtime": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VehicleRuntime"
+                        },
+                        "readOnly": true
+                    },
+                    "photos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskAttachmentShort"
+                        },
+                        "readOnly": true
+                    },
+                    "executor_report": {
+                        "type": "string",
+                        "maxLength": 510
+                    },
+                    "coordinator_report": {
+                        "type": "string",
+                        "title": "Executor report",
+                        "maxLength": 510
+                    },
+                    "check_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "posted_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "customer_mark_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "customer_mark": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "customer_mark",
+                    "photos",
+                    "recommendations",
+                    "runtime",
+                    "updated_at"
+                ]
+            },
+            "WorkTaskResultMark": {
+                "enum": [
+                    "no",
+                    "rejected",
+                    "applied"
+                ],
+                "type": "string",
+                "description": "* `no` - no\n* `rejected` - rejected\n* `applied` - applied"
             },
             "WorkTaskRoute": {
                 "type": "object",
@@ -16375,7 +18239,7 @@
                         "readOnly": true
                     },
                     "mark": {
-                        "$ref": "#/components/schemas/MarkEnum"
+                        "$ref": "#/components/schemas/WorkTaskMark"
                     },
                     "status": {
                         "$ref": "#/components/schemas/StatusEnum"
@@ -16473,7 +18337,7 @@
                         "readOnly": true
                     },
                     "mark": {
-                        "$ref": "#/components/schemas/MarkEnum"
+                        "$ref": "#/components/schemas/WorkTaskMark"
                     },
                     "status": {
                         "$ref": "#/components/schemas/StatusEnum"
