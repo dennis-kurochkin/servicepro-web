@@ -1,3 +1,4 @@
+import { PanelDataAbsent } from '@components/PanelDataAbsent'
 import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { VehicleChipRecommendationLevel } from '@features/vehicles/components/VehicleChipRecommendationLevel'
@@ -13,7 +14,7 @@ interface VehicleRecommendationsProps {
   vehicleID: number
 }
 
-export const VehicleRecommendations = ({ vehicleID }: VehicleRecommendationsProps) => {
+export const VehicleTabRecommendations = ({ vehicleID }: VehicleRecommendationsProps) => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
   const { data, isFetching, isSuccess } = useQuery({
@@ -23,8 +24,6 @@ export const VehicleRecommendations = ({ vehicleID }: VehicleRecommendationsProp
         orgId: organizationID.toString(),
         vehicleId: vehicleID.toString(),
       })
-
-      console.log(data)
 
       return data
     },
@@ -43,14 +42,15 @@ export const VehicleRecommendations = ({ vehicleID }: VehicleRecommendationsProp
           {Array.from({ length: 5 }).map((_, index) => (
             <Skeleton
               key={index}
-              height={54}
+              width={'50%'}
+              height={100}
               variant={'rounded'}
             />
           ))}
         </>
       ) : (
         <>
-          {isSuccess && (
+          {isSuccess && data.length > 0 ? (
             <>
               {data.map((rec) => (
                 <Card
@@ -133,7 +133,7 @@ export const VehicleRecommendations = ({ vehicleID }: VehicleRecommendationsProp
                 </Card>
               ))}
             </>
-          )}
+          ) : <PanelDataAbsent />}
         </>
       )}
     </Box>

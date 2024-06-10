@@ -7,8 +7,8 @@ import { PanelInfo } from '@features/shared/components/PanelInfo'
 import { QueryKey } from '@features/shared/data'
 import { LabelValue } from '@features/shared/types'
 import { TicketsTable } from '@features/tickets/components/TicketsTable'
-import { VehicleRecommendations } from '@features/vehicles/components/VehicleRecommendations'
 import { VehicleRecommendationsChips } from '@features/vehicles/components/VehicleRecommendationsChips'
+import { VehicleTabRecommendations } from '@features/vehicles/components/VehicleTabRecommendations'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
@@ -167,7 +167,7 @@ export const VehicleRoute = () => {
             value={VehicleTab.Recommendations}
             sx={{ paddingX: 0, width: '100%' }}
           >
-            <VehicleRecommendations vehicleID={vehicleID} />
+            <VehicleTabRecommendations vehicleID={vehicleID} />
           </TabPanel>
           <TabPanel
             value={VehicleTab.Tickets}
