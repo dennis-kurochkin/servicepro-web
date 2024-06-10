@@ -7,7 +7,7 @@ export enum TicketsTab {
 
 export const StatusEnumTitle: Record<StatusEnum, string> = {
   [StatusEnum.Done]: 'Выполнено',
-  [StatusEnum.Approval]: 'Согласование',
+  [StatusEnum.Approval]: 'Ждет подтверждения',
   [StatusEnum.OnWay]: 'В пути',
   [StatusEnum.Wait]: 'Ожидание ИСО',
   [StatusEnum.Pause]: 'Пауза',
