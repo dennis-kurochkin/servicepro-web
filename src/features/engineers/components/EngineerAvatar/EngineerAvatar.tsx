@@ -12,12 +12,13 @@ interface EngineerAvatarProps {
   }
   fullName?: string,
   labelled?: boolean
+  emptyLabel?: string
   sx?: SxProps
   renderAfterChip?: ReactNode
   onClick?: () => void
 }
 
-export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', labelled = true, sx, renderAfterChip, onClick }: EngineerAvatarProps) => {
+export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', emptyLabel = 'Не назначен', labelled = true, sx, renderAfterChip, onClick }: EngineerAvatarProps) => {
   const avatar = (
     <Avatar
       alt={fullName}
@@ -65,7 +66,7 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', l
           avatar={avatar}
           label={(
             <>
-              {profile ? getEngineerLabel(profile) : 'Не назначен'}
+              {profile ? getEngineerLabel(profile) : emptyLabel}
               {profile && (
                 <Typography
                   component={'span'}
