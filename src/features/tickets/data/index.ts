@@ -13,4 +13,5 @@ export const StatusEnumTitle: Record<StatusEnum, string> = {
   [StatusEnum.Pause]: 'Пауза',
   [StatusEnum.Search]: 'Поиск',
   [StatusEnum.Work]: 'ИСО приступил',
+  [StatusEnum.Processing]: 'Processing',
 }

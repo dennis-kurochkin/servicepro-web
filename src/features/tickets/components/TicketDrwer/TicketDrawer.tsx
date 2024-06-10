@@ -95,7 +95,7 @@ export const TicketDrawer = () => {
   })
 
   const { data, isFetching } = useQuery({
-    queryKey: [QueryKey.Ticket, organizationID],
+    queryKey: [QueryKey.Ticket, ticketID, organizationID],
     queryFn: async () => {
       const { data } = await api.workSersTasksRetrieve(ticketID!, organizationID.toString())
 
@@ -127,7 +127,7 @@ export const TicketDrawer = () => {
   })
 
   const chatsQuery = useQuery({
-    queryKey: [QueryKey.Chats, organizationID],
+    queryKey: [QueryKey.Chats, ticketID, organizationID],
     queryFn: async () => {
       const { data } = await chatApi.getMessagesApiChatsTaskIdMessagesGet({
         taskId: ticketID!,
@@ -140,6 +140,19 @@ export const TicketDrawer = () => {
     },
     refetchOnWindowFocus: false,
     enabled: readyState === ReadyState.OPEN && !!ticketID,
+  })
+
+  const attachmentsQuery = useQuery({
+    queryKey: ['attachments', ticketID, organizationID],
+    queryFn: async () => {
+      const { data } = await api.workSersTasksAttachmentsList({
+        orgId: organizationID.toString(),
+        taskId: ticketID?.toString() ?? '',
+      })
+
+      return data
+    },
+    enabled: open && !!ticketID,
   })
 
   const handleSendMessage = useCallback(async () => {
@@ -241,7 +254,13 @@ export const TicketDrawer = () => {
                   photo: members[message.employee_id].profile.photo ?? undefined,
                   role: members[message.employee_id].role,
                 } : message.employee_id}
-                pictures={message.media_files?.map((media) => media.path)}
+                pictures={message.media_files?.map((media) => {
+                  if (media.path.includes('http')) {
+                    return media.path
+                  }
+
+                  return attachmentsQuery.data?.find(({ client_uuid }) => media.path === client_uuid)?.file ?? media.path
+                })}
                 content={message.text}
                 status={message.status as StatusEnum}
                 date={message.server_time}

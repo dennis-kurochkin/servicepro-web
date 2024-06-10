@@ -10,6 +10,7 @@ const StatusEnumColor: Record<StatusEnum, ChipProps['color']> = {
   [StatusEnum.Pause]: 'info',
   [StatusEnum.Search]: 'info',
   [StatusEnum.Work]: 'success',
+  [StatusEnum.Processing]: 'info',
 }
 
 export interface ChipStatusProps {

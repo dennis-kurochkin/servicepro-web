@@ -47,7 +47,6 @@ export const ClientRoute = () => {
     queryFn: async () => {
       const options = {
         orgId: organizationID.toString(),
-        customer: clientID,
         offset: ticketsPage * PAGINATION_DEFAULT_LIMIT,
         limit: PAGINATION_DEFAULT_LIMIT,
       }
