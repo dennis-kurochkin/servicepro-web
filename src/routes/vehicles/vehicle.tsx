@@ -8,6 +8,8 @@ import { QueryKey } from '@features/shared/data'
 import { LabelValue } from '@features/shared/types'
 import { TicketsTable } from '@features/tickets/components/TicketsTable'
 import { VehicleRecommendationsChips } from '@features/vehicles/components/VehicleRecommendationsChips'
+import { VehicleTabDocumentation } from '@features/vehicles/components/VehicleTabDocumentation'
+import { VehicleTabNotes } from '@features/vehicles/components/VehicleTabNotes'
 import { VehicleTabRecommendations } from '@features/vehicles/components/VehicleTabRecommendations'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -184,15 +186,15 @@ export const VehicleRoute = () => {
           </TabPanel>
           <TabPanel
             value={VehicleTab.Documents}
-            sx={{ paddingX: 0 }}
+            sx={{ paddingX: 0, width: '100%' }}
           >
-
+            <VehicleTabDocumentation vehicleID={vehicleID} />
           </TabPanel>
           <TabPanel
             value={VehicleTab.Notes}
-            sx={{ paddingX: 0 }}
+            sx={{ paddingX: 0, width: '100%' }}
           >
-
+            <VehicleTabNotes vehicleID={vehicleID} />
           </TabPanel>
           <TabPanel
             value={VehicleTab.OperatingTime}
