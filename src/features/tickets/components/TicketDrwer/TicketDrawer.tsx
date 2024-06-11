@@ -230,9 +230,6 @@ export const TicketDrawer = () => {
               <TicketDrawerHeaderChip
                 label={`Начало план: ${data?.approval.plan_start_date ? format(new Date(data?.approval.plan_start_date), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_DASH}`}
               />
-              <TicketDrawerHeaderChip
-                label={`Завершение план: ${data?.approval.plan_complete_date ? format(new Date(data?.approval.plan_complete_date), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_DASH}`}
-              />
             </>
           )}
           onClose={handleClose}
