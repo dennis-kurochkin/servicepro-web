@@ -1,14 +1,9 @@
-import React from 'react'
-import { Control, Controller, ControllerProps, FieldValues, Path } from 'react-hook-form'
-import { FieldDatepicker, FieldDatepickerProps } from 'components/Field/components/FieldDatepicker'
+import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
+import { FieldDatepicker, FieldDatepickerProps } from '@components/Field/components/FieldDatepicker'
 
-interface FieldDatepickerControlledProps<F extends FieldValues> extends Omit<
+type FieldDatepickerControlledProps<F extends FieldValues = FieldValues> = UseControllerProps<F> & Omit<
   FieldDatepickerProps, 'id' | 'name' | 'value' | 'error' | 'required' | 'onChange'
-> {
-  name: Path<F>
-  control: Control<F>
-  rules: ControllerProps['rules']
-}
+>
 
 export const FieldDatepickerControlled = <F extends FieldValues>(props: FieldDatepickerControlledProps<F>) => {
   return (
