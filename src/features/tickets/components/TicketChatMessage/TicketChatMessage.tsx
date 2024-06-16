@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { DialogPhotoSlider } from '@components/DialogPhotoSlider'
 import { useDialogPhotoSliderUtils } from '@components/DialogPhotoSlider/hooks/useDialogPhotoSliderUtils'
 import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_DAY } from '@constants/index'
@@ -7,14 +7,15 @@ import { getEngineerLabel } from '@features/engineers/helpers'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { QueryKey, RoleLabel } from '@features/shared/data'
 import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
+import { TicketMessageAction, TicketMessageActionLabel } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { DisplaySettings, Person } from '@mui/icons-material'
-import { Avatar, Box, Card, Typography } from '@mui/material'
+import { Avatar, Box, Button, Card, Typography } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import { RoleEnum, StatusEnum } from '~/api/servicepro.generated'
+import { RoleEnum, StatusEnum, WorkTaskStatusChangeDetailed } from '~/api/servicepro.generated'
 
 type TicketChatMessageAuthor = {
   id: number
@@ -24,17 +25,20 @@ type TicketChatMessageAuthor = {
 }
 
 export interface TicketChatMessageProps {
+  ticketID: number | null
+  authorization: string
+  uuid: string
   author: null | number | TicketChatMessageAuthor
   content: ReactNode | string
   pictures?: string[]
   status?: StatusEnum
+  statusData: WorkTaskStatusChangeDetailed | null
   date: string
-  actions?: ReactNode
 }
 
-export const TicketChatMessage = ({ author, content, pictures, status, date, actions }: TicketChatMessageProps) => {
+export const TicketChatMessage = ({ ticketID, authorization, uuid, author, content, pictures, status, date, statusData }: TicketChatMessageProps) => {
   const { setCurrentPictureIndex } = useDialogPhotoSliderUtils()
-  const { api } = useApi()
+  const { api, chatApi } = useApi()
   const { organizationID } = useOrganizationID()
   const [isDialogPhotoSliderOpen, setDialogPhotoSliderOpen] = useState(false)
 
@@ -60,6 +64,19 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
     },
     enabled: typeof author === 'number',
   })
+
+  const handlePerformAction = useCallback(async (action: TicketMessageAction) => {
+    const { data } = await chatApi.useMessageButtonApiChatsTaskIdMessagesMessageUuidButtonsPost({
+      taskId: ticketID!,
+      authorization,
+      messageUuid: uuid,
+    }, {
+      name: action,
+      client_time: new Date().toISOString(),
+    })
+
+    console.log(data)
+  }, [ticketID, chatApi, uuid, authorization])
 
   const authorProfile = useMemo(() => typeof author === 'number' ? (profile ?? {
     id: -1,
@@ -228,7 +245,7 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
               ))}
             </Box>
           )}
-          {actions && (
+          {statusData?.buttons && (
             <Box
               sx={{
                 display: 'grid',
@@ -236,7 +253,17 @@ export const TicketChatMessage = ({ author, content, pictures, status, date, act
                 gridTemplateColumns: '1fr 1fr',
               }}
             >
-              {actions}
+              {statusData.buttons.map((action) => (
+                <Button
+                  key={action.name}
+                  variant={'outlined'}
+                  color={'info'}
+                  disabled={!action.active}
+                  onClick={() => handlePerformAction(action.name as TicketMessageAction)}
+                >
+                  {TicketMessageActionLabel[action.name as TicketMessageAction]}
+                </Button>
+              ))}
             </Box>
           )}
         </Box>

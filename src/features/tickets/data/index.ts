@@ -15,3 +15,11 @@ export const StatusEnumTitle: Record<StatusEnum, string> = {
   [StatusEnum.Search]: 'Поиск',
   [StatusEnum.Work]: 'ИСО приступил',
 }
+
+export enum TicketMessageAction {
+  Applied = 'applied',
+}
+
+export const TicketMessageActionLabel: Record<TicketMessageAction, string> = {
+  [TicketMessageAction.Applied]: 'Принято',
+}

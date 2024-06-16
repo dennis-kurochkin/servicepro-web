@@ -1,12 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { ButtonIconSquare } from '@components/ButtonIconSquare'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { TooltipNew } from '@components/TooltipNew'
-import { PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { getEngineerLabel } from '@features/engineers/helpers'
-import { QueryKey, SearchParamsKey } from '@features/shared/data'
+import { SearchParamsKey } from '@features/shared/data'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
 import { TicketChatMessage } from '@features/tickets/components/TicketChatMessage'
 import { TicketDrawerFooter } from '@features/tickets/components/TicketDrawerFooter'
@@ -16,6 +14,11 @@ import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHea
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
 import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketDrawerHeaderDateChip'
 import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
+import {
+  useTicketDrawerQuery,
+  useTicketDrawerQueryAttachments, useTicketDrawerQueryChats, useTicketDrawerQueryStatuses,
+  useTicketDrawerWebSocket,
+} from '@features/tickets/components/TicketDrwer/hooks'
 import { StatusEnumTitle } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
@@ -23,21 +26,7 @@ import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Send, Update } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, BoxProps, Drawer, styled } from '@mui/material'
-import { useQuery } from '@tanstack/react-query'
-import { queryClient } from '~/api'
-import { Message } from '~/api/servicepro-chat.generated'
-import { Profile, RoleEnum, StatusEnum, WorkTaskDetailed } from '~/api/servicepro.generated'
-
-type WSData = {
-  payload_model: 'NewMessage',
-  payload: {
-    task_id: number,
-    message: Message
-  }
-} | {
-  payload_model: 'Other',
-  payload: undefined
-}
+import { StatusEnum } from '~/api/servicepro.generated'
 
 const ContentWrapper = styled(Box)<BoxProps>(() => ({
   flexGrow: 1,
@@ -52,7 +41,7 @@ const ContentWrapper = styled(Box)<BoxProps>(() => ({
 
 export const TicketDrawer = () => {
   const { organizationID } = useOrganizationID()
-  const { api, chatApi } = useApi()
+  const { chatApi } = useApi()
   const [searchParams, setSearchParams] = useSearchParams()
   const params = useParams()
   const navigate = useNavigate()
@@ -60,99 +49,16 @@ export const TicketDrawer = () => {
 
   const open = useMemo(() => !!params.ticketID || !!searchParams.get('ticketID'), [params, searchParams])
   const ticketID = useMemo(() => params.ticketID ? +params.ticketID : searchParams.get('ticketID') ? +searchParams.get('ticketID')! : null, [params, searchParams])
-  const [authorization, setAuthorization] = useState('')
-  const [members, setMembers] = useState<{ [key: number]: { profile: Profile, role: RoleEnum } }>({})
   const [message, setMessage] = useState<string>('')
   const [newStatus, setNewStatus] = useState<StatusEnum | null>(null)
   const [showStatusField, setShowStatusField] = useState(false)
   const [sendingMessage, setSendingMessage] = useState(false)
 
-  const getSocketUrl = useCallback(async () => {
-    const { data: tokenData } = await api.workSersChatTokensCreate(organizationID.toString(), { token: '' })
-    setAuthorization(tokenData.token)
-    return `wss://servicepro-chat.humanagro.ru/ws/ws-chat?authorization=${tokenData.token}`
-  }, [api, organizationID])
-
-  const { readyState } = useWebSocket(getSocketUrl, {
-    onMessage: (event) => {
-      const data = JSON.parse(event.data) as WSData
-
-      if (data.payload_model === 'NewMessage' && data.payload.task_id === ticketID) {
-        queryClient.setQueryData([QueryKey.Chats, ticketID, organizationID], (oldData) => [
-          data.payload.message,
-          ...oldData as Message[],
-        ])
-
-        if (data.payload.message.status) {
-          queryClient.setQueryData([QueryKey.Ticket, ticketID, organizationID], (oldData) => ({
-            ...oldData as WorkTaskDetailed,
-            status: data.payload.message.status,
-          }))
-        }
-      }
-    },
-  })
-
-  const { data, isFetching } = useQuery({
-    queryKey: [QueryKey.Ticket, ticketID, organizationID],
-    queryFn: async () => {
-      const { data } = await api.workSersTasksRetrieve(ticketID!, organizationID.toString())
-
-      setMembers({
-        ...(data.executor?.id ? {
-          [data.executor.id]: {
-            profile: data.executor.profile,
-            role: RoleEnum.Engineer,
-          },
-        } : {}),
-        ...(data.coordinator?.id ? {
-          [data.coordinator.id]: {
-            profile: data.coordinator.profile,
-            role: RoleEnum.Coordinator,
-          },
-        } : {}),
-        ...(data.customer?.id ? {
-          [data.customer.id]: {
-            profile: data.customer.profile,
-            role: RoleEnum.Client,
-          },
-        } : {}),
-      })
-
-      return data
-    },
-    refetchOnWindowFocus: false,
-    enabled: open,
-  })
-
-  const chatsQuery = useQuery({
-    queryKey: [QueryKey.Chats, ticketID, organizationID],
-    queryFn: async () => {
-      const { data } = await chatApi.getMessagesApiChatsTaskIdMessagesGet({
-        taskId: ticketID!,
-        authorization,
-        offset: 0,
-        limit: PAGINATION_DEFAULT_LIMIT,
-      })
-
-      return data
-    },
-    refetchOnWindowFocus: false,
-    enabled: readyState === ReadyState.OPEN && !!ticketID,
-  })
-
-  const attachmentsQuery = useQuery({
-    queryKey: ['attachments', ticketID, organizationID],
-    queryFn: async () => {
-      const { data } = await api.workSersTasksAttachmentsList({
-        orgId: organizationID.toString(),
-        taskId: ticketID?.toString() ?? '',
-      })
-
-      return data
-    },
-    enabled: open && !!ticketID,
-  })
+  const { authorization, socket: { readyState } } = useTicketDrawerWebSocket(ticketID)
+  const { data, isFetching, members } = useTicketDrawerQuery(ticketID, open)
+  const attachmentsQuery = useTicketDrawerQueryAttachments(ticketID, open)
+  const statusesQuery = useTicketDrawerQueryStatuses(ticketID, open)
+  const chatsQuery = useTicketDrawerQueryChats(ticketID, authorization, readyState)
 
   const handleSendMessage = useCallback(async () => {
     if (!newStatus && !message) {
@@ -247,6 +153,9 @@ export const TicketDrawer = () => {
             {chatsQuery.data?.map((message) => (
               <TicketChatMessage
                 key={message.uuid}
+                ticketID={ticketID!}
+                authorization={authorization}
+                uuid={message.uuid}
                 author={members[message.employee_id] ? {
                   id: message.employee_id,
                   name: getEngineerLabel(members[message.employee_id].profile),
@@ -262,13 +171,18 @@ export const TicketDrawer = () => {
                 })}
                 content={message.text}
                 status={message.status as StatusEnum}
+                statusData={statusesQuery.data?.find((status) => status.message_uuid === message.uuid) ?? null}
                 date={message.server_time}
               />
             ))}
             {data && (
               <TicketChatMessage
+                ticketID={null}
+                authorization={authorization}
+                uuid={''}
                 author={null}
                 content={data.approval?.customer_description}
+                statusData={null}
                 date={data.created_at ?? ''}
               />
             )}
