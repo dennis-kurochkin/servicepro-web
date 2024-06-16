@@ -14,3 +14,4 @@ export const DATE_FORMAT_TIME_DAY = 'HH:mm, cccccc'
 export const PAGINATION_DEFAULT_LIMIT = 10
 export const SYMBOL_QUOTATION_LEFT = '«'
 export const SYMBOL_QUOTATION_RIGHT = '»'
+export const MAP_FLY_DURATION = 0.25

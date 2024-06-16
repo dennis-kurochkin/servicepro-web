@@ -308,7 +308,7 @@ export const TicketDrawer = () => {
                   value: newStatus,
                   label: StatusEnumTitle[newStatus],
                 } : null}
-                options={Object.values(StatusEnum).map((value) => ({
+                options={Object.values(StatusEnum).filter((value) => value !== StatusEnum.Processing).map((value) => ({
                   value,
                   label: StatusEnumTitle[value as StatusEnum],
                 }))}

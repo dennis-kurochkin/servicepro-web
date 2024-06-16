@@ -3,13 +3,13 @@ import { MapContainer } from 'react-leaflet'
 import { MapInner, MapInnerProps } from '@components/Map/components/MapInner'
 import { MapMarkerProps } from '@components/Map/components/MapMarker'
 import { MAP_ZOOM_DEFAULT } from '@components/Map/constants'
-import { LAT_LNG_INITIAL, MAP_OVERLAY_Z_INDEX } from '@constants/index'
+import { LAT_LNG_INITIAL, MAP_FLY_DURATION, MAP_OVERLAY_Z_INDEX } from '@constants/index'
 import { theme } from '@data/theme'
 import { Box, SxProps, Typography } from '@mui/material'
-import { LatLng, LatLngBoundsExpression, Map as LeafletMap } from 'leaflet'
+import { FitBoundsOptions, LatLng, LatLngBoundsExpression, Map as LeafletMap } from 'leaflet'
 import { WorkTaskGeo } from '~/api/servicepro.generated'
 
-export type MapRef = { flyToBounds: (bounds: LatLngBoundsExpression) => void }
+export type MapRef = { flyToBounds: (bounds: LatLngBoundsExpression, options?: FitBoundsOptions) => void }
 
 export interface MarkerData {
   coords: LatLng
@@ -31,8 +31,11 @@ export const Map = forwardRef<MapRef, MapProps>((props: MapProps, ref) => {
 
   useImperativeHandle(ref, () => {
     return {
-      flyToBounds: (bounds: LatLngBoundsExpression) => {
-        map?.flyToBounds(bounds)
+      flyToBounds: (bounds: LatLngBoundsExpression, options?: FitBoundsOptions) => {
+        map?.flyToBounds(bounds, {
+          duration: MAP_FLY_DURATION,
+          ...(options ?? {}),
+        })
       },
     }
   }, [map])

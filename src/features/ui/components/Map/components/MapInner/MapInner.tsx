@@ -9,7 +9,7 @@ import { MapMarker, MapMarkerProps } from '@features/ui/components/Map/component
 import { MapMarkers } from '@features/ui/components/Map/components/MapMarkers'
 import { MapLayer } from '@features/ui/components/Map/data'
 import { Tooltip } from '@features/ui/components/Tooltip'
-import { MAP_ACTIONS_Z_INDEX } from '@features/ui/constants'
+import { MAP_ACTIONS_Z_INDEX, MAP_FLY_DURATION } from '@features/ui/constants'
 import { useNotify } from '@hooks/useNotify'
 import { MyLocation } from '@mui/icons-material'
 import { Button, Typography } from '@mui/material'
@@ -39,7 +39,7 @@ export const MapInner = ({ geos, coords, markers, addressSearch = false, initial
       return
     }
 
-    map.flyToBounds(getGeoInfoBounds(geos[0]))
+    map.flyToBounds(getGeoInfoBounds(geos[0]), { duration: MAP_FLY_DURATION })
   }, [geos, map])
 
   const { coords: geolocation, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({

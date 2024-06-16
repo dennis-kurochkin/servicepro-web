@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Map, MapRef } from '@components/Map'
 import { TableHeader } from '@components/TableHeader'
-import { PAGINATION_DEFAULT_LIMIT } from '@constants/index'
+import { MAP_FLY_DURATION, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { getGeoInfoBounds } from '@features/shared/helpers'
 import { TicketsTable } from '@features/tickets/components/TicketsTable'
@@ -45,7 +45,7 @@ export const TicketsRoute = () => {
       return
     }
 
-    mapRef.current?.flyToBounds(getGeoInfoBounds(geo))
+    mapRef.current?.flyToBounds(getGeoInfoBounds(geo), { duration: MAP_FLY_DURATION })
   }
 
   return (
