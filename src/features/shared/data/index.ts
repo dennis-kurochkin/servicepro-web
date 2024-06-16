@@ -14,6 +14,7 @@ export enum QueryKey {
   Employee = 'employee',
   Vehicles = 'vehicles',
   Vehicle = 'vehicle',
+  VehicleTickets = 'vehicle-tickets',
 }
 
 export enum SearchParamsKey {

@@ -45,14 +45,14 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
         taskId: ticketID!,
         authorization,
       }, {
-        text: `Дата планируемого начала изменена на ${format(newDate, DATE_FORMAT_DEFAULT)}`,
+        text: `Предложена новая дата планируемого начала: ${format(newDate, DATE_FORMAT_DEFAULT)}`,
         edits: {
           'plan_start_date': newDate.toISOString(),
         },
       })
 
       notify({
-        message: 'Дата планируемого начала успешно изменена',
+        message: 'Дата планируемого начала успешно отправлена на согласование',
         variant: 'success',
       })
 
@@ -61,7 +61,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
       handleClose()
     } catch (error) {
       notify({
-        message: 'Произошла ошибка при изменении даты планируемого начала',
+        message: 'Произошла ошибка при отправки даты планируемого начала на согласование',
         variant: 'error',
       })
     } finally {

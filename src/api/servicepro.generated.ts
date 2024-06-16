@@ -169,41 +169,26 @@ export interface DefaultProfile {
 
 export interface Device {
   readonly id: number;
+  /**
+   * * `none` - none
+   * * `db` - db
+   * * `websocket` - websocket
+   * * `email_app` - email_app
+   * * `fcm_app` - fcm_app
+   * * `fcm_web` - fcm_web
+   * * `hpk_app` - hpk_app
+   * * `apns_app` - apns_app
+   */
+  type: TypeEnum;
   /** @format date-time */
   readonly created_at: string;
   /** @format date-time */
   readonly updated_at: string;
   /** @maxLength 255 */
   user_agent?: string;
-  /**
-   * * `0` - Ничего
-   * * `1` - DB
-   * * `100` - Email
-   * * `200` - FCM Mobile
-   * * `210` - FCM Web
-   * * `300` - HPK Mobile
-   */
-  device_type?: DeviceTypeEnum;
   /** @maxLength 255 */
   token: string;
   readonly user: number;
-}
-
-/**
- * * `0` - Ничего
- * * `1` - DB
- * * `100` - Email
- * * `200` - FCM Mobile
- * * `210` - FCM Web
- * * `300` - HPK Mobile
- */
-export enum DeviceTypeEnum {
-  Value0 = 0,
-  Value1 = 1,
-  Value100 = 100,
-  Value200 = 200,
-  Value210 = 210,
-  Value300 = 300,
 }
 
 export interface Employee {
@@ -1519,6 +1504,27 @@ export interface TotalVehicleSummaryPair {
   r_incomplete_count?: number;
   t_active_count?: number;
   t_total_count?: number;
+}
+
+/**
+ * * `none` - none
+ * * `db` - db
+ * * `websocket` - websocket
+ * * `email_app` - email_app
+ * * `fcm_app` - fcm_app
+ * * `fcm_web` - fcm_web
+ * * `hpk_app` - hpk_app
+ * * `apns_app` - apns_app
+ */
+export enum TypeEnum {
+  None = "none",
+  Db = "db",
+  Websocket = "websocket",
+  EmailApp = "email_app",
+  FcmApp = "fcm_app",
+  FcmWeb = "fcm_web",
+  HpkApp = "hpk_app",
+  ApnsApp = "apns_app",
 }
 
 export interface UserAcceptInvite {

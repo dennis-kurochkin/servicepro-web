@@ -9,9 +9,10 @@ interface TooltipNewProps extends Pick<TippyProps, 'visible' | 'interactive'>{
   content: string | ReactElement
   contentSx?: SxProps
   target: ReactElement
+  targetSx?: SxProps
 }
 
-export const TooltipNew = ({ visible, strategy = 'absolute', interactive, placement, content, contentSx, target }: TooltipNewProps) => {
+export const TooltipNew = ({ visible, strategy = 'absolute', interactive, placement, content, contentSx, target, targetSx }: TooltipNewProps) => {
   return (
     <>
       <Tippy
@@ -33,9 +34,11 @@ export const TooltipNew = ({ visible, strategy = 'absolute', interactive, placem
           strategy: strategy,
         }}
       >
-        <div>
+        <Box
+          sx={targetSx}
+        >
           {target}
-        </div>
+        </Box>
       </Tippy>
     </>
   )

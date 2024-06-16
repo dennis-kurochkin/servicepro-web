@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Map, MapRef } from '@components/Map'
 import { TableHeader } from '@components/TableHeader'
 import { MAP_FLY_DURATION, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { getGeoInfoBounds } from '@features/shared/helpers'
 import { TicketsTable } from '@features/tickets/components/TicketsTable'
+import { TaskVerbose } from '@features/tickets/types'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Container } from '@mui/material'
@@ -17,10 +18,12 @@ export const TicketsRoute = () => {
   const mapRef = useRef<MapRef | null>(null)
   const [count, setCount] = useState(0)
   const [page, setPage] = useState(0)
+  const [selectedTaskIndex, setSelectedTaskIndex] = useState<number | null>(null)
+  const [selectedTask, setSelectedTask] = useState<TaskVerbose | null>(null)
 
   const { data, isSuccess } = useQuery({
     queryKey: [QueryKey.TicketsGeos, page, organizationID],
-    queryFn: async () => {
+    queryFn: async (): Promise<TaskVerbose[]> => {
       const options = {
         orgId: organizationID.toString(),
         offset: page * PAGINATION_DEFAULT_LIMIT,
@@ -30,23 +33,29 @@ export const TicketsRoute = () => {
       const { data: tasks, headers } = await api.workSersTasksVerboseList(options)
       const { data: geos } = await api.workSersTasksGeosList(options)
 
-      setCount(headers['x-count'] ? +headers['x-count'] : 0)
-
-      return tasks.length > 0 ? tasks.map((task) => ({
+      const result = tasks.length > 0 ? tasks.map((task) => ({
         task,
         geo: geos.find(({ id }) => id == task.id),
       })) : []
+
+      setCount(headers['x-count'] ? +headers['x-count'] : 0)
+      handleSelectTask(0, result)
+
+      return result
     },
     refetchOnWindowFocus: false,
   })
 
-  const handleSelectTask = (geo: WorkTaskGeo | undefined) => {
-    if (!geo) {
-      return
-    }
+  const handleSelectTask = useCallback((index: number | null, tasks?: TaskVerbose[]) => {
+    const task = typeof index === 'number' ? (tasks ?? data)?.[index] ?? null : null
 
-    mapRef.current?.flyToBounds(getGeoInfoBounds(geo), { duration: MAP_FLY_DURATION })
-  }
+    setSelectedTaskIndex(index)
+    setSelectedTask(task)
+
+    if (task?.geo) {
+      mapRef.current?.flyToBounds(getGeoInfoBounds(task.geo), { duration: MAP_FLY_DURATION })
+    }
+  }, [data, mapRef])
 
   return (
     <>
@@ -58,6 +67,9 @@ export const TicketsRoute = () => {
           minHeight: '328px',
           maxHeight: '500px',
         }}
+        selectedTask={selectedTask}
+        onSelectPrev={(data?.length ?? 0) > 1 && !!selectedTaskIndex ? () => handleSelectTask(selectedTaskIndex - 1) : null}
+        onSelectNext={(data?.length ?? 0) > 1 && (selectedTaskIndex === null || selectedTaskIndex < data!.length - 1) ? () => handleSelectTask((selectedTaskIndex ?? -1) + 1) : null}
       />
       <Container
         maxWidth={'xl'}
@@ -77,7 +89,7 @@ export const TicketsRoute = () => {
           isSuccess={isSuccess}
           data={data?.map(({ task }) => task) ?? []}
           onPageChange={setPage}
-          onSelectTask={(id) => handleSelectTask(data?.find(({ task }) => task.id === id)?.geo)}
+          onSelectTask={(id) => handleSelectTask(data?.findIndex(({ task }) => task.id === id) ?? null)}
         />
       </Container>
     </>

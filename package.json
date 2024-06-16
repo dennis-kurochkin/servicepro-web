@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "api:main": "sta -p src/api/schema.json -o src/api -n servicepro.generated.ts --axios --add-readonly --extract-request-body --extract-request-params --extract-response-body",
     "api:chat": "sta -p src/api/chat.schema.json -o src/api -n servicepro-chat.generated.ts --axios --add-readonly --extract-request-body --extract-request-params --extract-response-body",
-    "api:generate": "npm run api:main; npm run api:chat"
+    "api": "npm run api:main; npm run api:chat"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

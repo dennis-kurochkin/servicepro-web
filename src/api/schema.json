@@ -12251,6 +12251,9 @@
                         "type": "integer",
                         "readOnly": true
                     },
+                    "type": {
+                        "$ref": "#/components/schemas/TypeEnum"
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -12265,9 +12268,6 @@
                         "type": "string",
                         "maxLength": 255
                     },
-                    "device_type": {
-                        "$ref": "#/components/schemas/DeviceTypeEnum"
-                    },
                     "token": {
                         "type": "string",
                         "maxLength": 255
@@ -12281,21 +12281,10 @@
                     "created_at",
                     "id",
                     "token",
+                    "type",
                     "updated_at",
                     "user"
                 ]
-            },
-            "DeviceTypeEnum": {
-                "enum": [
-                    0,
-                    1,
-                    100,
-                    200,
-                    210,
-                    300
-                ],
-                "type": "integer",
-                "description": "* `0` - Ничего\n* `1` - DB\n* `100` - Email\n* `200` - FCM Mobile\n* `210` - FCM Web\n* `300` - HPK Mobile"
             },
             "Employee": {
                 "type": "object",
@@ -15596,6 +15585,20 @@
                         "type": "integer"
                     }
                 }
+            },
+            "TypeEnum": {
+                "enum": [
+                    "none",
+                    "db",
+                    "websocket",
+                    "email_app",
+                    "fcm_app",
+                    "fcm_web",
+                    "hpk_app",
+                    "apns_app"
+                ],
+                "type": "string",
+                "description": "* `none` - none\n* `db` - db\n* `websocket` - websocket\n* `email_app` - email_app\n* `fcm_app` - fcm_app\n* `fcm_web` - fcm_web\n* `hpk_app` - hpk_app\n* `apns_app` - apns_app"
             },
             "UserAcceptInvite": {
                 "type": "object",

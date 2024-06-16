@@ -80,11 +80,12 @@ export const VehicleRoute = () => {
   }, [data])
 
   const ticketsQuery = useQuery({
-    queryKey: [QueryKey.ClientTickets, ticketsPage, organizationID],
+    queryKey: [QueryKey.VehicleTickets, vehicleID, ticketsPage, organizationID],
     queryFn: async () => {
       const options = {
         orgId: organizationID.toString(),
         offset: ticketsPage * PAGINATION_DEFAULT_LIMIT,
+        vehicleID,
         limit: PAGINATION_DEFAULT_LIMIT,
       }
 

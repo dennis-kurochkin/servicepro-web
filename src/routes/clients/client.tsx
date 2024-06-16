@@ -43,11 +43,12 @@ export const ClientRoute = () => {
   })
 
   const ticketsQuery = useQuery({
-    queryKey: [QueryKey.ClientTickets, ticketsPage, organizationID],
+    queryKey: [QueryKey.ClientTickets, clientID, ticketsPage, organizationID],
     queryFn: async () => {
       const options = {
         orgId: organizationID.toString(),
         offset: ticketsPage * PAGINATION_DEFAULT_LIMIT,
+        clientID,
         limit: PAGINATION_DEFAULT_LIMIT,
       }
 

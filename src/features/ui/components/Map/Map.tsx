@@ -5,6 +5,7 @@ import { MapMarkerProps } from '@components/Map/components/MapMarker'
 import { MAP_ZOOM_DEFAULT } from '@components/Map/constants'
 import { LAT_LNG_INITIAL, MAP_FLY_DURATION, MAP_OVERLAY_Z_INDEX } from '@constants/index'
 import { theme } from '@data/theme'
+import { TaskVerbose } from '@features/tickets/types'
 import { Box, SxProps, Typography } from '@mui/material'
 import { FitBoundsOptions, LatLng, LatLngBoundsExpression, Map as LeafletMap } from 'leaflet'
 import { WorkTaskGeo } from '~/api/servicepro.generated'
@@ -22,6 +23,9 @@ export interface MarkerData {
 export interface MapProps extends MapInnerProps {
   geos: WorkTaskGeo[],
   sx?: SxProps
+  selectedTask: TaskVerbose | null
+  onSelectPrev: (() => void) | null
+  onSelectNext: (() => void) | null
 }
 
 export const Map = forwardRef<MapRef, MapProps>((props: MapProps, ref) => {
@@ -82,14 +86,7 @@ export const Map = forwardRef<MapRef, MapProps>((props: MapProps, ref) => {
         bounceAtZoomLimits
         scrollWheelZoom
       >
-        <MapInner
-          coords={props.coords}
-          geos={props.geos}
-          initiallyOpen={props.initiallyOpen}
-          markers={props.markers}
-          addressSearch={props.addressSearch}
-          onChange={props.onChange}
-        />
+        <MapInner {...props} />
       </MapContainer>
     </Box>
   )
