@@ -53,3 +53,7 @@ body {
 .leaflet-tooltip.arrowlessTooltip::before {
     content: none;
 }
+
+.tippy-content {
+    padding: 0 !important;
+}

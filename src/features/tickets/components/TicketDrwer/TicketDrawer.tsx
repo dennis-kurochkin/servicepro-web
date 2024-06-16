@@ -4,8 +4,7 @@ import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { ButtonIconSquare } from '@components/ButtonIconSquare'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { TooltipNew } from '@components/TooltipNew'
-import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
-import { TooltipId } from '@data/tooltips'
+import { PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { QueryKey, SearchParamsKey } from '@features/shared/data'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
@@ -15,6 +14,7 @@ import { TicketDrawerForm } from '@features/tickets/components/TicketDrawerForm'
 import { TicketDrawerFormsContainer } from '@features/tickets/components/TicketDrawerFormsContainer'
 import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHeader'
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
+import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketDrawerHeaderDateChip'
 import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
 import { StatusEnumTitle } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
@@ -24,7 +24,6 @@ import { Send, Update } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, BoxProps, Drawer, styled } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
-import { format } from 'date-fns'
 import { queryClient } from '~/api'
 import { Message } from '~/api/servicepro-chat.generated'
 import { Profile, RoleEnum, StatusEnum, WorkTaskDetailed } from '~/api/servicepro.generated'
@@ -227,8 +226,10 @@ export const TicketDrawer = () => {
               <TicketDrawerHeaderChip
                 label={'ИСО - Иванов Иван Иванович'}
               />
-              <TicketDrawerHeaderChip
-                label={`Начало план: ${data?.approval.plan_start_date ? format(new Date(data?.approval.plan_start_date), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_DASH}`}
+              <TicketDrawerHeaderDateChip
+                ticketID={ticketID!}
+                authorization={authorization}
+                planStartDate={data?.approval?.plan_start_date ?? null}
               />
             </>
           )}
@@ -316,7 +317,6 @@ export const TicketDrawer = () => {
               />
             ) : (
               <TooltipNew
-                id={TooltipId.TicketDrawerChangeStatus}
                 content={'Изменить статус заявки'}
                 strategy={'fixed'}
                 target={(

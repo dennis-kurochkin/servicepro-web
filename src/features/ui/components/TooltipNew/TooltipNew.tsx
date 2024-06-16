@@ -1,31 +1,42 @@
-import { ReactElement, ReactNode } from 'react'
-import { PlacesType, Tooltip } from 'react-tooltip'
-import { renderToStaticMarkup } from 'react-dom/server'
-import { TooltipId } from '@data/tooltips'
+import { ReactElement } from 'react'
+import { Box, SxProps } from '@mui/material'
+import { Placement } from '@popperjs/core'
+import Tippy, { TippyProps } from '@tippyjs/react'
 
-interface TooltipNewProps {
-  id: TooltipId
-  place?: PlacesType
+interface TooltipNewProps extends Pick<TippyProps, 'visible' | 'interactive'>{
+  placement?: Placement
   strategy?: 'absolute' | 'fixed'
   content: string | ReactElement
-  target: ReactNode
+  contentSx?: SxProps
+  target: ReactElement
 }
 
-export const TooltipNew = ({ id, strategy = 'absolute', place, content, target }: TooltipNewProps) => {
+export const TooltipNew = ({ visible, strategy = 'absolute', interactive, placement, content, contentSx, target }: TooltipNewProps) => {
   return (
     <>
-      <Tooltip
-        id={id}
-      />
-      <div
-        className={'servicepro-tooltip'}
-        data-tooltip-id={id}
-        data-tooltip-place={place}
-        data-tooltip-position-strategy={strategy}
-        data-tooltip-html={typeof content === 'string' ? content : renderToStaticMarkup(content)}
+      <Tippy
+        theme={'light'}
+        visible={visible}
+        interactive={interactive}
+        placement={placement}
+        content={(
+          <Box
+            sx={{
+              padding: '6px 10px',
+              ...(contentSx ?? {}),
+            }}
+          >
+            {content}
+          </Box>
+        )}
+        popperOptions={{
+          strategy: strategy,
+        }}
       >
-        {target}
-      </div>
+        <div>
+          {target}
+        </div>
+      </Tippy>
     </>
   )
 }

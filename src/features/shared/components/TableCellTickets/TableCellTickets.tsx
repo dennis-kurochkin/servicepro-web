@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { TooltipNew } from '@components/TooltipNew'
 import { EMPTY_VALUE_DASH } from '@constants/index'
-import { TooltipId } from '@data/tooltips'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { SearchParamsKey } from '@features/shared/data'
@@ -109,7 +108,6 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, s
             </Button>
             {!disableView && (
               <TooltipNew
-                id={TooltipId.TicketsCellViewButton}
                 content={'Посмотреть заявку'}
                 target={(
                   <ButtonIcon
@@ -133,7 +131,6 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, s
             )}
             {onClickAccept && (
               <TooltipNew
-                id={TooltipId.TicketsCellAcceptButton}
                 content={isTaskAlreadyAssigned ? 'Заявка уже назначена на вас' : 'Принять заявку'}
                 target={(
                   <ButtonIcon
@@ -210,7 +207,6 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, s
               }}
             />
             <TooltipNew
-              id={TooltipId.TicketsCellAssignButton}
               content={'Назначить заявку'}
               target={(
                 <ButtonIcon

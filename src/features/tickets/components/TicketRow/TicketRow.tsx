@@ -4,7 +4,6 @@ import { ButtonIcon } from '@components/ButtonIcon'
 import { TableCellActions } from '@components/TableCellActions'
 import { TooltipNew } from '@components/TooltipNew'
 import { DATE_FORMAT_TIME_AHEAD, EMPTY_VALUE_DASH } from '@constants/index'
-import { TooltipId } from '@data/tooltips'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { DialogEngineerAssign } from '@features/shared/components/DialogEngineerAssign'
@@ -87,10 +86,9 @@ export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
         </TableCell>
         <TableCellActions>
           <TooltipNew
-            id={TooltipId.TicketsCellAssignButton}
             content={'Показать на карте'}
             strategy={'fixed'}
-            place={'left'}
+            placement={'left'}
             target={(
               <ButtonIcon
                 Icon={GpsFixedOutlined}
@@ -103,10 +101,9 @@ export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
             )}
           />
           <TooltipNew
-            id={TooltipId.TicketsCellAssignButton}
             content={'Назначить инженера'}
             strategy={'fixed'}
-            place={'top'}
+            placement={'left'}
             target={(
               <ButtonIcon
                 Icon={ManageAccounts}

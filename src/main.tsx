@@ -9,6 +9,8 @@ import { SnackbarProvider } from 'notistack'
 import { queryClient } from '~/api'
 import { router } from '~/routes'
 import './globals.css'
+import 'tippy.js/dist/tippy.css'
+import 'tippy.js/themes/light.css'
 import 'leaflet/dist/leaflet.css'
 
 createRoot(document.getElementById('root')!).render(
