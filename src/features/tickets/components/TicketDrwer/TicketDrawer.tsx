@@ -228,6 +228,7 @@ export const TicketDrawer = () => {
               />
               <TicketDrawerHeaderDateChip
                 ticketID={ticketID!}
+                status={data?.status ?? null}
                 authorization={authorization}
                 planStartDate={data?.approval?.plan_start_date ?? null}
               />

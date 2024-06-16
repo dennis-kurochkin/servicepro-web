@@ -1,27 +1,35 @@
 import { useCallback, useState } from 'react'
 import { FieldDatepicker } from '@components/Field/components/FieldDatepicker'
 import { TooltipNew } from '@components/TooltipNew'
-import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH } from '@constants/index'
+import {
+  DATE_FORMAT_DEFAULT,
+  DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_LABEL,
+  SYMBOL_QUOTATION_LEFT,
+  SYMBOL_QUOTATION_RIGHT,
+} from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
+import { StatusEnumTitle } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { format } from 'date-fns'
 import { queryClient } from '~/api'
+import { StatusEnum } from '~/api/servicepro.generated'
 
 interface TicketDrawerHeaderDateChipProps {
   ticketID: number
+  status: StatusEnum | null
   authorization: string
   planStartDate: string | null
 }
 
-export const TicketDrawerHeaderDateChip = ({ ticketID, authorization, planStartDate }: TicketDrawerHeaderDateChipProps) => {
+export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, planStartDate }: TicketDrawerHeaderDateChipProps) => {
   const { notify } = useNotify()
   const { chatApi } = useApi()
   const [dateChangeTooltipOpen, setDateChangeTooltipOpen] = useState(false)
-  const [newDate, setNewDate] = useState(new Date())
+  const [newDate, setNewDate] = useState(planStartDate ? new Date(planStartDate) : new Date())
   const [saving, setSaving] = useState(false)
 
   const handleClose = useCallback(() => {
@@ -59,9 +67,9 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, authorization, planStartD
     } finally {
       setSaving(false)
     }
-  }, [])
+  }, [newDate])
 
-  return (
+  return status === StatusEnum.Approval ? (
     <TooltipNew
       visible={dateChangeTooltipOpen}
       placement={'bottom'}
@@ -114,12 +122,24 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, authorization, planStartD
       }}
       target={(
         <TicketDrawerHeaderChip
-          label={`Начало план: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_DASH}`}
+          label={`Начало план: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_LABEL}`}
           sx={{ display: 'flex' }}
           onChange={() => setDateChangeTooltipOpen(true)}
         />
       )}
       interactive
+    />
+  ) : (
+    <TooltipNew
+      content={`Изменить дату начала планирования можно только на статусе ${SYMBOL_QUOTATION_LEFT}${StatusEnumTitle[StatusEnum.Approval]}${SYMBOL_QUOTATION_RIGHT}`}
+      target={(
+        <TicketDrawerHeaderChip
+          label={`Начало план: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_LABEL}`}
+          sx={{ cursor: 'not-allowed' }}
+          disabled
+          onChange={() => undefined}
+        />
+      )}
     />
   )
 }

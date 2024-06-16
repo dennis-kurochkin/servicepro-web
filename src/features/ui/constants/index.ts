@@ -6,6 +6,7 @@ export const MAP_OVERLAY_Z_INDEX = 1101
 export const TABLE_CONTEXT_BUTTON_CELL_WIDTH = '50px'
 export const TABLE_CELL_DENSE_PADDING = '12px'
 export const EMPTY_VALUE_DASH = '—'
+export const EMPTY_VALUE_LABEL = 'не назначена'
 export const DATE_FORMAT_TIME_AHEAD = 'HH:mm dd.MM.yyyy'
 export const DATE_FORMAT_TIME_BEHIND = 'dd.MM.yyyy HH:mm'
 export const DATE_FORMAT_DEFAULT = 'dd.MM.yyyy'

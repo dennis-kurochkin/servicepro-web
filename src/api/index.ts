@@ -19,4 +19,10 @@ export const chatClient = new ChatApi({
   timeout: 3000,
 })
 
-export const queryClient = new QueryClient()
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+})
