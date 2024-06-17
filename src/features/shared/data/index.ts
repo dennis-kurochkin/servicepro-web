@@ -11,6 +11,7 @@ export enum QueryKey {
   ClientTickets = 'client-tickets',
   Ticket = 'ticket',
   TicketAttachments = 'ticket-attachments',
+  TicketResult = 'ticket-result',
   TicketStatuses = 'ticket-statuses',
   Chats = 'chats',
   Employee = 'employee',

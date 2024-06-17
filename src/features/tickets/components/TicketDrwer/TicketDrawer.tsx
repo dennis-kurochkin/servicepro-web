@@ -16,7 +16,10 @@ import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketD
 import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
 import {
   useTicketDrawerQuery,
-  useTicketDrawerQueryAttachments, useTicketDrawerQueryChats, useTicketDrawerQueryStatuses,
+  useTicketDrawerQueryAttachments,
+  useTicketDrawerQueryChats,
+  useTicketDrawerQueryResult,
+  useTicketDrawerQueryStatuses,
   useTicketDrawerWebSocket,
 } from '@features/tickets/components/TicketDrwer/hooks'
 import { StatusEnumTitle } from '@features/tickets/data'
@@ -57,6 +60,7 @@ export const TicketDrawer = () => {
   const { authorization, socket: { readyState } } = useTicketDrawerWebSocket(ticketID)
   const { data, isFetching, members } = useTicketDrawerQuery(ticketID, open)
   const attachmentsQuery = useTicketDrawerQueryAttachments(ticketID, open)
+  const resultQuery = useTicketDrawerQueryResult(ticketID, open)
   const statusesQuery = useTicketDrawerQueryStatuses(ticketID, open)
   const chatsQuery = useTicketDrawerQueryChats(ticketID, authorization, readyState)
 
@@ -150,6 +154,49 @@ export const TicketDrawer = () => {
           }}
         >
           <TicketChatContainer>
+            {resultQuery.data && (
+              <TicketChatMessage
+                ticketID={ticketID!}
+                authorization={authorization}
+                uuid={''}
+                author={data?.executor.id ?? null}
+                pictures={resultQuery.data?.photos?.map((media) => attachmentsQuery.data?.find(({ client_uuid }) => media.client_uuid === client_uuid)?.file ?? '')}
+                content={(
+                  <Box
+                    sx={{
+                      display: 'grid',
+                      gap: '6px',
+                    }}
+                  >
+                    <Box
+                      fontWeight={500}
+                    >
+                      Отчет
+                    </Box>
+                    <Box>
+                      {resultQuery.data.executor_report || 'Нет данных'}
+                    </Box>
+                    <Box
+                      fontWeight={500}
+                      sx={{ marginTop: '6px' }}
+                    >
+                      Рекомендации
+                    </Box>
+                    {resultQuery.data.recommendations.length ? resultQuery.data.recommendations.map((recommendation) => (
+                      <Box
+                        key={recommendation.id}
+                      >
+                        {recommendation.title};
+                      </Box>
+                    )) : 'Нет данных'}
+                  </Box>
+                )}
+                status={data?.status ?? StatusEnum.Done}
+                statusData={null}
+                date={resultQuery.data?.posted_date ?? resultQuery.data?.check_date ?? resultQuery.data?.updated_at}
+                report
+              />
+            )}
             {chatsQuery.data?.map((message) => (
               <TicketChatMessage
                 key={message.uuid}

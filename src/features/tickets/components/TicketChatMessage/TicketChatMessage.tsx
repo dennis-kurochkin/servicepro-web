@@ -9,12 +9,15 @@ import { QueryKey, RoleLabel } from '@features/shared/data'
 import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
 import { TicketMessageAction, TicketMessageActionLabel } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
+import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { DisplaySettings, Person } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
 import { Avatar, Box, Button, Card, Typography } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import { queryClient } from '~/api'
 import { RoleEnum, StatusEnum, WorkTaskStatusChangeDetailed } from '~/api/servicepro.generated'
 
 type TicketChatMessageAuthor = {
@@ -34,13 +37,16 @@ export interface TicketChatMessageProps {
   status?: StatusEnum
   statusData: WorkTaskStatusChangeDetailed | null
   date: string
+  report?: boolean
 }
 
-export const TicketChatMessage = ({ ticketID, authorization, uuid, author, content, pictures, status, date, statusData }: TicketChatMessageProps) => {
+export const TicketChatMessage = ({ ticketID, authorization, uuid, author, content, pictures, status, date, statusData, report = false }: TicketChatMessageProps) => {
   const { setCurrentPictureIndex } = useDialogPhotoSliderUtils()
+  const { notify } = useNotify()
   const { api, chatApi } = useApi()
   const { organizationID } = useOrganizationID()
   const [isDialogPhotoSliderOpen, setDialogPhotoSliderOpen] = useState(false)
+  const [isAcceptLoading, setIsAcceptLoading] = useState(false)
 
   const { data: profile } = useQuery({
     queryKey: [QueryKey.Employee, typeof author === 'number' ? author : -1],
@@ -66,7 +72,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
   })
 
   const handlePerformAction = useCallback(async (action: TicketMessageAction) => {
-    const { data } = await chatApi.useMessageButtonApiChatsTaskIdMessagesMessageUuidButtonsPost({
+    await chatApi.useMessageButtonApiChatsTaskIdMessagesMessageUuidButtonsPost({
       taskId: ticketID!,
       authorization,
       messageUuid: uuid,
@@ -74,9 +80,25 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
       name: action,
       client_time: new Date().toISOString(),
     })
-
-    console.log(data)
   }, [ticketID, chatApi, uuid, authorization])
+
+  const handleAcceptResult = useCallback(async () => {
+    try {
+      setIsAcceptLoading(true)
+
+      await api.workSersTasksResultApplyPartialUpdate(ticketID!, organizationID.toString())
+
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.Ticket, ticketID] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.TicketsGeos] })
+    } catch (error) {
+      notify({
+        message: 'Произошла ошибка при принятии результата',
+        variant: 'error',
+      })
+    } finally {
+      setIsAcceptLoading(false)
+    }
+  }, [api, ticketID, organizationID, notify])
 
   const authorProfile = useMemo(() => typeof author === 'number' ? (profile ?? {
     id: -1,
@@ -129,7 +151,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
             }}
           >
             <TicketChipStatus
-              status={status}
+              status={report ? StatusEnum.Done : status}
               size={300}
               filled
             />
@@ -245,7 +267,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
               ))}
             </Box>
           )}
-          {statusData?.buttons && (
+          {(statusData?.buttons || report) && (
             <Box
               sx={{
                 display: 'grid',
@@ -253,7 +275,20 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
                 gridTemplateColumns: '1fr 1fr',
               }}
             >
-              {statusData.buttons.map((action) => (
+              {report && (
+                <LoadingButton
+                  variant={'contained'}
+                  size={'small'}
+                  color={'success'}
+                  disabled={status === StatusEnum.Done}
+                  loading={isAcceptLoading}
+                  disableElevation
+                  onClick={handleAcceptResult}
+                >
+                  {status === StatusEnum.Done ? 'Принято' : 'Принять'}
+                </LoadingButton>
+              )}
+              {statusData?.buttons.map((action) => (
                 <Button
                   key={action.name}
                   variant={'contained'}

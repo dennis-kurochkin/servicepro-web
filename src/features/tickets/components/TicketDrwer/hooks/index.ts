@@ -99,10 +99,9 @@ export const useTicketDrawerQueryResult = (ticketID: number | null, open: boolea
   const { api } = useApi()
 
   return useQuery({
-    queryKey: [QueryKey.TicketAttachments, ticketID, organizationID],
+    queryKey: [QueryKey.TicketResult, ticketID, organizationID],
     queryFn: async () => {
       const { data } = await api.workSersTasksResultRetrieve(ticketID!, organizationID.toString())
-
       return data
     },
     enabled: open && !!ticketID,
