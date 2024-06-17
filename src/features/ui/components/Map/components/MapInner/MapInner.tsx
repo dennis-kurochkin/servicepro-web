@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useGeolocated } from 'react-geolocated'
 import { LayersControl, TileLayer, useMap, useMapEvent } from 'react-leaflet'
 import { ButtonIcon } from '@components/ButtonIcon'
@@ -5,10 +6,8 @@ import { MapRouteInfo } from '@components/Map/components/MapRouteInfo'
 import { TooltipNew } from '@components/TooltipNew'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { TaskVerbose } from '@features/tickets/types'
-import { MarkerData } from '@features/ui/components/Map'
 import { MapAddressSearch } from '@features/ui/components/Map/components/MapAddressSearch'
 import { MapMarker, MapMarkerProps } from '@features/ui/components/Map/components/MapMarker'
-import { MapMarkers } from '@features/ui/components/Map/components/MapMarkers'
 import { MapLayer } from '@features/ui/components/Map/data'
 import { MAP_ACTIONS_Z_INDEX, MAP_FLY_DURATION } from '@features/ui/constants'
 import { useNotify } from '@hooks/useNotify'
@@ -20,7 +19,6 @@ import { WorkTaskGeo } from '~/api/servicepro.generated'
 export interface MapInnerProps extends Pick<MapMarkerProps, 'initiallyOpen'> {
   geos: WorkTaskGeo[],
   coords?: LatLng
-  markers?: MarkerData[]
   addressSearch?: boolean
   selectedTask: TaskVerbose | null
   onChange?: (coords: LatLng) => void
@@ -28,9 +26,13 @@ export interface MapInnerProps extends Pick<MapMarkerProps, 'initiallyOpen'> {
   onSelectNext: (() => void) | null
 }
 
-export const MapInner = ({ geos, coords, markers, addressSearch = false, initiallyOpen, selectedTask, onChange, onSelectPrev, onSelectNext }: MapInnerProps) => {
+export const MapInner = ({ geos, coords, addressSearch = false, initiallyOpen, selectedTask, onChange, onSelectPrev, onSelectNext }: MapInnerProps) => {
   const { notify } = useNotify()
   const map = useMap()
+  const geosSorted = useMemo(() => geos.some(({ id }) => id === selectedTask?.geo?.id) ? [
+    ...geos,
+    geos.find(({ id }) => id === selectedTask?.geo?.id) as WorkTaskGeo,
+  ] : geos, [geos, selectedTask])
 
   useMapEvent('click', (e: LeafletMouseEvent) => {
     if (onChange && (e.originalEvent.target as HTMLDivElement).classList.contains('leaflet-container')) {
@@ -205,15 +207,13 @@ export const MapInner = ({ geos, coords, markers, addressSearch = false, initial
           onChangeCoords={onChange}
         />
       )}
-      <MapMarkers markers={markers} />
-      {geos.map((geo) => (
+      {geosSorted.map((geo) => (
         <MapRouteInfo
           key={geo.id}
           geo={geo}
+          selected={selectedTask?.geo?.id === geo.id}
         />
       ))}
     </>
   )
 }
-
-export default MapInner

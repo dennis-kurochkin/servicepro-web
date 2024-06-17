@@ -38,6 +38,7 @@ export const Map = forwardRef<MapRef, MapProps>((props: MapProps, ref) => {
       flyToBounds: (bounds: LatLngBoundsExpression, options?: FitBoundsOptions) => {
         map?.flyToBounds(bounds, {
           duration: MAP_FLY_DURATION,
+          padding: [50, 50],
           ...(options ?? {}),
         })
       },

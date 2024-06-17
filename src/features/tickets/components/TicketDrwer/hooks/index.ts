@@ -94,6 +94,21 @@ export const useTicketDrawerQuery = (ticketID: number | null, open: boolean) => 
   }
 }
 
+export const useTicketDrawerQueryResult = (ticketID: number | null, open: boolean) => {
+  const { organizationID } = useOrganizationID()
+  const { api } = useApi()
+
+  return useQuery({
+    queryKey: [QueryKey.TicketAttachments, ticketID, organizationID],
+    queryFn: async () => {
+      const { data } = await api.workSersTasksResultRetrieve(ticketID!, organizationID.toString())
+
+      return data
+    },
+    enabled: open && !!ticketID,
+  })
+}
+
 export const useTicketDrawerQueryAttachments = (ticketID: number | null, open: boolean) => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()

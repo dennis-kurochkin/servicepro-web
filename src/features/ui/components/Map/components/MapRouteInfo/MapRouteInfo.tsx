@@ -1,29 +1,35 @@
-import { useState } from 'react'
-import { Marker, Polyline, useMap, useMapEvent } from 'react-leaflet'
+import { useMemo } from 'react'
+import { Marker, Polyline } from 'react-leaflet'
 import { Tooltip as LeafletTooltip } from 'react-leaflet/Tooltip'
 import ClientMarker from '@assets/client-marker.svg'
 import EngineerMarker from '@assets/engineer-marker.svg'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { getGeoInfoExpression } from '@features/shared/helpers'
-import { icon } from 'leaflet'
+import { Box } from '@mui/material'
+import { icon, IconOptions } from 'leaflet'
 import { WorkTaskGeo } from '~/api/servicepro.generated'
+
+const OPACITY_TRANSLUCENT = 0.5
 
 interface MapRouteInfoProps {
   geo: WorkTaskGeo
+  selected: boolean
 }
 
-export const MapRouteInfo = ({ geo }: MapRouteInfoProps) => {
-  const map = useMap()
-  const [zoomSuitableForTooltips, setZoomSuitableForTooltips] = useState(false)
-
-  useMapEvent('zoom', () => {
-    setZoomSuitableForTooltips(map.getZoom() >= 7)
-  })
-
+export const MapRouteInfo = ({ geo, selected }: MapRouteInfoProps) => {
   const { executor, route, routeCompleted, executorLocation, taskLocation } = getGeoInfoExpression(geo)
+  const opacity = useMemo(() => selected ? 1 : OPACITY_TRANSLUCENT, [selected])
+  const zIndexOffset = useMemo(() => selected ? 1000 : -1000, [selected])
+  const iconSizes = useMemo((): Omit<IconOptions, 'iconUrl'> => selected ? {
+    iconSize: [56, 56],
+    iconAnchor: [28, 52],
+  } : {
+    iconSize: [40, 40],
+    iconAnchor: [20, 36],
+  }, [selected])
 
   return (
-    <>
+    <Box>
       {route && (
         <>
           <Polyline
@@ -31,6 +37,7 @@ export const MapRouteInfo = ({ geo }: MapRouteInfoProps) => {
               lineJoin: 'round',
               color: '#4787F3',
               weight: 6,
+              opacity,
             }}
             positions={route}
           >
@@ -48,6 +55,7 @@ export const MapRouteInfo = ({ geo }: MapRouteInfoProps) => {
               lineJoin: 'round',
               color: 'green',
               weight: 6,
+              opacity,
             }}
             positions={routeCompleted}
           >
@@ -65,16 +73,16 @@ export const MapRouteInfo = ({ geo }: MapRouteInfoProps) => {
               <Marker
                 icon={icon({
                   iconUrl: EngineerMarker,
-                  iconSize: [56, 56],
-                  iconAnchor: [28, 52],
+                  ...iconSizes,
                 })}
+                zIndexOffset={zIndexOffset}
+                opacity={opacity}
                 position={executorLocation}
               >
-                {zoomSuitableForTooltips && (
+                {selected && (
                   <LeafletTooltip
                     direction="top"
                     offset={[0, -46]}
-                    opacity={1}
                     className={'arrowlessTooltip'}
                     permanent
                   >
@@ -85,24 +93,22 @@ export const MapRouteInfo = ({ geo }: MapRouteInfoProps) => {
               <Marker
                 icon={icon({
                   iconUrl: EngineerMarker,
-                  iconSize: [56, 56],
-                  iconAnchor: [28, 52],
+                  ...iconSizes,
                 })}
+                zIndexOffset={zIndexOffset}
                 opacity={0}
                 position={executorLocation}
               >
-                {zoomSuitableForTooltips && (
-                  <LeafletTooltip
-                    direction="bottom"
-                    offset={[0, 10]}
-                    opacity={1}
-                    sticky
-                  >
-                    {executor?.profile && (
-                      <EngineerAvatar profile={{}} />
-                    )}
-                  </LeafletTooltip>
-                )}
+                <LeafletTooltip
+                  direction="bottom"
+                  offset={[0, 10]}
+                  opacity={1}
+                  sticky
+                >
+                  {executor?.profile && (
+                    <EngineerAvatar profile={{}} />
+                  )}
+                </LeafletTooltip>
               </Marker>
             </>
           )}
@@ -111,16 +117,16 @@ export const MapRouteInfo = ({ geo }: MapRouteInfoProps) => {
               <Marker
                 icon={icon({
                   iconUrl: ClientMarker,
-                  iconSize: [56, 56],
-                  iconAnchor: [28, 52],
+                  ...iconSizes,
                 })}
+                zIndexOffset={zIndexOffset}
+                opacity={opacity}
                 position={taskLocation}
               >
-                {zoomSuitableForTooltips && (
+                {selected && (
                   <LeafletTooltip
                     direction="top"
                     offset={[0, -46]}
-                    opacity={1}
                     className={'arrowlessTooltip'}
                     permanent
                   >
@@ -131,27 +137,25 @@ export const MapRouteInfo = ({ geo }: MapRouteInfoProps) => {
               <Marker
                 icon={icon({
                   iconUrl: ClientMarker,
-                  iconSize: [56, 56],
-                  iconAnchor: [28, 52],
+                  ...iconSizes,
                 })}
+                zIndexOffset={zIndexOffset}
                 opacity={0}
                 position={taskLocation}
               >
-                {zoomSuitableForTooltips && (
-                  <LeafletTooltip
-                    direction="bottom"
-                    offset={[0, 16]}
-                    opacity={1}
-                    sticky
-                  >
-                    Местоположение задачи
-                  </LeafletTooltip>
-                )}
+                <LeafletTooltip
+                  direction="bottom"
+                  offset={[0, 16]}
+                  opacity={1}
+                  sticky
+                >
+                  Местоположение задачи
+                </LeafletTooltip>
               </Marker>
             </>
           )}
         </>
       )}
-    </>
+    </Box>
   )
 }
