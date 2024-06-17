@@ -218,7 +218,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
               )}
             </Typography>
           </Card>
-          {pictures && (
+          {!!pictures?.length && (
             <Box
               sx={{
                 display: 'grid',
@@ -256,9 +256,11 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
               {statusData.buttons.map((action) => (
                 <Button
                   key={action.name}
-                  variant={'outlined'}
+                  variant={'contained'}
+                  size={'small'}
                   color={'info'}
-                  disabled={!action.active}
+                  disabled={action.active}
+                  disableElevation
                   onClick={() => handlePerformAction(action.name as TicketMessageAction)}
                 >
                   {TicketMessageActionLabel[action.name as TicketMessageAction]}
