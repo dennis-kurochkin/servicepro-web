@@ -259,7 +259,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
                   variant={'contained'}
                   size={'small'}
                   color={'info'}
-                  disabled={action.active}
+                  disabled={action.name === TicketMessageAction.Applied || !action.active}
                   disableElevation
                   onClick={() => handlePerformAction(action.name as TicketMessageAction)}
                 >

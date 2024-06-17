@@ -22,7 +22,7 @@ export const useTicketDrawerWebSocket = (ticketID: number | null) => {
   }, [api, organizationID])
 
   const socket = useWebSocket(getSocketUrl, {
-    onMessage: (event) => {
+    onMessage: async (event) => {
       const data = JSON.parse(event.data) as WSData
 
       if (data.payload_model === 'NewMessage' && data.payload.task_id === ticketID) {
@@ -36,6 +36,10 @@ export const useTicketDrawerWebSocket = (ticketID: number | null) => {
             ...oldData as WorkTaskDetailed,
             status: data.payload.message.status,
           }))
+        }
+
+        if (data.payload.message.media_files?.length) {
+          await queryClient.invalidateQueries({ queryKey: [QueryKey.TicketAttachments, ticketID, organizationID] })
         }
       }
     },
