@@ -18,12 +18,14 @@ export const StatusEnumTitle: Record<StatusEnum, string> = {
 
 export enum TicketMessageAction {
   Applied = 'applied',
+  Rejected = 'rejected',
   Apply = 'apply',
   Reject = 'reject',
 }
 
 export const TicketMessageActionLabel: Record<TicketMessageAction, string> = {
   [TicketMessageAction.Applied]: 'Принято',
+  [TicketMessageAction.Rejected]: 'Отклонено',
   [TicketMessageAction.Apply]: 'Принять',
   [TicketMessageAction.Reject]: 'Отклонить',
 }

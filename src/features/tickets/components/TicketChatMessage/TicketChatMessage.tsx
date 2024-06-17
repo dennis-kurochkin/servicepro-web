@@ -258,8 +258,8 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
                   key={action.name}
                   variant={'contained'}
                   size={'small'}
-                  color={'info'}
-                  disabled={action.name === TicketMessageAction.Applied || !action.active}
+                  color={[TicketMessageAction.Rejected, TicketMessageAction.Reject].some((value) => value === action.name) ? 'primary' : 'info'}
+                  disabled={action.active}
                   disableElevation
                   onClick={() => handlePerformAction(action.name as TicketMessageAction)}
                 >
