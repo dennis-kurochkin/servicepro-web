@@ -1,11 +1,10 @@
 import { MouseEvent, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { TooltipNew } from '@components/TooltipNew'
 import { EMPTY_VALUE_DASH } from '@constants/index'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
-import { SearchParamsKey } from '@features/shared/data'
+import { useOpenTicketDrawer } from '@features/tickets/hooks/useOpenTicketDrawer'
 import { useProfile } from '@hooks/useProfile'
 import { ArrowDropDown, CheckCircle, ManageAccounts, Visibility } from '@mui/icons-material'
 import { Box, Button, Menu, MenuItem } from '@mui/material'
@@ -22,7 +21,7 @@ export interface TableCellTicketsProps {
 }
 
 export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, showClient = false, onChangeSelectedTaskID, onClickAssign, onClickAccept }: TableCellTicketsProps) => {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const { openTicketDrawer } = useOpenTicketDrawer()
   const { employment } = useProfile()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const open = !!anchorEl
@@ -42,8 +41,7 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, s
       return
     }
 
-    searchParams.set(SearchParamsKey.TicketID, selectedTaskID.toString())
-    setSearchParams(searchParams)
+    openTicketDrawer(selectedTaskID)
   }
 
   return (

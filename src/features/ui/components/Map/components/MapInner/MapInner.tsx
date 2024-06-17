@@ -5,13 +5,14 @@ import { ButtonIcon } from '@components/ButtonIcon'
 import { MapRouteInfo } from '@components/Map/components/MapRouteInfo'
 import { TooltipNew } from '@components/TooltipNew'
 import { getEngineerLabel } from '@features/engineers/helpers'
+import { useOpenTicketDrawer } from '@features/tickets/hooks/useOpenTicketDrawer'
 import { TaskVerbose } from '@features/tickets/types'
 import { MapAddressSearch } from '@features/ui/components/Map/components/MapAddressSearch'
 import { MapMarker, MapMarkerProps } from '@features/ui/components/Map/components/MapMarker'
 import { MapLayer } from '@features/ui/components/Map/data'
 import { MAP_ACTIONS_Z_INDEX, MAP_FLY_DURATION } from '@features/ui/constants'
 import { useNotify } from '@hooks/useNotify'
-import { ChevronLeft, ChevronRight, MyLocation } from '@mui/icons-material'
+import { ChevronLeft, ChevronRight, MyLocation, Visibility } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import { LatLng, LeafletMouseEvent } from 'leaflet'
 import { WorkTaskGeo } from '~/api/servicepro.generated'
@@ -29,6 +30,7 @@ export interface MapInnerProps extends Pick<MapMarkerProps, 'initiallyOpen'> {
 export const MapInner = ({ geos, coords, addressSearch = false, initiallyOpen, selectedTask, onChange, onSelectPrev, onSelectNext }: MapInnerProps) => {
   const { notify } = useNotify()
   const map = useMap()
+  const { openTicketDrawer } = useOpenTicketDrawer()
   const geosSorted = useMemo(() => geos.some(({ id }) => id === selectedTask?.geo?.id) ? [
     ...geos,
     geos.find(({ id }) => id === selectedTask?.geo?.id) as WorkTaskGeo,
@@ -198,6 +200,20 @@ export const MapInner = ({ geos, coords, addressSearch = false, initiallyOpen, s
             </Typography>
           )}
         </Box>
+        {selectedTask?.task?.id && (
+          <Box
+            sx={{
+              background: (theme) => theme.palette.common.white,
+              borderRadius: 1,
+            }}
+          >
+            <ButtonIcon
+              Icon={Visibility}
+              disableElevation={false}
+              onClick={() => openTicketDrawer(selectedTask.task.id)}
+            />
+          </Box>
+        )}
       </Box>
       {addressSearch && <MapAddressSearch onSelect={handleAddressSelect} />}
       {typeof coords !== 'undefined' && (
