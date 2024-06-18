@@ -5,10 +5,11 @@ import { Box, Button, Typography } from '@mui/material'
 
 interface TicketDrawerFormProps {
   title: string
+  disabled?: boolean
   bordered?: boolean
 }
 
-export const TicketDrawerForm = ({ title, bordered = true }: TicketDrawerFormProps) => {
+export const TicketDrawerForm = ({ title, disabled = false, bordered = true }: TicketDrawerFormProps) => {
   const [value, setValue] = useState('')
 
   return (
@@ -28,6 +29,7 @@ export const TicketDrawerForm = ({ title, bordered = true }: TicketDrawerFormPro
         value={value}
         name={'text'}
         placeholder={'Введите текст'}
+        disabled={disabled}
         minRows={3}
         maxRows={6}
         sx={{ marginTop: '12px' }}
@@ -39,6 +41,7 @@ export const TicketDrawerForm = ({ title, bordered = true }: TicketDrawerFormPro
         size={'small'}
         endIcon={<Send fontSize={'small'} />}
         sx={{ marginTop: '12px' }}
+        disabled={disabled}
       >
         Отправить
       </Button>

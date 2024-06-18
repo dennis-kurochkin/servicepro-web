@@ -22,7 +22,7 @@ import {
   useTicketDrawerQueryStatuses,
   useTicketDrawerWebSocket,
 } from '@features/tickets/components/TicketDrwer/hooks'
-import { StatusEnumTitle } from '@features/tickets/data'
+import { StatusEnumTitle, TicketDescriptionFormResult, TicketDescriptionFormStatuses } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -244,12 +244,14 @@ export const TicketDrawer = () => {
             )}
             <TicketDrawerForm
               title={'Условия для выполнения заявки'}
+              disabled={!TicketDescriptionFormStatuses.some((status) => data?.status === status)}
             />
             <TicketDrawerForm
               title={'Рекомендации'}
             />
             <TicketDrawerForm
               title={'Итоговое соглашение'}
+              disabled={!TicketDescriptionFormResult.some((status) => data?.status === status)}
             />
           </TicketDrawerFormsContainer>
         </Box>
@@ -269,7 +271,7 @@ export const TicketDrawer = () => {
                   value: newStatus,
                   label: StatusEnumTitle[newStatus],
                 } : null}
-                options={Object.values(StatusEnum).filter((value) => value !== StatusEnum.Processing).map((value) => ({
+                options={Object.values(StatusEnum).filter((value) => ![StatusEnum.Processing, StatusEnum.Search].some((v) => v === value)).map((value) => ({
                   value,
                   label: StatusEnumTitle[value as StatusEnum],
                 }))}

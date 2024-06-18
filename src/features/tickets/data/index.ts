@@ -29,3 +29,19 @@ export const TicketMessageActionLabel: Record<TicketMessageAction, string> = {
   [TicketMessageAction.Apply]: 'Принять',
   [TicketMessageAction.Reject]: 'Отклонить',
 }
+
+export const TicketDescriptionFormStatuses = [
+  StatusEnum.Processing,
+  StatusEnum.Wait,
+  StatusEnum.Approval,
+]
+
+export const TicketDescriptionFormResult = [
+  StatusEnum.Approval,
+  StatusEnum.Processing,
+  StatusEnum.OnWay,
+  StatusEnum.Wait,
+  StatusEnum.Pause,
+  StatusEnum.Search,
+  StatusEnum.Work,
+]

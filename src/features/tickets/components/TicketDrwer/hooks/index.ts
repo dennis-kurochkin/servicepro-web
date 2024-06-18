@@ -10,6 +10,14 @@ import { queryClient } from '~/api'
 import { Message } from '~/api/servicepro-chat.generated'
 import { Profile, RoleEnum, WorkTaskDetailed } from '~/api/servicepro.generated'
 
+/**
+ * Условия для выполнения заявки
+ * брать последнее изменение условий из statuses, edits беру первый попавшийся coordinator_description, если verdict === applied то значит он применен, если нет то он на согласовании, помечать
+ * можно менять только в обработке ожидание ИСО
+ *
+ * автоматически назначать координатором себя, если ты не координатор, сделать костыль
+ */
+
 export const useTicketDrawerWebSocket = (ticketID: number | null) => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
