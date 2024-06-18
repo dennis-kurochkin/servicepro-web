@@ -4,8 +4,10 @@ import { PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { WSData } from '@features/tickets/components/TicketDrwer/types'
 import { useApi } from '@hooks/useApi'
+import { useEmployment } from '@hooks/useEmployment'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { useQuery } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import { queryClient } from '~/api'
 import { Message } from '~/api/servicepro-chat.generated'
 import { Profile, RoleEnum, WorkTaskDetailed } from '~/api/servicepro.generated'
@@ -62,12 +64,19 @@ export const useTicketDrawerWebSocket = (ticketID: number | null) => {
 export const useTicketDrawerQuery = (ticketID: number | null, open: boolean) => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
+  const { data: employment } = useEmployment()
   const [members, setMembers] = useState<{ [key: number]: { profile: Profile, role: RoleEnum } }>({})
 
   const query = useQuery({
     queryKey: [QueryKey.Ticket, ticketID, organizationID],
     queryFn: async () => {
       const { data } = await api.workSersTasksRetrieve(ticketID!, organizationID.toString())
+
+      if (employment?.id && (data?.coordinator?.id !== employment?.id)) {
+        await api.workSersTasksExecutorsPartialUpdate(ticketID!, organizationID.toString(), {
+          coordinator: employment?.id,
+        })
+      }
 
       setMembers({
         ...(data.executor?.id ? {
@@ -93,7 +102,7 @@ export const useTicketDrawerQuery = (ticketID: number | null, open: boolean) => 
       return data
     },
     refetchOnWindowFocus: false,
-    enabled: open,
+    enabled: open && !!employment,
   })
 
   return {
@@ -109,8 +118,16 @@ export const useTicketDrawerQueryResult = (ticketID: number | null, open: boolea
   return useQuery({
     queryKey: [QueryKey.TicketResult, ticketID, organizationID],
     queryFn: async () => {
-      const { data } = await api.workSersTasksResultRetrieve(ticketID!, organizationID.toString())
-      return data
+      try {
+        const { data } = await api.workSersTasksResultRetrieve(ticketID!, organizationID.toString())
+        return data
+      } catch (error) {
+        if ((error as AxiosError)?.response?.status === 404) {
+          return null
+        }
+
+        throw error
+      }
     },
     enabled: open && !!ticketID,
   })

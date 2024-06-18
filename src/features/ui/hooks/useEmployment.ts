@@ -9,7 +9,7 @@ export const useEmployment = () => {
   const { organizationID } = useOrganizationIDNullable()
 
   return useQuery({
-    queryKey: ['my', auth?.user, auth?.accessToken],
+    queryKey: ['employment', auth?.user, auth?.accessToken],
     queryFn: async () => {
       const { data } = await api.orgMyRetrieve()
       return data.employments.find(({ organization: { id } }) => id === organizationID) ?? null
