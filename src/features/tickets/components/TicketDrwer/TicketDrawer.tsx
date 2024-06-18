@@ -133,9 +133,6 @@ export const TicketDrawer = () => {
               <TicketDrawerHeaderChip
                 label={'ТО - 2'}
               />
-              <TicketDrawerHeaderChip
-                label={'ИСО - Иванов Иван Иванович'}
-              />
               <TicketDrawerHeaderDateChip
                 ticketID={ticketID!}
                 status={data?.status ?? null}
