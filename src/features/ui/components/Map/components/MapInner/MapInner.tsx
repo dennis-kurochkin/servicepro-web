@@ -32,7 +32,7 @@ export const MapInner = ({ geos, coords, addressSearch = false, initiallyOpen, s
   const map = useMap()
   const { openTicketDrawer } = useOpenTicketDrawer()
   const geosSorted = useMemo(() => geos.some(({ id }) => id === selectedTask?.geo?.id) ? [
-    ...geos,
+    ...geos.filter((({ id }) => id !== selectedTask?.geo?.id)),
     geos.find(({ id }) => id === selectedTask?.geo?.id) as WorkTaskGeo,
   ] : geos, [geos, selectedTask])
 

@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react'
 import { FieldDatepicker } from '@components/Field/components/FieldDatepicker'
+import { FieldTimepicker } from '@components/Field/components/FieldTimepicker'
 import { TooltipNew } from '@components/TooltipNew'
 import {
-  DATE_FORMAT_DEFAULT,
   DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_LABEL,
   SYMBOL_QUOTATION_LEFT,
   SYMBOL_QUOTATION_RIGHT,
@@ -45,7 +45,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
         taskId: ticketID!,
         authorization,
       }, {
-        text: `Предложена новая дата планируемого начала: ${format(newDate, DATE_FORMAT_DEFAULT)}`,
+        text: `Предложена новая дата планируемого начала: ${format(newDate, DATE_FORMAT_TIME_BEHIND)}`,
         edits: {
           'plan_start_date': newDate.toISOString(),
         },
@@ -67,7 +67,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
     } finally {
       setSaving(false)
     }
-  }, [newDate])
+  }, [newDate, authorization, handleClose, chatApi, notify, ticketID])
 
   return status === StatusEnum.Approval ? (
     <TooltipNew
@@ -79,12 +79,17 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
             variant={'body2'}
             fontWeight={500}
           >
-            Изменить дату планируемого начала
+            Изменить дату и время планируемого начала
           </Typography>
           <FieldDatepicker
             name={'date'}
             value={newDate}
             disablePast
+            onChange={(date) => setNewDate(date ?? new Date())}
+          />
+          <FieldTimepicker
+            name={'time'}
+            value={newDate}
             onChange={(date) => setNewDate(date ?? new Date())}
           />
           <Box
