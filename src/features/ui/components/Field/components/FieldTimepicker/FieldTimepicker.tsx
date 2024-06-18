@@ -1,3 +1,4 @@
+import { forwardRef, Ref } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FieldCommonProps } from '@components/Field/types'
 import { TextFieldProps } from '@mui/material'
@@ -13,13 +14,13 @@ export interface FieldDatepickerProps extends
   onBlur?: TextFieldProps['onBlur']
 }
 
-export const FieldTimepicker = ({
+export const FieldTimepicker = forwardRef(({
   value,
   label,
   disableFuture,
   disablePast,
   onChange,
-}: FieldDatepickerProps) => {
+}: FieldDatepickerProps, ref: Ref<HTMLInputElement>) => {
   const { i18n } = useTranslation()
 
   return (
@@ -30,6 +31,7 @@ export const FieldTimepicker = ({
 
     >
       <TimePicker
+        inputRef={ref}
         value={value}
         disableFuture={disableFuture}
         disablePast={disablePast}
@@ -43,4 +45,4 @@ export const FieldTimepicker = ({
       />
     </LocalizationProvider>
   )
-}
+})
