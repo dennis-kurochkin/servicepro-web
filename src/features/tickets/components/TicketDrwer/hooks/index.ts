@@ -102,7 +102,7 @@ export const useTicketDrawerQuery = (ticketID: number | null, open: boolean) => 
       return data
     },
     refetchOnWindowFocus: false,
-    enabled: open ?? employment,
+    enabled: open && !!employment,
   })
 
   return {
