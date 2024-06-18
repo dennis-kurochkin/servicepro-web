@@ -127,7 +127,8 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
       }}
       target={(
         <TicketDrawerHeaderChip
-          label={`Начало план: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_LABEL}`}
+          label={`Дата планируемого начала: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_LABEL}`}
+          color={planStartDate ? 'success' : 'error'}
           sx={{ display: 'flex' }}
           onChange={() => setDateChangeTooltipOpen(true)}
         />
@@ -139,7 +140,8 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
       content={`Изменить дату начала планирования можно только на статусе ${SYMBOL_QUOTATION_LEFT}${StatusEnumTitle[StatusEnum.Approval]}${SYMBOL_QUOTATION_RIGHT}`}
       target={(
         <TicketDrawerHeaderChip
-          label={`Начало план: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_LABEL}`}
+          label={`Дата планируемого начала: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_LABEL}`}
+          color={planStartDate ? 'info' : 'default'}
           sx={{ cursor: 'not-allowed' }}
           disabled
           onChange={() => undefined}
