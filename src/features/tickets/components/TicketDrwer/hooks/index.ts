@@ -72,7 +72,7 @@ export const useTicketDrawerQuery = (ticketID: number | null, open: boolean) => 
     queryFn: async () => {
       const { data } = await api.workSersTasksRetrieve(ticketID!, organizationID.toString())
 
-      if (employment?.id && data?.coordinator?.id !== employment?.id) {
+      if (employment?.id && (data?.coordinator?.id !== employment?.id)) {
         await api.workSersTasksExecutorsPartialUpdate(ticketID!, organizationID.toString(), {
           coordinator: employment?.id,
         })

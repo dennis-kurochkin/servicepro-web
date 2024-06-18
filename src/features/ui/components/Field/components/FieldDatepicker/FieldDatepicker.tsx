@@ -1,4 +1,3 @@
-import { forwardRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FieldCommonProps } from '@components/Field/types'
 import { TextFieldProps } from '@mui/material'
@@ -13,7 +12,7 @@ export interface FieldDatepickerProps extends
   onBlur?: TextFieldProps['onBlur']
 }
 
-export const FieldDatepicker = forwardRef(({
+export const FieldDatepicker = ({
   value,
   label,
   disableFuture,
@@ -43,4 +42,4 @@ export const FieldDatepicker = forwardRef(({
       />
     </LocalizationProvider>
   )
-})
+}
