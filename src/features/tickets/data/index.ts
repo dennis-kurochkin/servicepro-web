@@ -30,7 +30,7 @@ export const TicketMessageActionLabel: Record<TicketMessageAction, string> = {
   [TicketMessageAction.Reject]: 'Отклонить',
 }
 
-export const TicketDescriptionFormStatuses = [
+export const TicketStatusesConditionsChange = [
   StatusEnum.Processing,
   StatusEnum.Wait,
   StatusEnum.Approval,

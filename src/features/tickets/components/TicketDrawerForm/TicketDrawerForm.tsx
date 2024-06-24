@@ -2,11 +2,12 @@ import { ChangeEvent, useState } from 'react'
 import { FieldInput } from '@components/Field'
 import { Send } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import { Box, Typography } from '@mui/material'
+import { Alert, Box, Typography } from '@mui/material'
 
 interface TicketDrawerFormProps {
   title: string
   value: string
+  alert?: string
   disabled?: boolean
   loading: boolean
   bordered?: boolean
@@ -14,7 +15,7 @@ interface TicketDrawerFormProps {
   onSubmit: () => void
 }
 
-export const TicketDrawerForm = ({ title, value, disabled = false, bordered = true, loading, onSubmit, onChange }: TicketDrawerFormProps) => {
+export const TicketDrawerForm = ({ title, value, alert, disabled = false, bordered = true, loading, onSubmit, onChange }: TicketDrawerFormProps) => {
   const [error, setError] = useState(false)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +57,14 @@ export const TicketDrawerForm = ({ title, value, disabled = false, bordered = tr
         multiline
         onChange={handleChange}
       />
+      {alert && (
+        <Alert
+          severity={'warning'}
+          sx={{ marginTop: '12px' }}
+        >
+          {alert}
+        </Alert>
+      )}
       <LoadingButton
         variant={'outlined'}
         size={'small'}

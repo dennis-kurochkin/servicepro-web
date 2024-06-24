@@ -245,6 +245,7 @@ export const TicketDrawer = () => {
               <>
                 <TicketDrawerFormConditions
                   ticket={data}
+                  statuses={statusesQuery.data ?? []}
                   authorization={authorization}
                 />
                 <TicketDrawerForm
