@@ -18,12 +18,13 @@ import {
 import { TicketDrawerFooter } from '@features/tickets/components/TicketDrawerFooter'
 import { TicketDrawerForm } from '@features/tickets/components/TicketDrawerForm'
 import { TicketDrawerFormConditions } from '@features/tickets/components/TicketDrawerFormConditions'
+import { TicketDrawerFormResult } from '@features/tickets/components/TicketDrawerFormResult'
 import { TicketDrawerFormsContainer } from '@features/tickets/components/TicketDrawerFormsContainer'
 import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHeader'
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
 import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketDrawerHeaderDateChip'
 import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
-import { StatusEnumTitle, TicketDescriptionFormResult } from '@features/tickets/data'
+import { StatusEnumTitle } from '@features/tickets/data'
 import { getAvailableStatusOptions } from '@features/tickets/helpers'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
@@ -158,7 +159,7 @@ export const TicketDrawer = () => {
                 ticketID={ticketID!}
                 authorization={authorization}
                 uuid={''}
-                author={data?.executor.id ?? null}
+                author={data?.executor?.id ?? data?.coordinator?.id ?? null}
                 pictures={resultQuery.data?.photos?.map((media) => attachmentsQuery.data?.find(({ client_uuid }) => media.client_uuid === client_uuid)?.file ?? '')}
                 content={(
                   <Box
@@ -173,7 +174,7 @@ export const TicketDrawer = () => {
                       Отчет
                     </Box>
                     <Box>
-                      {resultQuery.data.executor_report || 'Нет данных'}
+                      {resultQuery.data.coordinator_report || resultQuery.data.executor_report || 'Нет данных'}
                     </Box>
                     <Box
                       fontWeight={500}
@@ -255,14 +256,12 @@ export const TicketDrawer = () => {
                   onChange={() => {}}
                   onSubmit={() => {}}
                 />
-                <TicketDrawerForm
-                  value={''}
-                  title={'Итоговое соглашение'}
-                  loading={false}
-                  disabled={!TicketDescriptionFormResult.some((status) => data?.status === status)}
-                  onChange={() => {}}
-                  onSubmit={() => {}}
-                />
+                {resultQuery.isSuccess && (
+                  <TicketDrawerFormResult
+                    ticket={data}
+                    result={resultQuery.data}
+                  />
+                )}
               </>
             )}
           </TicketDrawerFormsContainer>

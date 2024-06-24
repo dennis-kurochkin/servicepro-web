@@ -8,6 +8,7 @@ interface TicketDrawerFormProps {
   title: string
   value: string
   alert?: string
+  actionLabel?: string
   disabled?: boolean
   loading: boolean
   bordered?: boolean
@@ -15,7 +16,7 @@ interface TicketDrawerFormProps {
   onSubmit: () => void
 }
 
-export const TicketDrawerForm = ({ title, value, alert, disabled = false, bordered = true, loading, onSubmit, onChange }: TicketDrawerFormProps) => {
+export const TicketDrawerForm = ({ title, value, alert, actionLabel = 'Отправить', disabled = false, bordered = true, loading, onSubmit, onChange }: TicketDrawerFormProps) => {
   const [error, setError] = useState(false)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +50,7 @@ export const TicketDrawerForm = ({ title, value, alert, disabled = false, border
         value={value}
         name={'text'}
         placeholder={'Введите текст'}
-        disabled={disabled || loading}
+        readOnly={disabled || loading}
         minRows={3}
         maxRows={6}
         error={error}
@@ -74,7 +75,7 @@ export const TicketDrawerForm = ({ title, value, alert, disabled = false, border
         loading={loading}
         onClick={handleSubmit}
       >
-        Отправить
+        {actionLabel}
       </LoadingButton>
     </Box>
   )

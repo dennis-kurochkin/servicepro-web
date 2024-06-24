@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { SYMBOL_QUOTATION_LEFT, SYMBOL_QUOTATION_RIGHT } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { TicketDrawerForm } from '@features/tickets/components/TicketDrawerForm'
@@ -28,7 +28,7 @@ export const TicketDrawerFormConditions = ({ ticket, statuses, authorization }: 
   const editable = useMemo(() => TicketStatusesConditionsChange.some((status) => ticket?.status === status), [ticket])
   const showAlert = useMemo(() => statuses.some((status) => status.edits.coordinator_description && status.verdict === WorkTaskEventVerdict.Discuss) && editable, [statuses, editable])
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     try {
       setLoading(true)
 
@@ -53,13 +53,14 @@ export const TicketDrawerFormConditions = ({ ticket, statuses, authorization }: 
     } finally {
       setLoading(false)
     }
-  }
+  }, [chatApi, ticket, authorization, value, notify])
 
   return (
     <TicketDrawerForm
       value={value}
       title={'Условия для выполнения заявки'}
       alert={showAlert ? 'Уже есть текст условий для выполнения заявки на согласовании' : undefined}
+      actionLabel={'Отправить на согласование'}
       disabled={!TicketStatusesConditionsChange.some((status) => ticket?.status === status)}
       loading={loading}
       onChange={setValue}
