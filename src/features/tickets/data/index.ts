@@ -47,43 +47,23 @@ export const TicketDescriptionFormResult = [
 ]
 
 export const TicketAvailableStatusesByStatus: Record<StatusEnum, StatusEnum[]> = {
-  [StatusEnum.Search]: [
-    StatusEnum.Approval,
-    StatusEnum.Processing,
-    StatusEnum.Pause,
-  ],
-  [StatusEnum.Processing]: [
-    StatusEnum.OnWay,
-    StatusEnum.Work,
-    StatusEnum.Pause,
-    StatusEnum.Wait,
-    StatusEnum.Done,
-  ],
+  [StatusEnum.Search]: [],
+  [StatusEnum.Processing]: [],
+  [StatusEnum.Wait]: [],
   [StatusEnum.Approval]: [
     StatusEnum.OnWay,
     StatusEnum.Work,
     StatusEnum.Pause,
-    StatusEnum.Wait,
-    StatusEnum.Done,
-  ],
-  [StatusEnum.Wait]: [
-    StatusEnum.OnWay,
-    StatusEnum.Work,
-    StatusEnum.Pause,
-    StatusEnum.Done,
   ],
   [StatusEnum.OnWay]: [
     StatusEnum.Work,
     StatusEnum.Pause,
-    StatusEnum.Done,
   ],
   [StatusEnum.Pause]: [
     StatusEnum.Work,
-    StatusEnum.Done,
   ],
   [StatusEnum.Work]: [
     StatusEnum.Pause,
-    StatusEnum.Done,
   ],
   [StatusEnum.Done]: [],
 }
