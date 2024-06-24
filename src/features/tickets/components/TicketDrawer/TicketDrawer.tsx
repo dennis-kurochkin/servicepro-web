@@ -131,10 +131,16 @@ export const TicketDrawer = () => {
                 />
               )}
               <TicketDrawerHeaderChip
-                label={'Туман 3'}
+                label={data?.vehicle?.model?.equipment?.name || 'Тип техники не указан'}
               />
               <TicketDrawerHeaderChip
-                label={'ТО - 2'}
+                label={(data?.vehicle?.model?.brand.name ?? '' + data?.vehicle?.model?.name ?? '') || 'Модель техники не указана'}
+              />
+              <TicketDrawerHeaderChip
+                label={data?.vehicle?.sn || data?.vehicle?.gos_number || 'Серийный номер техники не задан'}
+              />
+              <TicketDrawerHeaderChip
+                label={data?.vehicle?.manufacture_date ?? 'Год выпуска не указан'}
               />
               <TicketDrawerHeaderDateChip
                 ticketID={ticketID!}
