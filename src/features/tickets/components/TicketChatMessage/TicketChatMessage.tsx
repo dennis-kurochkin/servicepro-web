@@ -229,7 +229,10 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
                 }}
               />
             )}
-            <Typography variant={'body2'}>
+            <Typography
+              variant={'body2'}
+              sx={{ wordBreak: 'break-word' }}
+            >
               {content ? content : (
                 <Box
                   component={'span'}

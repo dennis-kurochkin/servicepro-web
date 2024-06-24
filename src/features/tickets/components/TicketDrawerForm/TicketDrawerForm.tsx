@@ -1,16 +1,35 @@
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { FieldInput } from '@components/Field'
 import { Send } from '@mui/icons-material'
-import { Box, Button, Typography } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { Box, Typography } from '@mui/material'
 
 interface TicketDrawerFormProps {
   title: string
+  value: string
   disabled?: boolean
+  loading: boolean
   bordered?: boolean
+  onChange: (value: string) => void
+  onSubmit: () => void
 }
 
-export const TicketDrawerForm = ({ title, disabled = false, bordered = true }: TicketDrawerFormProps) => {
-  const [value, setValue] = useState('')
+export const TicketDrawerForm = ({ title, value, disabled = false, bordered = true, loading, onSubmit, onChange }: TicketDrawerFormProps) => {
+  const [error, setError] = useState(false)
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value)
+    setError(false)
+  }
+
+  const handleSubmit = () => {
+    if (!value) {
+      setError(true)
+      return
+    }
+
+    onSubmit()
+  }
 
   return (
     <Box
@@ -29,22 +48,25 @@ export const TicketDrawerForm = ({ title, disabled = false, bordered = true }: T
         value={value}
         name={'text'}
         placeholder={'Введите текст'}
-        disabled={disabled}
+        disabled={disabled || loading}
         minRows={3}
         maxRows={6}
+        error={error}
         sx={{ marginTop: '12px' }}
         multiline
-        onChange={(e) => setValue(e.target.value)}
+        onChange={handleChange}
       />
-      <Button
+      <LoadingButton
         variant={'outlined'}
         size={'small'}
         endIcon={<Send fontSize={'small'} />}
         sx={{ marginTop: '12px' }}
         disabled={disabled}
+        loading={loading}
+        onClick={handleSubmit}
       >
         Отправить
-      </Button>
+      </LoadingButton>
     </Box>
   )
 }

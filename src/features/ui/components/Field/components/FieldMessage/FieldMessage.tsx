@@ -16,7 +16,7 @@ export const FieldMessage = ({ show = false, variant = 'error', message }: Field
         color: variant === 'error' ? theme.palette.error.main : theme.palette.warning.main,
       }}
     >
-      {message ?? 'Произошла ошибка'}
+      {message ?? 'Поле заполнено некорректно'}
     </Typography>
   ) : null
 }

@@ -7,13 +7,6 @@ import { getEngineerLabel } from '@features/engineers/helpers'
 import { SearchParamsKey } from '@features/shared/data'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
 import { TicketChatMessage } from '@features/tickets/components/TicketChatMessage'
-import { TicketDrawerFooter } from '@features/tickets/components/TicketDrawerFooter'
-import { TicketDrawerForm } from '@features/tickets/components/TicketDrawerForm'
-import { TicketDrawerFormsContainer } from '@features/tickets/components/TicketDrawerFormsContainer'
-import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHeader'
-import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
-import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketDrawerHeaderDateChip'
-import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
 import {
   useTicketDrawerQuery,
   useTicketDrawerQueryAttachments,
@@ -21,8 +14,16 @@ import {
   useTicketDrawerQueryResult,
   useTicketDrawerQueryStatuses,
   useTicketDrawerWebSocket,
-} from '@features/tickets/components/TicketDrwer/hooks'
-import { StatusEnumTitle, TicketDescriptionFormResult, TicketDescriptionFormStatuses } from '@features/tickets/data'
+} from '@features/tickets/components/TicketDrawer/hooks'
+import { TicketDrawerFooter } from '@features/tickets/components/TicketDrawerFooter'
+import { TicketDrawerForm } from '@features/tickets/components/TicketDrawerForm'
+import { TicketDrawerFormConditions } from '@features/tickets/components/TicketDrawerFormConditions'
+import { TicketDrawerFormsContainer } from '@features/tickets/components/TicketDrawerFormsContainer'
+import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHeader'
+import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
+import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketDrawerHeaderDateChip'
+import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
+import { StatusEnumTitle, TicketDescriptionFormResult } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -58,7 +59,7 @@ export const TicketDrawer = () => {
   const [sendingMessage, setSendingMessage] = useState(false)
 
   const { authorization, socket: { readyState } } = useTicketDrawerWebSocket(ticketID)
-  const { data, isFetching, members } = useTicketDrawerQuery(ticketID, open)
+  const { data, isFetching, isSuccess, members } = useTicketDrawerQuery(ticketID, open)
   const attachmentsQuery = useTicketDrawerQueryAttachments(ticketID, open)
   const resultQuery = useTicketDrawerQueryResult(ticketID, open)
   const statusesQuery = useTicketDrawerQueryStatuses(ticketID, open)
@@ -82,8 +83,8 @@ export const TicketDrawer = () => {
         authorization,
       }, {
         text: message,
-        edits: {},
         ...(newStatus ? { status: newStatus } : {}),
+        edits: {},
       })
 
       setNewStatus(null)
@@ -219,7 +220,7 @@ export const TicketDrawer = () => {
                 date={message.server_time}
               />
             ))}
-            {data && (
+            {isSuccess && (
               <TicketChatMessage
                 ticketID={null}
                 authorization={authorization}
@@ -239,17 +240,29 @@ export const TicketDrawer = () => {
                 coordinator={data?.coordinator?.profile ?? null}
               />
             )}
-            <TicketDrawerForm
-              title={'Условия для выполнения заявки'}
-              disabled={!TicketDescriptionFormStatuses.some((status) => data?.status === status)}
-            />
-            <TicketDrawerForm
-              title={'Рекомендации'}
-            />
-            <TicketDrawerForm
-              title={'Итоговое соглашение'}
-              disabled={!TicketDescriptionFormResult.some((status) => data?.status === status)}
-            />
+            {isSuccess && (
+              <>
+                <TicketDrawerFormConditions
+                  ticket={data}
+                  authorization={authorization}
+                />
+                <TicketDrawerForm
+                  value={''}
+                  title={'Рекомендации'}
+                  loading={false}
+                  onChange={() => {}}
+                  onSubmit={() => {}}
+                />
+                <TicketDrawerForm
+                  value={''}
+                  title={'Итоговое соглашение'}
+                  loading={false}
+                  disabled={!TicketDescriptionFormResult.some((status) => data?.status === status)}
+                  onChange={() => {}}
+                  onSubmit={() => {}}
+                />
+              </>
+            )}
           </TicketDrawerFormsContainer>
         </Box>
         <TicketDrawerFooter>
