@@ -7,7 +7,7 @@ import { StatusEnum } from '~/api/servicepro.generated'
 interface TicketDrawerHeaderProps {
   title: string
   subtitle: string
-  status: StatusEnum
+  status: StatusEnum | null
   loading?: boolean
   renderChips: ReactNode
   onClose: () => void
@@ -39,11 +39,13 @@ export const TicketDrawerHeader = ({ title, subtitle, status, loading = false, r
           />
         ) : (
           <>
-            <TicketChipStatus
-              status={status}
-              size={400}
-              filled
-            />
+            {status && (
+              <TicketChipStatus
+                status={status}
+                size={400}
+                filled
+              />
+            )}
             <Typography
               variant={'h6'}
               fontWeight={500}

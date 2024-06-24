@@ -16,8 +16,8 @@ import {
   useTicketDrawerWebSocket,
 } from '@features/tickets/components/TicketDrawer/hooks'
 import { TicketDrawerFooter } from '@features/tickets/components/TicketDrawerFooter'
-import { TicketDrawerForm } from '@features/tickets/components/TicketDrawerForm'
 import { TicketDrawerFormConditions } from '@features/tickets/components/TicketDrawerFormConditions'
+import { TicketDrawerFormRecommendation } from '@features/tickets/components/TicketDrawerFormRecommendation'
 import { TicketDrawerFormResult } from '@features/tickets/components/TicketDrawerFormResult'
 import { TicketDrawerFormsContainer } from '@features/tickets/components/TicketDrawerFormsContainer'
 import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHeader'
@@ -26,6 +26,8 @@ import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketD
 import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
 import { StatusEnumTitle } from '@features/tickets/data'
 import { getAvailableStatusOptions } from '@features/tickets/helpers'
+import { VehicleChipRecommendationLevel } from '@features/vehicles/components/VehicleChipRecommendationLevel'
+import { VehicleChipRecommendationSolution } from '@features/vehicles/components/VehicleChipRecommendationSolution'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -61,7 +63,7 @@ export const TicketDrawer = () => {
   const [sendingMessage, setSendingMessage] = useState(false)
 
   const { authorization, socket: { readyState } } = useTicketDrawerWebSocket(ticketID)
-  const { data, isFetching, isSuccess, members } = useTicketDrawerQuery(ticketID, open)
+  const { data, isFetching, isPending, isSuccess, members } = useTicketDrawerQuery(ticketID, open)
   const attachmentsQuery = useTicketDrawerQueryAttachments(ticketID, open)
   const resultQuery = useTicketDrawerQueryResult(ticketID, open)
   const statusesQuery = useTicketDrawerQueryStatuses(ticketID, open)
@@ -121,8 +123,8 @@ export const TicketDrawer = () => {
         <TicketDrawerHeader
           title={data?.title ?? ''}
           subtitle={getEngineerLabel(data?.customer?.profile ?? {})}
-          status={data?.status ?? StatusEnum.Wait}
-          loading={isFetching}
+          status={data?.status ?? null}
+          loading={isFetching || isPending}
           renderChips={(
             <>
               {data?.service_center.requisites.full_name && (
@@ -186,15 +188,25 @@ export const TicketDrawer = () => {
                       fontWeight={500}
                       sx={{ marginTop: '6px' }}
                     >
-                      Рекомендации
+                      Рекомендация
                     </Box>
-                    {resultQuery.data.recommendations.length ? resultQuery.data.recommendations.map((recommendation) => (
-                      <Box
-                        key={recommendation.id}
-                      >
-                        {recommendation.title};
+                    {resultQuery.data.recommendations?.[0] ? (
+                      <Box>
+                        <Box>
+                          {resultQuery.data.recommendations[0].title || resultQuery.data.recommendations[0].text}
+                        </Box>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            gap: '4px',
+                            marginTop: '8px',
+                          }}
+                        >
+                          <VehicleChipRecommendationLevel level={resultQuery.data.recommendations[0].level} />
+                          <VehicleChipRecommendationSolution solution={resultQuery.data.recommendations[0].solution} />
+                        </Box>
                       </Box>
-                    )) : 'Нет данных'}
+                    ) : 'Нет данных'}
                   </Box>
                 )}
                 status={data?.status ?? StatusEnum.Done}
@@ -255,18 +267,17 @@ export const TicketDrawer = () => {
                   statuses={statusesQuery.data ?? []}
                   authorization={authorization}
                 />
-                <TicketDrawerForm
-                  value={''}
-                  title={'Рекомендации'}
-                  loading={false}
-                  onChange={() => {}}
-                  onSubmit={() => {}}
-                />
                 {resultQuery.isSuccess && (
-                  <TicketDrawerFormResult
-                    ticket={data}
-                    result={resultQuery.data}
-                  />
+                  <>
+                    <TicketDrawerFormRecommendation
+                      ticket={data}
+                      result={resultQuery.data}
+                    />
+                    <TicketDrawerFormResult
+                      ticket={data}
+                      result={resultQuery.data}
+                    />
+                  </>
                 )}
               </>
             )}
