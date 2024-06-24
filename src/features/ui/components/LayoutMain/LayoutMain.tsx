@@ -1,7 +1,7 @@
 import { Outlet, useParams } from 'react-router-dom'
 import { FooterCopyright } from '@components/FooterCopyright'
 import { Header } from '@components/Header'
-import { TicketDrawer } from '@features/tickets/components/TicketDrwer'
+import { TicketDrawer } from '@features/tickets/components/TicketDrawer'
 
 export const LayoutMain = () => {
   const params = useParams()
