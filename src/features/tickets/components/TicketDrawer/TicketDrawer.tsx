@@ -24,6 +24,7 @@ import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawe
 import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketDrawerHeaderDateChip'
 import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
 import { StatusEnumTitle, TicketDescriptionFormResult } from '@features/tickets/data'
+import { getAvailableStatusOptions } from '@features/tickets/helpers'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -281,10 +282,7 @@ export const TicketDrawer = () => {
                   value: newStatus,
                   label: StatusEnumTitle[newStatus],
                 } : null}
-                options={Object.values(StatusEnum).filter((value) => ![StatusEnum.Processing, StatusEnum.Search].some((v) => v === value)).map((value) => ({
-                  value,
-                  label: StatusEnumTitle[value as StatusEnum],
-                }))}
+                options={getAvailableStatusOptions(data?.status ?? StatusEnum.Done)}
                 disabled={sendingMessage}
                 labelInside
                 onChange={(data) => setNewStatus(data?.value as StatusEnum ?? null)}
@@ -298,7 +296,7 @@ export const TicketDrawer = () => {
                     <ButtonIconSquare
                       color={'info'}
                       variant={'outlined'}
-                      disabled={sendingMessage}
+                      disabled={sendingMessage || getAvailableStatusOptions(data?.status ?? StatusEnum.Done).length === 0}
                       onClick={() => setShowStatusField(true)}
                     >
                       <Update fontSize={'medium'} />
