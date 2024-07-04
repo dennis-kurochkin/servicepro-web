@@ -52,6 +52,19 @@ export const useTicketDrawerWebSocket = (ticketID: number | null) => {
           await queryClient.invalidateQueries({ queryKey: [QueryKey.TicketAttachments, ticketID, organizationID] })
         }
       }
+
+      if (data.payload_model === 'UsedButton' && data.payload.task_id === ticketID) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: [QueryKey.TicketAttachments, ticketID, organizationID] }),
+          queryClient.invalidateQueries({ queryKey: [QueryKey.TicketStatuses, ticketID] }),
+          queryClient.invalidateQueries({ queryKey: [QueryKey.TicketResult, ticketID] }),
+          queryClient.invalidateQueries({ queryKey: [QueryKey.Chats, ticketID, organizationID] }),
+        ])
+      }
+
+      if (data.payload_model === 'NewTask') {
+        await queryClient.invalidateQueries({ queryKey: [QueryKey.TicketsGeos] })
+      }
     },
   })
 
