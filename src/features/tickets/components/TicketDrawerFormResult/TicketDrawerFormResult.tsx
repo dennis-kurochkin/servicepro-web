@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { QueryKey } from '@features/shared/data'
 import { TicketDrawerForm } from '@features/tickets/components/TicketDrawerForm'
-import { TicketDescriptionFormResult } from '@features/tickets/data'
+import { ticketDescriptionFormResult } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -56,7 +56,7 @@ export const TicketDrawerFormResult = ({ ticket, result }: TicketDrawerFormResul
       value={value}
       title={'Итоговое соглашение'}
       actionLabel={'Отправить'}
-      disabled={!TicketDescriptionFormResult.some((status) => ticket?.status === status)}
+      disabled={!ticketDescriptionFormResult.some((status) => ticket?.status === status)}
       loading={loading}
       onChange={setValue}
       onSubmit={handleSubmit}

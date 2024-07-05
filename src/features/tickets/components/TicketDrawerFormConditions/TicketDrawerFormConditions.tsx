@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { SYMBOL_QUOTATION_LEFT, SYMBOL_QUOTATION_RIGHT } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { TicketDrawerForm } from '@features/tickets/components/TicketDrawerForm'
-import { TicketStatusesConditionsChange } from '@features/tickets/data'
+import { ticketStatusesConditionsChange } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { queryClient } from '~/api'
@@ -25,7 +25,7 @@ export const TicketDrawerFormConditions = ({ ticket, statuses, authorization }: 
   const [value, setValue] = useState(ticket.approval.coordinator_description || ticket.approval.customer_description || '')
   const [loading, setLoading] = useState(false)
 
-  const editable = useMemo(() => TicketStatusesConditionsChange.some((status) => ticket?.status === status), [ticket])
+  const editable = useMemo(() => ticketStatusesConditionsChange.some((status) => ticket?.status === status), [ticket])
   const showAlert = useMemo(() => statuses.some((status) => status.edits.coordinator_description && status.verdict === WorkTaskEventVerdict.Discuss) && editable, [statuses, editable])
 
   const handleSubmit = useCallback(async () => {
@@ -61,7 +61,7 @@ export const TicketDrawerFormConditions = ({ ticket, statuses, authorization }: 
       title={'Условия для выполнения заявки'}
       alert={showAlert ? 'Уже есть текст условий для выполнения заявки на согласовании' : undefined}
       actionLabel={'Отправить на согласование'}
-      disabled={!TicketStatusesConditionsChange.some((status) => ticket?.status === status)}
+      disabled={!ticketStatusesConditionsChange.some((status) => ticket?.status === status)}
       loading={loading}
       onChange={setValue}
       onSubmit={handleSubmit}

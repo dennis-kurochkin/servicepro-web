@@ -5,7 +5,7 @@ export enum TicketsTab {
   History = 'history'
 }
 
-export const StatusEnumTitle: Record<StatusEnum, string> = {
+export const StatusEnumLabel: Record<StatusEnum, string> = {
   [StatusEnum.Done]: 'Выполнено',
   [StatusEnum.Approval]: 'В обработке',
   [StatusEnum.Processing]: 'В обработке',
@@ -30,13 +30,13 @@ export const TicketMessageActionLabel: Record<TicketMessageAction, string> = {
   [TicketMessageAction.Reject]: 'Отклонить',
 }
 
-export const TicketStatusesConditionsChange = [
+export const ticketStatusesConditionsChange = [
   StatusEnum.Processing,
   StatusEnum.Wait,
   StatusEnum.Approval,
 ]
 
-export const TicketDescriptionFormResult = [
+export const ticketDescriptionFormResult = [
   StatusEnum.Approval,
   StatusEnum.Processing,
   StatusEnum.OnWay,
@@ -45,6 +45,8 @@ export const TicketDescriptionFormResult = [
   StatusEnum.Search,
   StatusEnum.Work,
 ]
+
+export const ticketStatusesEngineerEditable = Object.values(StatusEnum).filter((status) => status !== StatusEnum.Done)
 
 export const TicketAvailableStatusesByStatus: Record<StatusEnum, StatusEnum[]> = {
   [StatusEnum.Search]: [],

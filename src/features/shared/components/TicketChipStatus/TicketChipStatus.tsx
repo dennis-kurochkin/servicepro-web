@@ -1,4 +1,4 @@
-import { StatusEnumTitle } from '@features/tickets/data'
+import { StatusEnumLabel } from '@features/tickets/data'
 import { Chip, ChipProps } from '@mui/material'
 import { StatusEnum } from '~/api/servicepro.generated'
 
@@ -24,7 +24,7 @@ export const TicketChipStatus = ({ status = StatusEnum.Wait, filled = false, siz
     <Chip
       variant={filled ? 'filled' : 'outlined'}
       color={StatusEnumColor[status]}
-      label={status ? StatusEnumTitle[status] : 'Не обновлялся'}
+      label={status ? StatusEnumLabel[status] : 'Не обновлялся'}
       size={size === 500 ? 'medium' : 'small'}
       sx={{
         paddingTop: '1px',

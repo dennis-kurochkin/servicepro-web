@@ -24,7 +24,7 @@ import { TicketDrawerHeader } from '@features/tickets/components/TicketDrawerHea
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
 import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketDrawerHeaderDateChip'
 import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
-import { StatusEnumTitle } from '@features/tickets/data'
+import { StatusEnumLabel } from '@features/tickets/data'
 import { getAvailableStatusOptions } from '@features/tickets/helpers'
 import { VehicleChipRecommendationLevel } from '@features/vehicles/components/VehicleChipRecommendationLevel'
 import { VehicleChipRecommendationSolution } from '@features/vehicles/components/VehicleChipRecommendationSolution'
@@ -256,6 +256,7 @@ export const TicketDrawer = () => {
             {typeof ticketID === 'number' && (
               <TicketDrawerParticipantsSection
                 ticketID={ticketID}
+                status={data?.status ?? StatusEnum.Processing}
                 engineer={data?.executor?.profile ?? null}
                 coordinator={data?.coordinator?.profile ?? null}
               />
@@ -297,7 +298,7 @@ export const TicketDrawer = () => {
                 sx={{ minWidth: '200px' }}
                 value={newStatus ? {
                   value: newStatus,
-                  label: StatusEnumTitle[newStatus],
+                  label: StatusEnumLabel[newStatus],
                 } : null}
                 options={getAvailableStatusOptions(data?.status ?? StatusEnum.Done)}
                 disabled={sendingMessage}
