@@ -60,12 +60,13 @@ export const TicketDrawerParticipantsSection = ({ engineer, status, ticketID }: 
           <EngineerAvatar
             profile={engineer ?? null}
           />
-          <ButtonIcon
-            Icon={ManageAccounts}
-            fontSize={'18px'}
-            disabled={!ticketStatusesEngineerEditable.some((value) => value === status)}
-            onClick={handleOpenDialog}
-          />
+          {ticketStatusesEngineerEditable.some((value) => value === status) && (
+            <ButtonIcon
+              Icon={ManageAccounts}
+              fontSize={'18px'}
+              onClick={handleOpenDialog}
+            />
+          )}
         </Box>
       </Box>
       {/*<Box*/}
