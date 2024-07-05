@@ -70,11 +70,11 @@ export const TicketsTable = ({ page, count, isSuccess, data, sx, onPageChange, o
         <TableBody>
           {isSuccess && (
             <>
-              {data.map((task) => (
+              {data.map((ticket) => (
                 <TicketRow
-                  key={task.id}
-                  task={task}
-                  onSelect={() => onSelectTask ? onSelectTask(task.id) : () => {}}
+                  key={ticket.id}
+                  ticket={ticket}
+                  onSelect={() => onSelectTask ? onSelectTask(ticket.id) : () => {}}
                 />
               ))}
             </>

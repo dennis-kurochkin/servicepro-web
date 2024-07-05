@@ -8,6 +8,7 @@ import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { DialogEngineerAssign } from '@features/shared/components/DialogEngineerAssign'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
+import { ticketStatusesEngineerEditable } from '@features/tickets/data'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { GpsFixedOutlined, ManageAccounts } from '@mui/icons-material'
 import { TableCell, TableRow } from '@mui/material'
@@ -15,7 +16,7 @@ import { format } from 'date-fns'
 import { SerWorkTaskVerbose } from '~/api/servicepro.generated'
 
 export interface TicketRowProps {
-  task: SerWorkTaskVerbose
+  ticket: SerWorkTaskVerbose
   onSelect: () => void
 }
 
@@ -25,16 +26,16 @@ export interface TicketRowProps {
  * что описание было отредактировано координатором
  */
 
-export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
+export const TicketRow = ({ ticket, onSelect }: TicketRowProps) => {
   const navigate = useNavigate()
   const { organizationID } = useOrganizationID()
 
   const [open, setOpen] = useState(false)
-  const requisites = useMemo(() => task.organization?.requisites ?? null, [task.organization?.requisites])
-  const vehicle = useMemo(() => task.vehicle ?? null, [task.vehicle])
+  const requisites = useMemo(() => ticket.organization?.requisites ?? null, [ticket.organization?.requisites])
+  const vehicle = useMemo(() => ticket.vehicle ?? null, [ticket.vehicle])
 
   const handleClick = () => {
-    navigate(`/${organizationID}/tickets/${task.id}`)
+    navigate(`/${organizationID}/tickets/${ticket.id}`)
   }
 
   return (
@@ -53,10 +54,10 @@ export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
         onClick={() => handleClick()}
       >
         <TableCell>
-          {task.id}
+          {ticket.id}
         </TableCell>
         <TableCell>
-          {task.customer?.profile ? getEngineerLabel(task.customer?.profile) : EMPTY_VALUE_DASH}
+          {ticket.customer?.profile ? getEngineerLabel(ticket.customer?.profile) : EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
           {requisites?.legal_address?.region?.local_name ?? requisites?.physical_address?.region?.local_name ?? requisites?.postal_address?.region?.local_name ?? EMPTY_VALUE_DASH}
@@ -71,17 +72,17 @@ export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
           {vehicle?.model.name || EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          {task.approval.want_start_date ? format(new Date(task.approval.want_start_date), DATE_FORMAT_TIME_AHEAD) : EMPTY_VALUE_DASH}
+          {ticket.approval.want_start_date ? format(new Date(ticket.approval.want_start_date), DATE_FORMAT_TIME_AHEAD) : EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          {task.approval.plan_start_date ? format(new Date(task.approval.plan_start_date), DATE_FORMAT_TIME_AHEAD) : EMPTY_VALUE_DASH}
+          {ticket.approval.plan_start_date ? format(new Date(ticket.approval.plan_start_date), DATE_FORMAT_TIME_AHEAD) : EMPTY_VALUE_DASH}
         </TableCell>
         <TableCell>
-          <TicketChipStatus status={task.status} />
+          <TicketChipStatus status={ticket.status} />
         </TableCell>
         <TableCell>
           <EngineerAvatar
-            profile={task.executor?.profile ?? null}
+            profile={ticket.executor?.profile ?? null}
           />
         </TableCell>
         <TableCellActions>
@@ -101,13 +102,14 @@ export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
             )}
           />
           <TooltipNew
-            content={'Назначить инженера'}
+            content={ticketStatusesEngineerEditable.some((status) => status === ticket.status) ? 'Назначить инженера' : 'Изменение инженера у выполненных задач невозможно'}
             strategy={'fixed'}
             placement={'left'}
             target={(
               <ButtonIcon
                 Icon={ManageAccounts}
                 fontSize={'18px'}
+                disabled={!ticketStatusesEngineerEditable.some((status) => status === ticket.status)}
                 onClick={(event) => {
                   event.stopPropagation()
                   setOpen(true)
@@ -119,7 +121,7 @@ export const TicketRow = ({ task, onSelect }: TicketRowProps) => {
       </TableRow>
       <DialogEngineerAssign
         open={open}
-        selectedTaskID={task.id}
+        selectedTaskID={ticket.id}
         onClose={() => setOpen(false)}
       />
     </>

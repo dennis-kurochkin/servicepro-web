@@ -9,7 +9,7 @@ import {
 } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
-import { StatusEnumTitle } from '@features/tickets/data'
+import { StatusEnumLabel } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { LoadingButton } from '@mui/lab'
@@ -138,7 +138,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
     />
   ) : (
     <TooltipNew
-      content={`Изменить дату начала планирования можно только на статусе ${SYMBOL_QUOTATION_LEFT}${StatusEnumTitle[StatusEnum.Approval]}${SYMBOL_QUOTATION_RIGHT}`}
+      content={`Изменить дату начала планирования можно только на статусе ${SYMBOL_QUOTATION_LEFT}${StatusEnumLabel[StatusEnum.Approval]}${SYMBOL_QUOTATION_RIGHT}`}
       target={(
         <TicketDrawerHeaderChip
           label={`Дата планируемого начала: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_LABEL}`}
