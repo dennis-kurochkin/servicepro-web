@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
-import { WSData } from '@features/tickets/components/TicketDrawer/types'
+import { WSData, WSMessagePayloadModel } from '@features/tickets/components/TicketDrawer/types'
 import { useApi } from '@hooks/useApi'
 import { useEmployment } from '@hooks/useEmployment'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -11,14 +11,6 @@ import { AxiosError } from 'axios'
 import { queryClient } from '~/api'
 import { Message } from '~/api/servicepro-chat.generated'
 import { Profile, RoleEnum, WorkTaskDetailed } from '~/api/servicepro.generated'
-
-/**
- * Условия для выполнения заявки
- * брать последнее изменение условий из statuses, edits беру первый попавшийся coordinator_description, если verdict === applied то значит он применен, если нет то он на согласовании, помечать
- * можно менять только в обработке ожидание ИСО
- *
- * автоматически назначать координатором себя, если ты не координатор, сделать костыль
- */
 
 export const useTicketDrawerWebSocket = (ticketID: number | null) => {
   const { organizationID } = useOrganizationID()
@@ -35,34 +27,41 @@ export const useTicketDrawerWebSocket = (ticketID: number | null) => {
     onMessage: async (event) => {
       const data = JSON.parse(event.data) as WSData
 
-      if (data.payload_model === 'NewMessage' && data.payload.task_id === ticketID) {
-        queryClient.setQueryData([QueryKey.Chats, ticketID, organizationID], (oldData) => [
-          data.payload.message,
-          ...oldData as Message[],
-        ])
+      if (data.payload?.task_id) {
+        switch (data.payload_model) {
+          case WSMessagePayloadModel.NewMessage:
+            queryClient.setQueryData([QueryKey.Chats, ticketID, organizationID], (oldData) => [
+              data.payload.message,
+              ...oldData as Message[],
+            ])
 
-        if (data.payload.message.status) {
-          queryClient.setQueryData([QueryKey.Ticket, ticketID, organizationID], (oldData) => ({
-            ...oldData as WorkTaskDetailed,
-            status: data.payload.message.status,
-          }))
-        }
+            if (data.payload.message.status) {
+              queryClient.setQueryData([QueryKey.Ticket, ticketID, organizationID], (oldData) => ({
+                ...oldData as WorkTaskDetailed,
+                status: data.payload.message.status,
+              }))
+            }
 
-        if (data.payload.message.media_files?.length) {
-          await queryClient.invalidateQueries({ queryKey: [QueryKey.TicketAttachments, ticketID, organizationID] })
+            if (data.payload.message.media_files?.length) {
+              await queryClient.invalidateQueries({ queryKey: [QueryKey.TicketAttachments, ticketID, organizationID] })
+            }
+
+            break
+          case WSMessagePayloadModel.UsedButton:
+          case WSMessagePayloadModel.RefreshTask:
+            await Promise.all([
+              queryClient.invalidateQueries({ queryKey: [QueryKey.TicketAttachments, ticketID, organizationID] }),
+              queryClient.invalidateQueries({ queryKey: [QueryKey.TicketStatuses, ticketID] }),
+              queryClient.invalidateQueries({ queryKey: [QueryKey.TicketResult, ticketID] }),
+              queryClient.invalidateQueries({ queryKey: [QueryKey.Chats, ticketID, organizationID] }),
+            ])
+            break
+          case WSMessagePayloadModel.RemoveTask:
+            console.log('remove')
         }
       }
 
-      if (data.payload_model === 'UsedButton' && data.payload.task_id === ticketID) {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: [QueryKey.TicketAttachments, ticketID, organizationID] }),
-          queryClient.invalidateQueries({ queryKey: [QueryKey.TicketStatuses, ticketID] }),
-          queryClient.invalidateQueries({ queryKey: [QueryKey.TicketResult, ticketID] }),
-          queryClient.invalidateQueries({ queryKey: [QueryKey.Chats, ticketID, organizationID] }),
-        ])
-      }
-
-      if (data.payload_model === 'NewTask') {
+      if (data.payload_model === WSMessagePayloadModel.NewTask) {
         await queryClient.invalidateQueries({ queryKey: [QueryKey.TicketsGeos] })
       }
     },
