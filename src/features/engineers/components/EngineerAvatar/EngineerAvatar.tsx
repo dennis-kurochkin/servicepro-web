@@ -5,6 +5,8 @@ import { Person, PersonOff } from '@mui/icons-material'
 import { Avatar, Box, Chip, SxProps, Typography } from '@mui/material'
 
 interface EngineerAvatarProps {
+  variant?: 'default' | 'uncontained'
+  size?: 400 | 500
   profile: null | {
     last_name?: string
     first_name?: string
@@ -18,7 +20,7 @@ interface EngineerAvatarProps {
   onClick?: () => void
 }
 
-export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', emptyLabel = 'Не назначен', labelled = true, sx, renderAfterChip, onClick }: EngineerAvatarProps) => {
+export const EngineerAvatar = ({ variant = 'default', size = 500, profile = {}, fullName = 'Без имени', emptyLabel = 'Не назначен', labelled = true, sx, renderAfterChip, onClick }: EngineerAvatarProps) => {
   const avatar = (
     <Avatar
       alt={fullName}
@@ -28,6 +30,13 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', e
         height: '24px !important',
         border: labelled ? 'none' : undefined,
         cursor: 'pointer',
+        ...(variant === 'uncontained' ? {
+          marginLeft: '0 !important',
+        } : {}),
+        ...(size === 400 ? {
+          width: '20px !important',
+          height: '20px !important',
+        } : {}),
       }}
       onClick={onClick}
     >
@@ -62,6 +71,13 @@ export const EngineerAvatar = ({ profile = {}, fullName = 'Без имени', e
             height: '32px',
             borderRadius: '20px 8px 8px 20px',
             background: 'rgba(0, 0, 0, 0.06)',
+            ...(variant === 'uncontained' ? {
+              height: 'auto',
+              background: 'transparent',
+              '& > [class*="label"]': {
+                paddingRight: 0,
+              },
+            } : {}),
           }}
           avatar={avatar}
           label={(

@@ -2,13 +2,13 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { TableCellActions } from '@components/TableCellActions'
-import { TooltipNew } from '@components/TooltipNew'
 import { DATE_FORMAT_TIME_AHEAD, EMPTY_VALUE_DASH } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { DialogEngineerAssign } from '@features/shared/components/DialogEngineerAssign'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { ticketStatusesEngineerEditable } from '@features/tickets/data'
+import { Tooltip } from '@features/ui/components/Tooltip'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { GpsFixedOutlined, ManageAccounts } from '@mui/icons-material'
 import { TableCell, TableRow } from '@mui/material'
@@ -86,7 +86,7 @@ export const TicketRow = ({ ticket, onSelect }: TicketRowProps) => {
           />
         </TableCell>
         <TableCellActions>
-          <TooltipNew
+          <Tooltip
             content={'Показать на карте'}
             strategy={'fixed'}
             placement={'left'}
@@ -101,7 +101,7 @@ export const TicketRow = ({ ticket, onSelect }: TicketRowProps) => {
               />
             )}
           />
-          <TooltipNew
+          <Tooltip
             content={ticketStatusesEngineerEditable.some((status) => status === ticket.status) ? 'Назначить инженера' : 'Изменение инженера у выполненных задач невозможно'}
             strategy={'fixed'}
             placement={'left'}

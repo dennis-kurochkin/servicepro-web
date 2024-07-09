@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import { FieldDatepicker } from '@components/Field/components/FieldDatepicker'
 import { FieldTimepicker } from '@components/Field/components/FieldTimepicker'
-import { TooltipNew } from '@components/TooltipNew'
 import {
   DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_LABEL,
   SYMBOL_QUOTATION_LEFT,
@@ -10,6 +9,7 @@ import {
 import { QueryKey } from '@features/shared/data'
 import { TicketDrawerHeaderChip } from '@features/tickets/components/TicketDrawerHeaderChip'
 import { StatusEnumLabel } from '@features/tickets/data'
+import { Tooltip } from '@features/ui/components/Tooltip'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { LoadingButton } from '@mui/lab'
@@ -71,7 +71,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
   }, [newDate, authorization, handleClose, chatApi, notify, ticketID])
 
   return status === StatusEnum.Approval ? (
-    <TooltipNew
+    <Tooltip
       visible={dateChangeTooltipOpen}
       placement={'bottom'}
       content={(
@@ -137,7 +137,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
       interactive
     />
   ) : (
-    <TooltipNew
+    <Tooltip
       content={`Изменить дату начала планирования можно только на статусе ${SYMBOL_QUOTATION_LEFT}${StatusEnumLabel[StatusEnum.Approval]}${SYMBOL_QUOTATION_RIGHT}`}
       target={(
         <TicketDrawerHeaderChip

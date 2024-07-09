@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ButtonIconSquare } from '@components/ButtonIconSquare'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
-import { TooltipNew } from '@components/TooltipNew'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { SearchParamsKey } from '@features/shared/data'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
@@ -26,6 +25,7 @@ import { TicketDrawerHeaderDateChip } from '@features/tickets/components/TicketD
 import { TicketDrawerParticipantsSection } from '@features/tickets/components/TicketDrawerParticipantsSection'
 import { StatusEnumLabel } from '@features/tickets/data'
 import { getAvailableStatusOptions } from '@features/tickets/helpers'
+import { Tooltip } from '@features/ui/components/Tooltip'
 import { VehicleChipRecommendationLevel } from '@features/vehicles/components/VehicleChipRecommendationLevel'
 import { VehicleChipRecommendationSolution } from '@features/vehicles/components/VehicleChipRecommendationSolution'
 import { useApi } from '@hooks/useApi'
@@ -306,7 +306,7 @@ export const TicketDrawer = () => {
                 onChange={(data) => setNewStatus(data?.value as StatusEnum ?? null)}
               />
             ) : (
-              <TooltipNew
+              <Tooltip
                 content={'Изменить статус заявки'}
                 strategy={'fixed'}
                 target={(

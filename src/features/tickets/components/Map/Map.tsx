@@ -1,11 +1,12 @@
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { MapContainer } from 'react-leaflet'
-import { MapInner, MapInnerProps } from '@components/Map/components/MapInner'
-import { MAP_ZOOM_DEFAULT } from '@components/Map/constants'
 import { LAT_LNG_INITIAL, MAP_FLY_DURATION } from '@constants/index'
+import { MapInner, MapInnerProps } from '@features/tickets/components/Map/components/MapInner'
+import { MAP_ZOOM_DEFAULT } from '@features/tickets/components/Map/constants'
 import { TaskVerbose } from '@features/tickets/types'
 import { Box, SxProps } from '@mui/material'
 import { FitBoundsOptions, LatLngBoundsExpression, Map as LeafletMap } from 'leaflet'
+import { omit } from 'ramda'
 import { WorkTaskGeo } from '~/api/servicepro.generated'
 
 export type MapRef = { flyToBounds: (bounds: LatLngBoundsExpression, options?: FitBoundsOptions) => void }
@@ -19,7 +20,7 @@ export interface MapProps extends MapInnerProps {
 }
 
 export const Map = forwardRef<MapRef, MapProps>((props: MapProps, ref) => {
-  const { coords, sx } = props
+  const { sx } = props
 
   const [map, setMap] = useState<LeafletMap | null>(null)
 
@@ -46,14 +47,14 @@ export const Map = forwardRef<MapRef, MapProps>((props: MapProps, ref) => {
     >
       <MapContainer
         ref={setMap}
-        center={coords ?? LAT_LNG_INITIAL}
+        center={LAT_LNG_INITIAL}
         zoom={MAP_ZOOM_DEFAULT}
         style={{ height: '100%' }}
         minZoom={2}
         bounceAtZoomLimits
         scrollWheelZoom
       >
-        <MapInner {...props} />
+        <MapInner {...omit(['sx'], props)} />
       </MapContainer>
     </Box>
   )

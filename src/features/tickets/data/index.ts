@@ -32,7 +32,6 @@ export const TicketMessageActionLabel: Record<TicketMessageAction, string> = {
 
 export const ticketStatusesConditionsChange = [
   StatusEnum.Processing,
-  StatusEnum.Wait,
   StatusEnum.Approval,
 ]
 

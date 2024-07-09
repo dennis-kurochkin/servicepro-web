@@ -1,10 +1,10 @@
 import { MouseEvent, useMemo, useState } from 'react'
 import { ButtonIcon } from '@components/ButtonIcon'
-import { TooltipNew } from '@components/TooltipNew'
 import { EMPTY_VALUE_DASH } from '@constants/index'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { useOpenTicketDrawer } from '@features/tickets/hooks/useOpenTicketDrawer'
+import { Tooltip } from '@features/ui/components/Tooltip'
 import { useProfile } from '@hooks/useProfile'
 import { ArrowDropDown, CheckCircle, ManageAccounts, Visibility } from '@mui/icons-material'
 import { Box, Button, Menu, MenuItem } from '@mui/material'
@@ -105,7 +105,7 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, s
               />
             </Button>
             {!disableView && (
-              <TooltipNew
+              <Tooltip
                 content={'Посмотреть заявку'}
                 target={(
                   <ButtonIcon
@@ -128,7 +128,7 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, s
               />
             )}
             {onClickAccept && (
-              <TooltipNew
+              <Tooltip
                 content={isTaskAlreadyAssigned ? 'Заявка уже назначена на вас' : 'Принять заявку'}
                 target={(
                   <ButtonIcon
@@ -204,7 +204,7 @@ export const TableCellTickets = ({ selectedTaskID, tasks, disableView = false, s
                 background: (theme) => theme.palette.grey['300'],
               }}
             />
-            <TooltipNew
+            <Tooltip
               content={'Назначить заявку'}
               target={(
                 <ButtonIcon
