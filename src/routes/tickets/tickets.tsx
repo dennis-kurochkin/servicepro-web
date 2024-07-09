@@ -1,9 +1,9 @@
 import { useCallback, useRef, useState } from 'react'
-import { Map, MapRef } from '@components/Map'
 import { TableHeader } from '@components/TableHeader'
 import { MAP_FLY_DURATION, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { QueryKey } from '@features/shared/data'
 import { getGeoInfoBounds } from '@features/shared/helpers'
+import { Map, MapRef } from '@features/tickets/components/Map'
 import { TicketsTable } from '@features/tickets/components/TicketsTable'
 import { TaskVerbose } from '@features/tickets/types'
 import { useApi } from '@hooks/useApi'
@@ -62,12 +62,12 @@ export const TicketsRoute = () => {
       <Map
         ref={mapRef}
         geos={data?.map(({ geo }) => geo).filter((geo): geo is WorkTaskGeo => !!geo) ?? []}
+        selectedTask={selectedTask}
         sx={{
           height: '45vh',
           minHeight: '328px',
           maxHeight: '500px',
         }}
-        selectedTask={selectedTask}
         onSelectPrev={(data?.length ?? 0) > 1 && !!selectedTaskIndex ? () => handleSelectTask(selectedTaskIndex - 1) : null}
         onSelectNext={(data?.length ?? 0) > 1 && (selectedTaskIndex === null || selectedTaskIndex < data!.length - 1) ? () => handleSelectTask((selectedTaskIndex ?? -1) + 1) : null}
       />

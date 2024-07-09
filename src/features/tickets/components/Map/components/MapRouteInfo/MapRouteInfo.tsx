@@ -4,19 +4,22 @@ import { Tooltip as LeafletTooltip } from 'react-leaflet/Tooltip'
 import ClientMarker from '@assets/client-marker.svg'
 import EngineerMarker from '@assets/engineer-marker.svg'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
+import { getEngineerLabel } from '@features/engineers/helpers'
 import { getGeoInfoExpression } from '@features/shared/helpers'
+import { useQueryEmployee } from '@features/shared/hooks/useQueryEmployee'
 import { Box } from '@mui/material'
 import { icon, IconOptions } from 'leaflet'
-import { WorkTaskGeo } from '~/api/servicepro.generated'
+import { EmployeeDetailed, WorkTaskGeo } from '~/api/servicepro.generated'
 
 const OPACITY_TRANSLUCENT = 0.5
 
 interface MapRouteInfoProps {
   geo: WorkTaskGeo
   selected: boolean
+  selectedTaskClient: EmployeeDetailed | null
 }
 
-export const MapRouteInfo = ({ geo, selected }: MapRouteInfoProps) => {
+export const MapRouteInfo = ({ geo, selected, selectedTaskClient }: MapRouteInfoProps) => {
   const { executor, route, routeCompleted, executorLocation, taskLocation } = getGeoInfoExpression(geo)
   const opacity = useMemo(() => selected ? 1 : OPACITY_TRANSLUCENT, [selected])
   const zIndexOffset = useMemo(() => selected ? 1000 : -1000, [selected])
@@ -27,6 +30,8 @@ export const MapRouteInfo = ({ geo, selected }: MapRouteInfoProps) => {
     iconSize: [40, 40],
     iconAnchor: [20, 36],
   }, [selected])
+
+  const executorProfileQuery = useQueryEmployee(executor?.id ?? null)
 
   return (
     <Box>
@@ -82,33 +87,21 @@ export const MapRouteInfo = ({ geo, selected }: MapRouteInfoProps) => {
                 {selected && (
                   <LeafletTooltip
                     direction="top"
-                    offset={[0, -46]}
+                    offset={[0, -48]}
                     className={'arrowlessTooltip'}
                     permanent
                   >
-                    Инженер
+                    {executorProfileQuery.isSuccess ? (
+                      <>
+                        <EngineerAvatar
+                          variant={'uncontained'}
+                          size={400}
+                          profile={executorProfileQuery.data}
+                        />
+                      </>
+                    ) : 'Инженер'}
                   </LeafletTooltip>
                 )}
-              </Marker>
-              <Marker
-                icon={icon({
-                  iconUrl: EngineerMarker,
-                  ...iconSizes,
-                })}
-                zIndexOffset={zIndexOffset}
-                opacity={0}
-                position={executorLocation}
-              >
-                <LeafletTooltip
-                  direction="bottom"
-                  offset={[0, 10]}
-                  opacity={1}
-                  sticky
-                >
-                  {executor?.profile && (
-                    <EngineerAvatar profile={{}} />
-                  )}
-                </LeafletTooltip>
               </Marker>
             </>
           )}
@@ -130,27 +123,13 @@ export const MapRouteInfo = ({ geo, selected }: MapRouteInfoProps) => {
                     className={'arrowlessTooltip'}
                     permanent
                   >
-                    Клиент
+                    {selectedTaskClient ? (
+                      <>
+                        {getEngineerLabel(selectedTaskClient.profile)}
+                      </>
+                    ) : 'Клиент'}
                   </LeafletTooltip>
                 )}
-              </Marker>
-              <Marker
-                icon={icon({
-                  iconUrl: ClientMarker,
-                  ...iconSizes,
-                })}
-                zIndexOffset={zIndexOffset}
-                opacity={0}
-                position={taskLocation}
-              >
-                <LeafletTooltip
-                  direction="bottom"
-                  offset={[0, 16]}
-                  opacity={1}
-                  sticky
-                >
-                  Местоположение задачи
-                </LeafletTooltip>
               </Marker>
             </>
           )}

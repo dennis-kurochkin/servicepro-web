@@ -1,37 +1,45 @@
-import { styled, tooltipClasses, TooltipProps as MUITooltipProps, Tooltip as MUITooltip, Box } from '@mui/material'
+import { ReactElement } from 'react'
+import { Box, SxProps } from '@mui/material'
+import { Placement } from '@popperjs/core'
+import Tippy, { TippyProps } from '@tippyjs/react'
 
-const LightTooltip = styled(({ className, ...props }: MUITooltipProps) => (
-  <MUITooltip
-    {...props}
-    classes={{ popper: className }}
-  />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.white,
-    color: theme.palette.text.primary,
-    boxShadow: theme.shadows[2],
-  },
-}))
-
-interface TooltipProps extends Pick<MUITooltipProps, 'children' | 'placement'> {
-  content: MUITooltipProps['title']
+interface TooltipNewProps extends Pick<TippyProps, 'visible' | 'interactive'>{
+  placement?: Placement
+  strategy?: 'absolute' | 'fixed'
+  content: string | ReactElement
+  contentSx?: SxProps
+  target: ReactElement
+  targetSx?: SxProps
 }
 
-export const Tooltip = ({ content, children, placement = 'top' }: TooltipProps) => {
+export const Tooltip = ({ visible, strategy = 'absolute', interactive, placement, content, contentSx, target, targetSx }: TooltipNewProps) => {
   return (
-    <LightTooltip
-      title={(
+    <>
+      <Tippy
+        theme={'light'}
+        visible={visible}
+        interactive={interactive}
+        placement={placement}
+        content={(
+          <Box
+            sx={{
+              padding: '6px 10px',
+              ...(contentSx ?? {}),
+            }}
+          >
+            {content}
+          </Box>
+        )}
+        popperOptions={{
+          strategy: strategy,
+        }}
+      >
         <Box
-          sx={{ padding: '4px' }}
-          onClick={(e) => e.stopPropagation()}
+          sx={targetSx}
         >
-          {content}
+          {target}
         </Box>
-      )}
-      placement={placement}
-      arrow
-    >
-      {children}
-    </LightTooltip>
+      </Tippy>
+    </>
   )
 }

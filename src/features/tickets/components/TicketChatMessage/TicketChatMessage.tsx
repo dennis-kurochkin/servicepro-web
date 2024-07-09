@@ -3,9 +3,10 @@ import { DialogPhotoSlider } from '@components/DialogPhotoSlider'
 import { useDialogPhotoSliderUtils } from '@components/DialogPhotoSlider/hooks/useDialogPhotoSliderUtils'
 import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_DAY } from '@constants/index'
 import { theme } from '@data/theme'
-import { getEngineerLabel } from '@features/engineers/helpers'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { QueryKey, RoleLabel } from '@features/shared/data'
+import { useQueryDrawerEmployee } from '@features/shared/hooks/useQueryDrawerEmployee'
+import { EmployeeProfile } from '@features/shared/types'
 import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
 import { TicketMessageAction, TicketMessageActionLabel } from '@features/tickets/data'
 import { useApi } from '@hooks/useApi'
@@ -14,24 +15,16 @@ import { useOrganizationID } from '@hooks/useOrganizationID'
 import { DisplaySettings, Person } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Avatar, Box, Button, Card, Typography } from '@mui/material'
-import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { queryClient } from '~/api'
 import { RoleEnum, StatusEnum, WorkTaskStatusChangeDetailed } from '~/api/servicepro.generated'
 
-type TicketChatMessageAuthor = {
-  id: number
-  name: string
-  role: RoleEnum
-  photo?: string
-}
-
 export interface TicketChatMessageProps {
   ticketID: number | null
   authorization: string
   uuid: string
-  author: null | number | TicketChatMessageAuthor
+  author: null | number | EmployeeProfile
   content: ReactNode | string
   pictures?: string[]
   status?: StatusEnum
@@ -48,28 +41,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
   const [isDialogPhotoSliderOpen, setDialogPhotoSliderOpen] = useState(false)
   const [isAcceptLoading, setIsAcceptLoading] = useState(false)
 
-  const { data: profile } = useQuery({
-    queryKey: [QueryKey.Employee, typeof author === 'number' ? author : -1],
-    queryFn: async (): Promise<TicketChatMessageAuthor> => {
-      if (typeof author !== 'number') {
-        return {
-          id: -1,
-          name: 'Система',
-          role: RoleEnum.Server,
-        }
-      }
-
-      const { data } = await api.workSersEmployeesRetrieve(author, organizationID.toString())
-
-      return {
-        id: data.id,
-        name: getEngineerLabel(data.profile),
-        role: data.role,
-        photo: data.profile.photo ?? undefined,
-      }
-    },
-    enabled: typeof author === 'number',
-  })
+  const { data: profile } = useQueryDrawerEmployee(typeof author === 'object' ? -1 : author)
 
   const handlePerformAction = useCallback(async (action: TicketMessageAction) => {
     await chatApi.useMessageButtonApiChatsTaskIdMessagesMessageUuidButtonsPost({
