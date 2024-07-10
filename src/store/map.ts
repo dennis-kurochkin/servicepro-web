@@ -9,7 +9,7 @@ interface MapStoreState {
 }
 
 export const useMapStore = create<MapStoreState>((setState) => ({
-  updateTime: ticketMapUpdateTimeOptions[0].value,
+  updateTime: ticketMapUpdateTimeOptions[2].value,
   setUpdateTime: (time: TicketMapUpdateTime) => setState({ updateTime: time }),
   updatedNotification: false,
   setUpdatedNotification: (value: boolean) => setState({ updatedNotification: value }),
