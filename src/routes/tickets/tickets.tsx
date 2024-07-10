@@ -11,7 +11,7 @@ import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Container } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { WorkTaskGeo } from '~/api/servicepro.generated'
-import { useMapStore } from '~/store/map'
+import { useMapStore } from '~/store/useMapStore'
 
 export const TicketsRoute = () => {
   const { organizationID } = useOrganizationID()
@@ -22,6 +22,7 @@ export const TicketsRoute = () => {
   const [selectedTaskIndex, setSelectedTaskIndex] = useState<number | null>(null)
   const [selectedTask, setSelectedTask] = useState<TaskVerbose | null>(null)
   const updateTime = useMapStore((state) => state.updateTime)
+  const setUpdatedTime = useMapStore((state) => state.setUpdatedTime)
 
   const { data, isSuccess } = useQuery({
     queryKey: [QueryKey.TicketsGeos, page, organizationID],
@@ -41,6 +42,7 @@ export const TicketsRoute = () => {
       })) : []
 
       setCount(headers['x-count'] ? +headers['x-count'] : 0)
+      setUpdatedTime(new Date())
 
       if (selectedTask && tasks.find((task) => task.id === selectedTask.task.id)) {
         return result

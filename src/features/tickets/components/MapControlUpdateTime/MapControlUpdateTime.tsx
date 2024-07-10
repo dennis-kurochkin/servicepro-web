@@ -6,7 +6,7 @@ import { MAP_ACTIONS_Z_INDEX } from '@constants/index'
 import { ticketMapUpdateTimeOptions } from '@features/tickets/data'
 import { Done, Update } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
-import { useMapStore } from '~/store/map'
+import { useMapStore } from '~/store/useMapStore'
 
 export const MapControlUpdateTime = () => {
   const [open, setOpen] = useState(false)

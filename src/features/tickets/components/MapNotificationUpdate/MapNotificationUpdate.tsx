@@ -1,8 +1,11 @@
 import { DATE_FORMAT_TIME, MAP_ACTIONS_Z_INDEX } from '@constants/index'
 import { Box } from '@mui/material'
 import { format } from 'date-fns'
+import { useMapStore } from '~/store/useMapStore'
 
 export const MapNotificationUpdate = () => {
+  const updatedTime = useMapStore((state) => state.updatedTime)
+
   return (
     <Box
       sx={{
@@ -17,7 +20,7 @@ export const MapNotificationUpdate = () => {
         background: (theme) => theme.palette.background.paper,
       }}
     >
-      Данные обновлены в {format(new Date(), DATE_FORMAT_TIME)}
+      Данные обновлены в {format(updatedTime, DATE_FORMAT_TIME)}
     </Box>
   )
 }
