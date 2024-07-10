@@ -2,8 +2,8 @@ import { Control, ControllerProps, FieldValues, Path } from 'react-hook-form'
 import { FieldCommonProps } from '@components/Field/types'
 import { SxProps } from '@mui/material'
 
-export interface FieldAutocompleteCommonValue {
-  value: string
+export interface FieldAutocompleteCommonValue<V extends string = string> {
+  value: V
   label: string
 }
 

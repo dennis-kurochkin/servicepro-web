@@ -3,7 +3,7 @@ import { Box, SxProps } from '@mui/material'
 import { Placement } from '@popperjs/core'
 import Tippy, { TippyProps } from '@tippyjs/react'
 
-interface TooltipNewProps extends Pick<TippyProps, 'visible' | 'interactive'>{
+interface TooltipNewProps extends Pick<TippyProps, 'visible' | 'interactive' | 'maxWidth'>{
   placement?: Placement
   strategy?: 'absolute' | 'fixed'
   content: string | ReactElement
@@ -12,7 +12,7 @@ interface TooltipNewProps extends Pick<TippyProps, 'visible' | 'interactive'>{
   targetSx?: SxProps
 }
 
-export const Tooltip = ({ visible, strategy = 'absolute', interactive, placement, content, contentSx, target, targetSx }: TooltipNewProps) => {
+export const Tooltip = ({ visible, strategy = 'absolute', interactive, placement, content, contentSx, target, targetSx, maxWidth }: TooltipNewProps) => {
   return (
     <>
       <Tippy
@@ -20,6 +20,7 @@ export const Tooltip = ({ visible, strategy = 'absolute', interactive, placement
         visible={visible}
         interactive={interactive}
         placement={placement}
+        maxWidth={maxWidth}
         content={(
           <Box
             sx={{

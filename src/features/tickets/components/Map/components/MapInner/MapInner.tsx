@@ -5,7 +5,9 @@ import { MapAddressSearch } from '@features/tickets/components/Map/components/Ma
 import { MapRouteInfo } from '@features/tickets/components/Map/components/MapRouteInfo'
 import { MapControlLocation } from '@features/tickets/components/MapControlLocation'
 import { MapControlTickets } from '@features/tickets/components/MapControlTickets'
+import { MapControlUpdateTime } from '@features/tickets/components/MapControlUpdateTime'
 import { MapLayersControls } from '@features/tickets/components/MapLayersControls'
+import { MapNotificationUpdate } from '@features/tickets/components/MapNotificationUpdate'
 import { TaskVerbose } from '@features/tickets/types'
 import { MAP_FLY_DURATION } from '@features/ui/constants'
 import { useNotify } from '@hooks/useNotify'
@@ -72,6 +74,8 @@ export const MapInner = ({ geos, addressSearch = false, selectedTask, onChange, 
         onSelectPrev={onSelectPrev}
         onSelectNext={onSelectNext}
       />
+      <MapControlUpdateTime />
+      <MapNotificationUpdate />
       {addressSearch && <MapAddressSearch onSelect={handleAddressSelect} />}
       {geosSorted.map((geo) => (
         <MapRouteInfo
