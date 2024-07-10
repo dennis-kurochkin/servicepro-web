@@ -41,8 +41,12 @@ export const TicketsRoute = () => {
       })) : []
 
       setCount(headers['x-count'] ? +headers['x-count'] : 0)
-      handleSelectTask(0, result)
 
+      if (selectedTask && tasks.find((task) => task.id === selectedTask.task.id)) {
+        return result
+      }
+
+      handleSelectTask(0, result)
       return result
     },
     refetchInterval: +updateTime * 60000,
