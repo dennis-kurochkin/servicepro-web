@@ -1,3 +1,4 @@
+import { FieldAutocompleteCommonValue } from '@components/Field/components/FieldAutocomplete/types'
 import { StatusEnum } from '~/api/servicepro.generated'
 
 export enum TicketsTab {
@@ -68,3 +69,20 @@ export const TicketAvailableStatusesByStatus: Record<StatusEnum, StatusEnum[]> =
   ],
   [StatusEnum.Done]: [],
 }
+
+export type TicketMapUpdateTime = '1' | '3' | '5'
+
+export const ticketMapUpdateTimeOptions: FieldAutocompleteCommonValue<TicketMapUpdateTime>[] = [
+  {
+    value: '1',
+    label: '1 минута',
+  },
+  {
+    value: '3',
+    label: '3 минуты',
+  },
+  {
+    value: '5',
+    label: '5 минут',
+  },
+]

@@ -11,6 +11,7 @@ import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Container } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { WorkTaskGeo } from '~/api/servicepro.generated'
+import { useMapStore } from '~/store/map'
 
 export const TicketsRoute = () => {
   const { organizationID } = useOrganizationID()
@@ -20,6 +21,7 @@ export const TicketsRoute = () => {
   const [page, setPage] = useState(0)
   const [selectedTaskIndex, setSelectedTaskIndex] = useState<number | null>(null)
   const [selectedTask, setSelectedTask] = useState<TaskVerbose | null>(null)
+  const updateTime = useMapStore((state) => state.updateTime)
 
   const { data, isSuccess } = useQuery({
     queryKey: [QueryKey.TicketsGeos, page, organizationID],
@@ -43,6 +45,7 @@ export const TicketsRoute = () => {
 
       return result
     },
+    refetchInterval: +updateTime * 60000,
     refetchOnWindowFocus: false,
   })
 
