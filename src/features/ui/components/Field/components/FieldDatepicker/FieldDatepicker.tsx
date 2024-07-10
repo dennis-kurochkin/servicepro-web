@@ -8,7 +8,7 @@ import { languages } from '~/i18n'
 
 export interface FieldDatepickerProps extends
   FieldCommonProps,
-  Pick<DatePickerProps<Date>, 'value' | 'disableFuture' | 'disablePast' | 'maxDate' | 'onChange'>
+  Pick<DatePickerProps<Date>, 'value' | 'disableFuture' | 'disablePast' | 'maxDate' | 'shouldDisableDate' | 'onChange'>
 {
   onBlur?: TextFieldProps['onBlur']
 }
@@ -18,6 +18,7 @@ export const FieldDatepicker = forwardRef(({
   label,
   disableFuture,
   disablePast,
+  shouldDisableDate,
   maxDate,
   onChange,
 }: FieldDatepickerProps, ref: Ref<HTMLInputElement>) => {
@@ -34,6 +35,7 @@ export const FieldDatepicker = forwardRef(({
         disableFuture={disableFuture}
         disablePast={disablePast}
         maxDate={maxDate}
+        shouldDisableDate={shouldDisableDate}
         label={label}
         slotProps={{
           textField: {

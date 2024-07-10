@@ -148,7 +148,7 @@ export const TicketDrawer = () => {
                 ticketID={ticketID!}
                 status={data?.status ?? null}
                 authorization={authorization}
-                planStartDate={data?.approval?.plan_start_date ?? null}
+                planStartDate={data?.approval?.plan_start_date ?? data?.approval?.want_start_date ?? null}
               />
             </>
           )}

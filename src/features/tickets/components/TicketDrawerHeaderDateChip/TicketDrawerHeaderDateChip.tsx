@@ -14,9 +14,11 @@ import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
-import { format } from 'date-fns'
+import { format, isAfter, isBefore, isToday, setHours } from 'date-fns'
 import { queryClient } from '~/api'
 import { StatusEnum } from '~/api/servicepro.generated'
+
+const now = new Date()
 
 interface TicketDrawerHeaderDateChipProps {
   ticketID: number
@@ -31,6 +33,14 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
   const [dateChangeTooltipOpen, setDateChangeTooltipOpen] = useState(false)
   const [newDate, setNewDate] = useState(planStartDate ? new Date(planStartDate) : new Date())
   const [saving, setSaving] = useState(false)
+
+  const getIsDateDisabled = (date: Date) => {
+    if (isBefore(date, now) && !isToday(date)) {
+      return true
+    }
+
+    return isToday(date) && isAfter(now, setHours(now, 12))
+  }
 
   const handleClose = useCallback(() => {
     setDateChangeTooltipOpen(false)
@@ -85,7 +95,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
           <FieldDatepicker
             name={'date'}
             value={newDate}
-            disablePast
+            shouldDisableDate={getIsDateDisabled}
             onChange={(date) => setNewDate(date ?? new Date())}
           />
           <FieldTimepicker
@@ -129,7 +139,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
       target={(
         <TicketDrawerHeaderChip
           label={`Дата планируемого начала: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_LABEL}`}
-          color={planStartDate ? 'success' : 'error'}
+          color={planStartDate ? 'info' : 'error'}
           sx={{ display: 'flex' }}
           onChange={() => setDateChangeTooltipOpen(true)}
         />

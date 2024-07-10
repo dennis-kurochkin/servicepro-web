@@ -50,6 +50,7 @@ export const useTicketDrawerWebSocket = (ticketID: number | null) => {
           case WSMessagePayloadModel.UsedButton:
           case WSMessagePayloadModel.RefreshTask:
             await Promise.all([
+              queryClient.invalidateQueries({ queryKey: [QueryKey.Ticket, ticketID, organizationID] }),
               queryClient.invalidateQueries({ queryKey: [QueryKey.TicketAttachments, ticketID, organizationID] }),
               queryClient.invalidateQueries({ queryKey: [QueryKey.TicketStatuses, ticketID] }),
               queryClient.invalidateQueries({ queryKey: [QueryKey.TicketResult, ticketID] }),
