@@ -74,6 +74,14 @@ export interface ChatButton {
   button_uuid?: string | null;
 }
 
+export interface ChatPush {
+  task: number;
+  employee: number;
+  /** @format uuid */
+  message_uuid: string;
+  text: string;
+}
+
 export interface ChatStatus {
   task: number;
   employee: number;
@@ -189,25 +197,6 @@ export interface Device {
   /** @maxLength 255 */
   token: string;
   readonly user: number;
-}
-
-export interface Employee {
-  readonly id: number;
-  /**
-   * * `server` - server
-   * * `client` - client
-   * * `engineer` - engineer
-   * * `coordinator` - coordinator
-   */
-  role: RoleEnum;
-  /** @format date-time */
-  readonly created_at: string;
-  /** @format date-time */
-  readonly updated_at: string;
-  /** Active */
-  is_active?: boolean;
-  readonly organization: number;
-  profile?: number | null;
 }
 
 export interface EmployeeDetailed {
@@ -475,13 +464,14 @@ export interface MyUserInvite {
 
 export interface Notification {
   readonly id: number;
+  readonly author: EmployeeDetailed;
   /** @format date-time */
   readonly created_at: string;
   /** @maxLength 255 */
   title: string;
   text: string;
   payload?: any;
-  readonly user: number;
+  readonly organization: number | null;
 }
 
 export interface OrgWorkTask {
@@ -534,14 +524,8 @@ export interface OrgWorkTask {
 }
 
 export interface OrgWorkTaskEdit {
-  /**
-   * * `draft` - draft
-   * * `posted` - posted
-   * * `reject` - reject
-   * * `delete` - delete
-   * * `archived` - archived
-   */
-  mark: WorkTaskMark;
+  /** @default "posted" */
+  mark?: WorkTaskMark;
   /** @format date-time */
   mark_date?: string | null;
   approval: WorkTaskCustomerApproval;
@@ -729,7 +713,7 @@ export type PaginatedControlPointList = ControlPoint[];
 
 export type PaginatedDeviceList = Device[];
 
-export type PaginatedEmployeeList = Employee[];
+export type PaginatedEmployeeDetailedList = EmployeeDetailed[];
 
 export type PaginatedNotificationList = Notification[];
 
@@ -738,6 +722,8 @@ export type PaginatedOrgWorkTaskList = OrgWorkTask[];
 export type PaginatedOrganizationInviteList = OrganizationInvite[];
 
 export type PaginatedOrganizationList = Organization[];
+
+export type PaginatedOrganizationPublicList = OrganizationPublic[];
 
 export type PaginatedSerVehicleList = SerVehicle[];
 
@@ -805,7 +791,7 @@ export interface PatchedControlPoint {
   readonly organization?: number;
 }
 
-export interface PatchedEmployee {
+export interface PatchedEmployeeDetailed {
   readonly id?: number;
   /**
    * * `server` - server
@@ -814,6 +800,7 @@ export interface PatchedEmployee {
    * * `coordinator` - coordinator
    */
   role?: RoleEnum;
+  readonly profile?: Profile;
   /** @format date-time */
   readonly created_at?: string;
   /** @format date-time */
@@ -821,17 +808,10 @@ export interface PatchedEmployee {
   /** Active */
   is_active?: boolean;
   readonly organization?: number;
-  profile?: number | null;
 }
 
 export interface PatchedOrgWorkTaskEdit {
-  /**
-   * * `draft` - draft
-   * * `posted` - posted
-   * * `reject` - reject
-   * * `delete` - delete
-   * * `archived` - archived
-   */
+  /** @default "posted" */
   mark?: WorkTaskMark;
   /** @format date-time */
   mark_date?: string | null;
@@ -1178,6 +1158,10 @@ export interface PatchedWorkTaskMarkResult {
   customer_mark?: WorkTaskResultMark;
 }
 
+export interface PatchedWorkTaskMeCustomer {
+  customer?: number | null;
+}
+
 export interface PatchedWorkTaskSaveResult {
   runtime?: VehicleRuntimeResult[];
   recommendations?: VehicleRecommendationResult[];
@@ -1350,6 +1334,23 @@ export interface SerWorkTask {
   parent?: number | null;
   assistants?: number[];
   involved?: number[];
+}
+
+export interface SerWorkTaskEdit {
+  /** @default "posted" */
+  mark?: WorkTaskMark;
+  /** @format date-time */
+  mark_date?: string | null;
+  approval: WorkTaskCoordinatorApproval;
+  new_photos?: WorkTaskAttachment[];
+  /** @format double */
+  longitude?: number;
+  /** @format double */
+  latitude?: number;
+  organization: number;
+  vehicle?: number | null;
+  /** Parent task */
+  parent?: number | null;
 }
 
 export interface SerWorkTaskVerbose {
@@ -2249,6 +2250,17 @@ export interface WorkTaskCheckGeo {
   control_point: ControlPoint;
 }
 
+export interface WorkTaskCoordinatorApproval {
+  /** @maxLength 510 */
+  coordinator_description?: string;
+  /** @format date-time */
+  coordinator_approve_date?: string | null;
+  /** @format date-time */
+  plan_start_date?: string | null;
+  /** @format date-time */
+  plan_complete_date?: string | null;
+}
+
 export interface WorkTaskCustomerApproval {
   /** @maxLength 510 */
   customer_description?: string;
@@ -2539,6 +2551,8 @@ export interface WorkTaskStatusChangeDetailed {
   longitude?: number;
   /** @format double */
   latitude?: number;
+  /** @format date-time */
+  verdict_date?: string | null;
   readonly edits: any;
 }
 
@@ -2563,6 +2577,8 @@ export interface WorkTaskStatusChangeGeo {
    * * `removed` - removed
    */
   verdict: WorkTaskEventVerdict;
+  /** @format date-time */
+  verdict_date?: string | null;
   /** @format double */
   longitude?: number;
   /** @format double */
@@ -2619,8 +2635,6 @@ export type AccountDeviceListData = PaginatedDeviceList;
 
 export type AccountDeviceCreateData = Device;
 
-export type AccountDeviceRetrieveData = Device;
-
 export type AccountDeviceDestroyData = any;
 
 export type AccountJwtBlacklistCreateData = TokenBlacklist;
@@ -2647,24 +2661,25 @@ export type AccountMeDeleteAccountCreateData = UserDeleteAccount;
 
 export type AccountMeDeleteAccountConfirmCreateData = UserDeleteAccountConfirm;
 
-export interface AccountNotificationListParams {
-  /** Number of results to return per page. */
-  limit?: number;
-  /** The initial index from which to return the results. */
-  offset?: number;
-  title?: string;
-  user?: number;
-}
-
-export type AccountNotificationListData = PaginatedNotificationList;
-
-export type AccountNotificationRetrieveData = Notification;
-
 export type OrgMyRetrieveData = MyUserAll;
 
 export type OrgMyEmploymentsRetrieveData = MyUserEmployment;
 
 export type OrgMyInvitesRetrieveData = MyUserInvite;
+
+export interface OrgNotificationListParams {
+  author?: number;
+  /** Number of results to return per page. */
+  limit?: number;
+  /** The initial index from which to return the results. */
+  offset?: number;
+  organization?: number;
+  title?: string;
+}
+
+export type OrgNotificationListData = PaginatedNotificationList;
+
+export type OrgNotificationRetrieveData = Notification;
 
 export interface OrgOrgsListParams {
   /** Number of results to return per page. */
@@ -2741,13 +2756,13 @@ export interface OrgOrgsEmployeesListParams {
   orgId: string;
 }
 
-export type OrgOrgsEmployeesListData = PaginatedEmployeeList;
+export type OrgOrgsEmployeesListData = PaginatedEmployeeDetailedList;
 
-export type OrgOrgsEmployeesCreateData = Employee;
+export type OrgOrgsEmployeesCreateData = EmployeeDetailed;
 
 export type OrgOrgsEmployeesRetrieveData = EmployeeDetailed;
 
-export type OrgOrgsEmployeesPartialUpdateData = Employee;
+export type OrgOrgsEmployeesPartialUpdateData = EmployeeDetailed;
 
 export type OrgOrgsEmployeesDestroyData = any;
 
@@ -2784,6 +2799,63 @@ export type OrgOrgsPointsPartialUpdateData = ControlPoint;
 
 export type OrgOrgsPointsDestroyData = any;
 
+export interface OrgOrgsRelatedSersListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type OrgOrgsRelatedSersListData = PaginatedOrganizationPublicList;
+
+export type OrgOrgsRelatedSersRetrieveData = OrganizationPublic;
+
+export interface OrgOrgsRelatedSersEmployeesListParams {
+  is_active?: boolean;
+  is_owner?: boolean;
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  profile?: number;
+  /**
+   * * `server` - server
+   * * `client` - client
+   * * `engineer` - engineer
+   * * `coordinator` - coordinator
+   */
+  role?: "client" | "coordinator" | "engineer" | "server";
+  user?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  relatedId: string;
+}
+
+export type OrgOrgsRelatedSersEmployeesListData = PaginatedEmployeeDetailedList;
+
+export type OrgOrgsRelatedSersEmployeesRetrieveData = EmployeeDetailed;
+
 export type OrgOrgsRequisitesPartialUpdateData = OrganizationRequisites;
 
 export type OrgOrgsServiceCenterPartialUpdateData = ServiceCenter;
@@ -2819,6 +2891,63 @@ export type OrgOrgsUserInvitesDestroyData = any;
 export type OrgOrgsUserInvitesAcceptCreateData = UserAcceptInvite;
 
 export type OrgOrgsRetrieveData = OrganizationDetailed;
+
+export interface OrgSersRelatedOrgsListParams {
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+}
+
+export type OrgSersRelatedOrgsListData = PaginatedOrganizationPublicList;
+
+export type OrgSersRelatedOrgsRetrieveData = OrganizationPublic;
+
+export interface OrgSersRelatedOrgsEmployeesListParams {
+  is_active?: boolean;
+  is_owner?: boolean;
+  /** Number of results to return per page. */
+  limit?: number;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   */
+  o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  profile?: number;
+  /**
+   * * `server` - server
+   * * `client` - client
+   * * `engineer` - engineer
+   * * `coordinator` - coordinator
+   */
+  role?: "client" | "coordinator" | "engineer" | "server";
+  user?: number;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  relatedId: string;
+}
+
+export type OrgSersRelatedOrgsEmployeesListData = PaginatedEmployeeDetailedList;
+
+export type OrgSersRelatedOrgsEmployeesRetrieveData = EmployeeDetailed;
 
 export interface VehicleOrgsBrandsListParams {
   equipment?: string;
@@ -3004,6 +3133,16 @@ export type VehicleOrgsVehiclesPhotosPartialUpdateData = VehiclePhotoUpdate;
 export type VehicleOrgsVehiclesPhotosDestroyData = any;
 
 export interface VehicleOrgsVehiclesRecsListParams {
+  /** Multiple values may be separated by commas. */
+  author?: string[];
+  /**
+   * Multiple values may be separated by commas.
+   *
+   * * `info` - info
+   * * `warning` - warning
+   * * `critical` - critical
+   */
+  level?: ("critical" | "info" | "warning")[];
   /** Number of results to return per page. */
   limit?: number;
   /**
@@ -3017,6 +3156,26 @@ export interface VehicleOrgsVehiclesRecsListParams {
   o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
+  /**
+   * Multiple values may be separated by commas.
+   *
+   * * `no` - no
+   * * `complete` - complete
+   */
+  solution?: ("complete" | "no")[];
+  title?: string;
+  /**
+   * Multiple values may be separated by commas.
+   *
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict?: ("no" | "posted" | "rejected")[];
   /** @pattern ^\d+$ */
   orgId: string;
   /** @pattern ^\d+$ */
@@ -3051,6 +3210,41 @@ export interface VehicleOrgsVehiclesRuntimeListParams {
 export type VehicleOrgsVehiclesRuntimeListData = PaginatedVehicleRuntimeList;
 
 export type VehicleOrgsVehiclesRuntimeRetrieveData = VehicleRuntime;
+
+export interface VehicleSersRelatedOrgsVehiclesListParams {
+  gos_number?: string;
+  /** Number of results to return per page. */
+  limit?: number;
+  /** Multiple values may be separated by commas. */
+  model?: string[];
+  name?: string;
+  /**
+   * Ordering
+   *
+   * * `created_at` - Created at
+   * * `-created_at` - Created at (descending)
+   * * `updated_at` - Updated at
+   * * `-updated_at` - Updated at (descending)
+   * * `order` - Order
+   * * `-order` - Order (descending)
+   */
+  o?: ("-created_at" | "-order" | "-updated_at" | "created_at" | "order" | "updated_at")[];
+  /** The initial index from which to return the results. */
+  offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
+  sn?: string;
+  /** @pattern ^\d+$ */
+  orgId: string;
+  /** @pattern ^\d+$ */
+  relatedId: string;
+}
+
+export type VehicleSersRelatedOrgsVehiclesListData = PaginatedSerVehicleList;
+
+export type VehicleSersRelatedOrgsVehiclesRetrieveData = VehicleDetailed;
 
 export interface VehicleSersVehiclesListParams {
   gos_number?: string;
@@ -3174,6 +3368,16 @@ export type VehicleSersVehiclesPhotosPartialUpdateData = VehiclePhotoUpdate;
 export type VehicleSersVehiclesPhotosDestroyData = any;
 
 export interface VehicleSersVehiclesRecsListParams {
+  /** Multiple values may be separated by commas. */
+  author?: string[];
+  /**
+   * Multiple values may be separated by commas.
+   *
+   * * `info` - info
+   * * `warning` - warning
+   * * `critical` - critical
+   */
+  level?: ("critical" | "info" | "warning")[];
   /** Number of results to return per page. */
   limit?: number;
   /**
@@ -3187,6 +3391,26 @@ export interface VehicleSersVehiclesRecsListParams {
   o?: ("-created_at" | "-updated_at" | "created_at" | "updated_at")[];
   /** The initial index from which to return the results. */
   offset?: number;
+  /** Multiple values may be separated by commas. */
+  organization?: string[];
+  /** Multiple values may be separated by commas. */
+  service_center?: string[];
+  /**
+   * Multiple values may be separated by commas.
+   *
+   * * `no` - no
+   * * `complete` - complete
+   */
+  solution?: ("complete" | "no")[];
+  title?: string;
+  /**
+   * Multiple values may be separated by commas.
+   *
+   * * `no` - no
+   * * `posted` - posted
+   * * `rejected` - rejected
+   */
+  verdict?: ("no" | "posted" | "rejected")[];
   /** @pattern ^\d+$ */
   orgId: string;
   /** @pattern ^\d+$ */
@@ -3235,6 +3459,8 @@ export type VehicleSersVehiclesRuntimePartialUpdateData = VehicleRuntime;
 export type VehicleSersVehiclesRuntimeDestroyData = any;
 
 export type WorkM2MChatButtonCreateData = ChatButton;
+
+export type WorkM2MChatPushCreateData = ChatPush;
 
 export type WorkM2MChatStatusCreateData = ChatStatus;
 
@@ -3356,6 +3582,8 @@ export type WorkOrgsTasksRetrieveData = WorkTaskDetailed;
 export type WorkOrgsTasksPartialUpdateData = WorkTaskDetailed;
 
 export type WorkOrgsTasksDestroyData = any;
+
+export type WorkOrgsTasksCustomerPartialUpdateData = WorkTaskDetailed;
 
 export type WorkOrgsTasksGeoRetrieveData = WorkTaskGeo;
 
@@ -3713,6 +3941,8 @@ export interface WorkSersTasksListParams {
 }
 
 export type WorkSersTasksListData = PaginatedSerWorkTaskList;
+
+export type WorkSersTasksCreateData = WorkTaskDetailed;
 
 export type WorkSersTasksRetrieveData = WorkTaskDetailed;
 
@@ -4330,29 +4560,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags account
-     * @name AccountDeviceRetrieve
-     * @request GET:/api/v1/account/device/{id}/
-     * @secure
-     */
-    accountDeviceRetrieve: (id: number, params: RequestParams = {}) =>
-      this.request<AccountDeviceRetrieveData, any>({
-        path: `/api/v1/account/device/${id}/`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags account
      * @name AccountDeviceDestroy
-     * @request DELETE:/api/v1/account/device/{id}/
+     * @request DELETE:/api/v1/account/device/{token}/
      * @secure
      */
-    accountDeviceDestroy: (id: number, params: RequestParams = {}) =>
+    accountDeviceDestroy: (token: string, params: RequestParams = {}) =>
       this.request<AccountDeviceDestroyData, any>({
-        path: `/api/v1/account/device/${id}/`,
+        path: `/api/v1/account/device/${token}/`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -4559,39 +4773,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags account
-     * @name AccountNotificationList
-     * @request GET:/api/v1/account/notification/
-     * @secure
-     */
-    accountNotificationList: (query: AccountNotificationListParams, params: RequestParams = {}) =>
-      this.request<AccountNotificationListData, any>({
-        path: `/api/v1/account/notification/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags account
-     * @name AccountNotificationRetrieve
-     * @request GET:/api/v1/account/notification/{id}/
-     * @secure
-     */
-    accountNotificationRetrieve: (id: number, params: RequestParams = {}) =>
-      this.request<AccountNotificationRetrieveData, any>({
-        path: `/api/v1/account/notification/${id}/`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
      * @tags org
      * @name OrgMyRetrieve
      * @request GET:/api/v1/org/my/
@@ -4632,6 +4813,39 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     orgMyInvitesRetrieve: (params: RequestParams = {}) =>
       this.request<OrgMyInvitesRetrieveData, any>({
         path: `/api/v1/org/my-invites/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgNotificationList
+     * @request GET:/api/v1/org/notification/
+     * @secure
+     */
+    orgNotificationList: (query: OrgNotificationListParams, params: RequestParams = {}) =>
+      this.request<OrgNotificationListData, any>({
+        path: `/api/v1/org/notification/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgNotificationRetrieve
+     * @request GET:/api/v1/org/notification/{id}/
+     * @secure
+     */
+    orgNotificationRetrieve: (id: number, params: RequestParams = {}) =>
+      this.request<OrgNotificationRetrieveData, any>({
+        path: `/api/v1/org/notification/${id}/`,
         method: "GET",
         secure: true,
         ...params,
@@ -4782,7 +4996,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/v1/org/orgs/{org_id}/employees/
      * @secure
      */
-    orgOrgsEmployeesCreate: (orgId: string, data: Employee, params: RequestParams = {}) =>
+    orgOrgsEmployeesCreate: (orgId: string, data: EmployeeDetailed, params: RequestParams = {}) =>
       this.request<OrgOrgsEmployeesCreateData, any>({
         path: `/api/v1/org/orgs/${orgId}/employees/`,
         method: "POST",
@@ -4816,7 +5030,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PATCH:/api/v1/org/orgs/{org_id}/employees/{id}/
      * @secure
      */
-    orgOrgsEmployeesPartialUpdate: (id: number, orgId: string, data: PatchedEmployee, params: RequestParams = {}) =>
+    orgOrgsEmployeesPartialUpdate: (
+      id: number,
+      orgId: string,
+      data: PatchedEmployeeDetailed,
+      params: RequestParams = {},
+    ) =>
       this.request<OrgOrgsEmployeesPartialUpdateData, any>({
         path: `/api/v1/org/orgs/${orgId}/employees/${id}/`,
         method: "PATCH",
@@ -4957,6 +5176,75 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<OrgOrgsPointsDestroyData, any>({
         path: `/api/v1/org/orgs/${orgId}/points/${id}/`,
         method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgOrgsRelatedSersList
+     * @request GET:/api/v1/org/orgs/{org_id}/related-sers/
+     * @secure
+     */
+    orgOrgsRelatedSersList: ({ orgId, ...query }: OrgOrgsRelatedSersListParams, params: RequestParams = {}) =>
+      this.request<OrgOrgsRelatedSersListData, any>({
+        path: `/api/v1/org/orgs/${orgId}/related-sers/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgOrgsRelatedSersRetrieve
+     * @request GET:/api/v1/org/orgs/{org_id}/related-sers/{related_id}/
+     * @secure
+     */
+    orgOrgsRelatedSersRetrieve: (orgId: string, relatedId: number, params: RequestParams = {}) =>
+      this.request<OrgOrgsRelatedSersRetrieveData, any>({
+        path: `/api/v1/org/orgs/${orgId}/related-sers/${relatedId}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgOrgsRelatedSersEmployeesList
+     * @request GET:/api/v1/org/orgs/{org_id}/related-sers/{related_id}/employees/
+     * @secure
+     */
+    orgOrgsRelatedSersEmployeesList: (
+      { orgId, relatedId, ...query }: OrgOrgsRelatedSersEmployeesListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<OrgOrgsRelatedSersEmployeesListData, any>({
+        path: `/api/v1/org/orgs/${orgId}/related-sers/${relatedId}/employees/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgOrgsRelatedSersEmployeesRetrieve
+     * @request GET:/api/v1/org/orgs/{org_id}/related-sers/{related_id}/employees/{id}/
+     * @secure
+     */
+    orgOrgsRelatedSersEmployeesRetrieve: (id: number, orgId: string, relatedId: string, params: RequestParams = {}) =>
+      this.request<OrgOrgsRelatedSersEmployeesRetrieveData, any>({
+        path: `/api/v1/org/orgs/${orgId}/related-sers/${relatedId}/employees/${id}/`,
+        method: "GET",
         secure: true,
         ...params,
       }),
@@ -5111,6 +5399,75 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     orgOrgsRetrieve: (id: number, params: RequestParams = {}) =>
       this.request<OrgOrgsRetrieveData, any>({
         path: `/api/v1/org/orgs/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgSersRelatedOrgsList
+     * @request GET:/api/v1/org/sers/{org_id}/related-orgs/
+     * @secure
+     */
+    orgSersRelatedOrgsList: ({ orgId, ...query }: OrgSersRelatedOrgsListParams, params: RequestParams = {}) =>
+      this.request<OrgSersRelatedOrgsListData, any>({
+        path: `/api/v1/org/sers/${orgId}/related-orgs/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgSersRelatedOrgsRetrieve
+     * @request GET:/api/v1/org/sers/{org_id}/related-orgs/{related_id}/
+     * @secure
+     */
+    orgSersRelatedOrgsRetrieve: (orgId: string, relatedId: number, params: RequestParams = {}) =>
+      this.request<OrgSersRelatedOrgsRetrieveData, any>({
+        path: `/api/v1/org/sers/${orgId}/related-orgs/${relatedId}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgSersRelatedOrgsEmployeesList
+     * @request GET:/api/v1/org/sers/{org_id}/related-orgs/{related_id}/employees/
+     * @secure
+     */
+    orgSersRelatedOrgsEmployeesList: (
+      { orgId, relatedId, ...query }: OrgSersRelatedOrgsEmployeesListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<OrgSersRelatedOrgsEmployeesListData, any>({
+        path: `/api/v1/org/sers/${orgId}/related-orgs/${relatedId}/employees/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgSersRelatedOrgsEmployeesRetrieve
+     * @request GET:/api/v1/org/sers/{org_id}/related-orgs/{related_id}/employees/{id}/
+     * @secure
+     */
+    orgSersRelatedOrgsEmployeesRetrieve: (id: number, orgId: string, relatedId: string, params: RequestParams = {}) =>
+      this.request<OrgSersRelatedOrgsEmployeesRetrieveData, any>({
+        path: `/api/v1/org/sers/${orgId}/related-orgs/${relatedId}/employees/${id}/`,
         method: "GET",
         secure: true,
         ...params,
@@ -5669,6 +6026,47 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags vehicle
+     * @name VehicleSersRelatedOrgsVehiclesList
+     * @request GET:/api/v1/vehicle/sers/{org_id}/related-orgs/{related_id}/vehicles/
+     * @secure
+     */
+    vehicleSersRelatedOrgsVehiclesList: (
+      { orgId, relatedId, ...query }: VehicleSersRelatedOrgsVehiclesListParams,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersRelatedOrgsVehiclesListData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/related-orgs/${relatedId}/vehicles/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
+     * @name VehicleSersRelatedOrgsVehiclesRetrieve
+     * @request GET:/api/v1/vehicle/sers/{org_id}/related-orgs/{related_id}/vehicles/{id}/
+     * @secure
+     */
+    vehicleSersRelatedOrgsVehiclesRetrieve: (
+      id: number,
+      orgId: string,
+      relatedId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<VehicleSersRelatedOrgsVehiclesRetrieveData, any>({
+        path: `/api/v1/vehicle/sers/${orgId}/related-orgs/${relatedId}/vehicles/${id}/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags vehicle
      * @name VehicleSersVehiclesList
      * @request GET:/api/v1/vehicle/sers/{org_id}/vehicles/
      * @secure
@@ -6186,6 +6584,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags work
+     * @name WorkM2MChatPushCreate
+     * @request POST:/api/v1/work/m2m/chat-push/
+     * @secure
+     */
+    workM2MChatPushCreate: (data: ChatPush, params: RequestParams = {}) =>
+      this.request<WorkM2MChatPushCreateData, any>({
+        path: `/api/v1/work/m2m/chat-push/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
      * @name WorkM2MChatStatusCreate
      * @request POST:/api/v1/work/m2m/chat-status/
      * @secure
@@ -6386,6 +6802,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/v1/work/orgs/${orgId}/tasks/${id}/`,
         method: "DELETE",
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkOrgsTasksCustomerPartialUpdate
+     * @request PATCH:/api/v1/work/orgs/{org_id}/tasks/{id}/customer/
+     * @secure
+     */
+    workOrgsTasksCustomerPartialUpdate: (
+      id: number,
+      orgId: string,
+      data: PatchedWorkTaskMeCustomer,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkOrgsTasksCustomerPartialUpdateData, any>({
+        path: `/api/v1/work/orgs/${orgId}/tasks/${id}/customer/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
 
@@ -6840,6 +7279,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "GET",
         query: query,
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name WorkSersTasksCreate
+     * @request POST:/api/v1/work/sers/{org_id}/tasks/
+     * @secure
+     */
+    workSersTasksCreate: (orgId: string, data: SerWorkTaskEdit, params: RequestParams = {}) =>
+      this.request<WorkSersTasksCreateData, any>({
+        path: `/api/v1/work/sers/${orgId}/tasks/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
 
