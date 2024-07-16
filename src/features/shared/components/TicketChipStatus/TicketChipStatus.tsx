@@ -1,5 +1,5 @@
 import { StatusEnumLabel } from '@features/tickets/data'
-import { Chip, ChipProps } from '@mui/material'
+import { Chip, ChipProps, SxProps } from '@mui/material'
 import { StatusEnum } from '~/api/servicepro.generated'
 
 const StatusEnumColor: Record<StatusEnum, ChipProps['color']> = {
@@ -17,9 +17,10 @@ export interface ChipStatusProps {
   status?: StatusEnum
   filled?: boolean
   size?: 300 | 400 | 500
+  sx?: SxProps
 }
 
-export const TicketChipStatus = ({ status = StatusEnum.Wait, filled = false, size = 500 }: ChipStatusProps) => {
+export const TicketChipStatus = ({ status = StatusEnum.Wait, filled = false, size = 500, sx }: ChipStatusProps) => {
   return (
     <Chip
       variant={filled ? 'filled' : 'outlined'}
@@ -43,6 +44,7 @@ export const TicketChipStatus = ({ status = StatusEnum.Wait, filled = false, siz
           height: '18px',
           fontSize: '10px',
         } : {}),
+        ...(sx ?? {}),
       }}
     />
   )

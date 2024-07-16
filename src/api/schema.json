@@ -345,54 +345,16 @@
                 }
             }
         },
-        "/api/v1/account/device/{id}/": {
-            "get": {
-                "operationId": "account_device_retrieve",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this device.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "account"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Device"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
+        "/api/v1/account/device/{token}/": {
             "delete": {
                 "operationId": "account_device_destroy",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "token",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "A unique integer value identifying this device.",
                         "required": true
                     }
                 ],
@@ -889,107 +851,6 @@
                 }
             }
         },
-        "/api/v1/account/notification/": {
-            "get": {
-                "operationId": "account_notification_list",
-                "parameters": [
-                    {
-                        "name": "limit",
-                        "required": false,
-                        "in": "query",
-                        "description": "Number of results to return per page.",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "offset",
-                        "required": false,
-                        "in": "query",
-                        "description": "The initial index from which to return the results.",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "in": "query",
-                        "name": "title",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "in": "query",
-                        "name": "user",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "tags": [
-                    "account"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PaginatedNotificationList"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/v1/account/notification/{id}/": {
-            "get": {
-                "operationId": "account_notification_retrieve",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this notification.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "account"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {
-                        "cookieAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Notification"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
         "/api/v1/org/my/": {
             "get": {
                 "operationId": "org_my_retrieve",
@@ -1066,6 +927,114 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/MyUserInvite"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/org/notification/": {
+            "get": {
+                "operationId": "org_notification_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "author",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedNotificationList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/org/notification/{id}/": {
+            "get": {
+                "operationId": "org_notification_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this notification.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Notification"
                                 }
                             }
                         },
@@ -1538,7 +1507,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PaginatedEmployeeList"
+                                    "$ref": "#/components/schemas/PaginatedEmployeeDetailedList"
                                 }
                             }
                         },
@@ -1566,17 +1535,17 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Employee"
+                                "$ref": "#/components/schemas/EmployeeDetailed"
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/Employee"
+                                "$ref": "#/components/schemas/EmployeeDetailed"
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/Employee"
+                                "$ref": "#/components/schemas/EmployeeDetailed"
                             }
                         }
                     },
@@ -1595,7 +1564,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Employee"
+                                    "$ref": "#/components/schemas/EmployeeDetailed"
                                 }
                             }
                         },
@@ -1680,17 +1649,17 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PatchedEmployee"
+                                "$ref": "#/components/schemas/PatchedEmployeeDetailed"
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/PatchedEmployee"
+                                "$ref": "#/components/schemas/PatchedEmployeeDetailed"
                             }
                         },
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/PatchedEmployee"
+                                "$ref": "#/components/schemas/PatchedEmployeeDetailed"
                             }
                         }
                     }
@@ -1708,7 +1677,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Employee"
+                                    "$ref": "#/components/schemas/EmployeeDetailed"
                                 }
                             }
                         },
@@ -2133,6 +2102,314 @@
                 "responses": {
                     "204": {
                         "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/org/orgs/{org_id}/related-sers/": {
+            "get": {
+                "operationId": "org_orgs_related_sers_list",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-updated_at",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedOrganizationPublicList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/org/orgs/{org_id}/related-sers/{related_id}/": {
+            "get": {
+                "operationId": "org_orgs_related_sers_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "related_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this organization.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrganizationPublic"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/org/orgs/{org_id}/related-sers/{related_id}/employees/": {
+            "get": {
+                "operationId": "org_orgs_related_sers_employees_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "is_active",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "is_owner",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-updated_at",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "profile",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "related_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "role",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "client",
+                                "coordinator",
+                                "engineer",
+                                "server"
+                            ]
+                        },
+                        "description": "* `server` - server\n* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
+                    },
+                    {
+                        "in": "query",
+                        "name": "user",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedEmployeeDetailedList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/org/orgs/{org_id}/related-sers/{related_id}/employees/{id}/": {
+            "get": {
+                "operationId": "org_orgs_related_sers_employees_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this employee.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "related_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeDetailed"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -2629,6 +2906,314 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/OrganizationDetailed"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/org/sers/{org_id}/related-orgs/": {
+            "get": {
+                "operationId": "org_sers_related_orgs_list",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-updated_at",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedOrganizationPublicList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/org/sers/{org_id}/related-orgs/{related_id}/": {
+            "get": {
+                "operationId": "org_sers_related_orgs_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "related_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this organization.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrganizationPublic"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/org/sers/{org_id}/related-orgs/{related_id}/employees/": {
+            "get": {
+                "operationId": "org_sers_related_orgs_employees_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "is_active",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "is_owner",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-updated_at",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "profile",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "related_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "role",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "client",
+                                "coordinator",
+                                "engineer",
+                                "server"
+                            ]
+                        },
+                        "description": "* `server` - server\n* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
+                    },
+                    {
+                        "in": "query",
+                        "name": "user",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedEmployeeDetailedList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/org/sers/{org_id}/related-orgs/{related_id}/employees/{id}/": {
+            "get": {
+                "operationId": "org_sers_related_orgs_employees_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this employee.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "related_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeDetailed"
                                 }
                             }
                         },
@@ -4323,6 +4908,37 @@
                 "operationId": "vehicle_orgs_vehicles_recs_list",
                 "parameters": [
                     {
+                        "in": "query",
+                        "name": "author",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "level",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "critical",
+                                    "info",
+                                    "warning"
+                                ]
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.\n\n* `info` - info\n* `warning` - warning\n* `critical` - critical",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
                         "name": "limit",
                         "required": false,
                         "in": "query",
@@ -4369,6 +4985,56 @@
                         "required": true
                     },
                     {
+                        "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "solution",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "complete",
+                                    "no"
+                                ]
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.\n\n* `no` - no\n* `complete` - complete",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "in": "path",
                         "name": "vehicle_id",
                         "schema": {
@@ -4376,6 +5042,24 @@
                             "pattern": "^\\d+$"
                         },
                         "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "verdict",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "no",
+                                    "posted",
+                                    "rejected"
+                                ]
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.\n\n* `no` - no\n* `posted` - posted\n* `rejected` - rejected",
+                        "explode": false,
+                        "style": "form"
                     }
                 ],
                 "tags": [
@@ -4601,6 +5285,210 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/VehicleRuntime"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/vehicle/sers/{org_id}/related-orgs/{related_id}/vehicles/": {
+            "get": {
+                "operationId": "vehicle_sers_related_orgs_vehicles_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "gos_number",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "model",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "o",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "-created_at",
+                                    "-order",
+                                    "-updated_at",
+                                    "created_at",
+                                    "order",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "description": "Ordering\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `order` - Order\n* `-order` - Order (descending)",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "path",
+                        "name": "related_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sn",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "vehicle"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedSerVehicleList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/vehicle/sers/{org_id}/related-orgs/{related_id}/vehicles/{id}/": {
+            "get": {
+                "operationId": "vehicle_sers_related_orgs_vehicles_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this vehicle.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "related_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "vehicle"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VehicleDetailed"
                                 }
                             }
                         },
@@ -5715,6 +6603,37 @@
                 "operationId": "vehicle_sers_vehicles_recs_list",
                 "parameters": [
                     {
+                        "in": "query",
+                        "name": "author",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "level",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "critical",
+                                    "info",
+                                    "warning"
+                                ]
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.\n\n* `info` - info\n* `warning` - warning\n* `critical` - critical",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
                         "name": "limit",
                         "required": false,
                         "in": "query",
@@ -5761,6 +6680,56 @@
                         "required": true
                     },
                     {
+                        "in": "query",
+                        "name": "organization",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service_center",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "solution",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "complete",
+                                    "no"
+                                ]
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.\n\n* `no` - no\n* `complete` - complete",
+                        "explode": false,
+                        "style": "form"
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "in": "path",
                         "name": "vehicle_id",
                         "schema": {
@@ -5768,6 +6737,24 @@
                             "pattern": "^\\d+$"
                         },
                         "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "verdict",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "no",
+                                    "posted",
+                                    "rejected"
+                                ]
+                            }
+                        },
+                        "description": "Multiple values may be separated by commas.\n\n* `no` - no\n* `posted` - posted\n* `rejected` - rejected",
+                        "explode": false,
+                        "style": "form"
                     }
                 ],
                 "tags": [
@@ -6417,6 +7404,54 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ChatButton"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/work/m2m/chat-push/": {
+            "post": {
+                "operationId": "work_m2m_chat_push_create",
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatPush"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatPush"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatPush"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "tokenAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatPush"
                                 }
                             }
                         },
@@ -7290,6 +8325,73 @@
                 "responses": {
                     "204": {
                         "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/work/orgs/{org_id}/tasks/{id}/customer/": {
+            "patch": {
+                "operationId": "work_orgs_tasks_customer_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this work task.",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskMeCustomer"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskMeCustomer"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedWorkTaskMeCustomer"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskDetailed"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -9456,6 +10558,63 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PaginatedSerWorkTaskList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "work_sers_tasks_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "org_id",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "work"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SerWorkTaskEdit"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SerWorkTaskEdit"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SerWorkTaskEdit"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkTaskDetailed"
                                 }
                             }
                         },
@@ -11988,6 +13147,30 @@
                     "task"
                 ]
             },
+            "ChatPush": {
+                "type": "object",
+                "properties": {
+                    "task": {
+                        "type": "integer"
+                    },
+                    "employee": {
+                        "type": "integer"
+                    },
+                    "message_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "text": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "employee",
+                    "message_uuid",
+                    "task",
+                    "text"
+                ]
+            },
             "ChatStatus": {
                 "type": "object",
                 "properties": {
@@ -12284,49 +13467,6 @@
                     "type",
                     "updated_at",
                     "user"
-                ]
-            },
-            "Employee": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
-                    "role": {
-                        "$ref": "#/components/schemas/RoleEnum"
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "is_active": {
-                        "type": "boolean",
-                        "title": "Active"
-                    },
-                    "organization": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
-                    "profile": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    }
-                },
-                "required": [
-                    "created_at",
-                    "id",
-                    "organization",
-                    "role",
-                    "updated_at"
                 ]
             },
             "EmployeeDetailed": {
@@ -12945,6 +14085,14 @@
                         "type": "integer",
                         "readOnly": true
                     },
+                    "author": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/EmployeeDetailed"
+                            }
+                        ],
+                        "readOnly": true
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -12958,17 +14106,21 @@
                         "type": "string"
                     },
                     "payload": {},
-                    "user": {
-                        "type": "integer",
+                    "organization": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
                         "readOnly": true
                     }
                 },
                 "required": [
+                    "author",
                     "created_at",
                     "id",
+                    "organization",
                     "text",
-                    "title",
-                    "user"
+                    "title"
                 ]
             },
             "OrgWorkTask": {
@@ -13111,7 +14263,12 @@
                 "type": "object",
                 "properties": {
                     "mark": {
-                        "$ref": "#/components/schemas/WorkTaskMark"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/WorkTaskMark"
+                            }
+                        ],
+                        "default": "posted"
                     },
                     "mark_date": {
                         "type": [
@@ -13159,8 +14316,7 @@
                     }
                 },
                 "required": [
-                    "approval",
-                    "mark"
+                    "approval"
                 ]
             },
             "Organization": {
@@ -13728,10 +14884,10 @@
                     "$ref": "#/components/schemas/Device"
                 }
             },
-            "PaginatedEmployeeList": {
+            "PaginatedEmployeeDetailedList": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/Employee"
+                    "$ref": "#/components/schemas/EmployeeDetailed"
                 }
             },
             "PaginatedNotificationList": {
@@ -13756,6 +14912,12 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Organization"
+                }
+            },
+            "PaginatedOrganizationPublicList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/OrganizationPublic"
                 }
             },
             "PaginatedSerVehicleList": {
@@ -13951,7 +15113,7 @@
                     }
                 }
             },
-            "PatchedEmployee": {
+            "PatchedEmployeeDetailed": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -13960,6 +15122,14 @@
                     },
                     "role": {
                         "$ref": "#/components/schemas/RoleEnum"
+                    },
+                    "profile": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Profile"
+                            }
+                        ],
+                        "readOnly": true
                     },
                     "created_at": {
                         "type": "string",
@@ -13978,12 +15148,6 @@
                     "organization": {
                         "type": "integer",
                         "readOnly": true
-                    },
-                    "profile": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
                     }
                 }
             },
@@ -13991,7 +15155,12 @@
                 "type": "object",
                 "properties": {
                     "mark": {
-                        "$ref": "#/components/schemas/WorkTaskMark"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/WorkTaskMark"
+                            }
+                        ],
+                        "default": "posted"
                     },
                     "mark_date": {
                         "type": [
@@ -14871,6 +16040,17 @@
                     }
                 }
             },
+            "PatchedWorkTaskMeCustomer": {
+                "type": "object",
+                "properties": {
+                    "customer": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                }
+            },
             "PatchedWorkTaskSaveResult": {
                 "type": "object",
                 "properties": {
@@ -15262,6 +16442,64 @@
                     "status",
                     "updated_at",
                     "vehicle"
+                ]
+            },
+            "SerWorkTaskEdit": {
+                "type": "object",
+                "properties": {
+                    "mark": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/WorkTaskMark"
+                            }
+                        ],
+                        "default": "posted"
+                    },
+                    "mark_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "approval": {
+                        "$ref": "#/components/schemas/WorkTaskCoordinatorApproval"
+                    },
+                    "new_photos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkTaskAttachment"
+                        },
+                        "writeOnly": true
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "organization": {
+                        "type": "integer"
+                    },
+                    "vehicle": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "parent": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "title": "Parent task"
+                    }
+                },
+                "required": [
+                    "approval",
+                    "organization"
                 ]
             },
             "SerWorkTaskVerbose": {
@@ -17784,6 +19022,36 @@
                     "id"
                 ]
             },
+            "WorkTaskCoordinatorApproval": {
+                "type": "object",
+                "properties": {
+                    "coordinator_description": {
+                        "type": "string",
+                        "maxLength": 510
+                    },
+                    "coordinator_approve_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "plan_start_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "plan_complete_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                }
+            },
             "WorkTaskCustomerApproval": {
                 "type": "object",
                 "properties": {
@@ -18500,6 +19768,13 @@
                         "type": "number",
                         "format": "double"
                     },
+                    "verdict_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
                     "edits": {
                         "readOnly": true
                     }
@@ -18526,6 +19801,13 @@
                     },
                     "verdict": {
                         "$ref": "#/components/schemas/WorkTaskEventVerdict"
+                    },
+                    "verdict_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
                     },
                     "longitude": {
                         "type": "number",

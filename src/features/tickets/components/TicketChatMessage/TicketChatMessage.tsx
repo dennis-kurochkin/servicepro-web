@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { DialogPhotoSlider } from '@components/DialogPhotoSlider'
 import { useDialogPhotoSliderUtils } from '@components/DialogPhotoSlider/hooks/useDialogPhotoSliderUtils'
-import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_DAY } from '@constants/index'
+import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_BEHIND, DATE_FORMAT_TIME_DAY } from '@constants/index'
 import { theme } from '@data/theme'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { QueryKey, RoleLabel } from '@features/shared/data'
@@ -40,6 +40,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
   const { organizationID } = useOrganizationID()
   const [isDialogPhotoSliderOpen, setDialogPhotoSliderOpen] = useState(false)
   const [isAcceptLoading, setIsAcceptLoading] = useState(false)
+  const hasStatus = useMemo(() => !!(author && (report || !!status)), [author, report, status])
 
   const { data: profile } = useQueryDrawerEmployee(typeof author === 'object' ? -1 : author)
 
@@ -88,7 +89,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
         sx={{
           position: 'relative',
           display: 'grid',
-          gridTemplateColumns: author ? '116px 130px 1fr' : '116px 1fr',
+          gridTemplateColumns: hasStatus ? '116px 130px 1fr' : '120px 1fr',
           alignItems: 'start',
         }}
       >
@@ -116,15 +117,17 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
           <br/>
           {format(new Date(date), DATE_FORMAT_TIME_DAY, { locale: ru })}
         </Typography>
-        {author && (
+        {hasStatus && (
           <Box
             sx={{
               marginTop: '36px',
+              paddingRight: '20px',
             }}
           >
             <TicketChipStatus
               status={report ? StatusEnum.Done : status}
               size={300}
+              sx={{ width: '100%' }}
               filled
             />
           </Box>
@@ -276,6 +279,23 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
                   {TicketMessageActionLabel[action.name as TicketMessageAction]}
                 </Button>
               ))}
+              {(statusData?.buttons?.length || report) && statusData?.verdict_date && (
+                <Typography
+                  variant={'body2'}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingRight: statusData?.buttons?.some((button) => button.name === TicketMessageAction.Applied) ? '12px' : 0,
+                    paddingLeft: statusData?.buttons?.some((button) => button.name === TicketMessageAction.Rejected) ? '4px' : 0,
+                    order: statusData?.buttons?.some((button) => button.name === TicketMessageAction.Rejected) ? -1 : undefined,
+                    color: (theme) => theme.palette.grey['700'],
+                    fontSize: '13px',
+                  }}
+                >
+                  {format(new Date(statusData.verdict_date!), DATE_FORMAT_TIME_BEHIND)}
+                </Typography>
+              )}
             </Box>
           )}
         </Box>
