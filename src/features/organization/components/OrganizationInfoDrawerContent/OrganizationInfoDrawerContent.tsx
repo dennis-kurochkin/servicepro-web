@@ -34,6 +34,10 @@ export const OrganizationInfoDrawerContent = ({ onClose }: OrganizationInfoDrawe
   return (
     <DrawerContent
       title={`Сервисный центр: “${employment?.organization?.name ?? 'Без названия'}”`}
+      sx={{
+        width: '80vw',
+        maxWidth: '1200px',
+      }}
       renderFooter={(
         <>
           <Button

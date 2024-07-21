@@ -18,7 +18,7 @@ export const VehicleTabNotes = ({ vehicleID }: VehicleTabNotesProps) => {
   const { data, isFetching, isSuccess } = useQuery({
     queryKey: ['vehicle', 'notes', vehicleID, organizationID],
     queryFn: async () => {
-      const { data } = await api.vehicleSersVehiclesDocsList({
+      const { data } = await api.vehicleSersVehiclesNotesList({
         orgId: organizationID.toString(),
         vehicleId: vehicleID.toString(),
       })
@@ -56,6 +56,7 @@ export const VehicleTabNotes = ({ vehicleID }: VehicleTabNotesProps) => {
                   key={note.id}
                   variant={'outlined'}
                   sx={{
+                    background: (theme) => theme.palette.grey['200'],
                     padding: '12px 32px 12px 12px',
                     borderRadius: 2,
                   }}
@@ -77,7 +78,7 @@ export const VehicleTabNotes = ({ vehicleID }: VehicleTabNotesProps) => {
                   <Typography
                     variant={'subtitle1'}
                   >
-                    {note.title || 'Текст отсутствует'}
+                    {note.text || 'Текст отсутствует'}
                   </Typography>
                   <Box
                     sx={{

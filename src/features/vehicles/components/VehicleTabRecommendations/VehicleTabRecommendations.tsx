@@ -59,6 +59,7 @@ export const VehicleTabRecommendations = ({ vehicleID }: VehicleRecommendationsP
                   sx={{
                     padding: '12px 32px 12px 12px',
                     borderRadius: 2,
+                    background: (theme) => theme.palette.grey['200'],
                   }}
                 >
                   <Box

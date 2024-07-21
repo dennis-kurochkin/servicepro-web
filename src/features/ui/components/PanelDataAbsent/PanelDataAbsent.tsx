@@ -11,6 +11,7 @@ export const PanelDataAbsent = () => {
         width: '100%',
         height: '100px',
         borderRadius: 2,
+        background: (theme) => theme.palette.grey['200'],
       }}
     >
       <Typography

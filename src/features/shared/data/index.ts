@@ -17,6 +17,7 @@ export enum QueryKey {
   Employee = 'employee',
   Vehicles = 'vehicles',
   Vehicle = 'vehicle',
+  VehicleDocuments = 'vehicle-documents',
   VehicleTickets = 'vehicle-tickets',
 }
 

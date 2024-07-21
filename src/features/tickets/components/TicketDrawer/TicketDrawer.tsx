@@ -193,7 +193,7 @@ export const TicketDrawer = () => {
                     {resultQuery.data.recommendations?.[0] ? (
                       <Box>
                         <Box>
-                          {resultQuery.data.recommendations[0].title || resultQuery.data.recommendations[0].text}
+                          {resultQuery.data.recommendations[0].title}
                         </Box>
                         <Box
                           sx={{
