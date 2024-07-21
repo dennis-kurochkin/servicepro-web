@@ -28,7 +28,7 @@ export const theme = createTheme({
             borderColor: `${defaultTheme.palette.grey['300']} !important`,
           },
           '& > fieldset': {
-            borderColor: `${defaultTheme.palette.grey['200']}`,
+            borderColor: `${defaultTheme.palette.grey['300']}`,
           },
           '&:hover > fieldset': {
             borderColor: `${defaultTheme.palette.grey['300']} !important`,

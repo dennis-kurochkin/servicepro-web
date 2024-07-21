@@ -20,7 +20,7 @@ export const TicketDrawerFormRecommendation = ({ ticket, result }: TicketDrawerF
   const { api } = useApi()
   const { notify } = useNotify()
   const { organizationID } = useOrganizationID()
-  const [value, setValue] = useState(result?.recommendations?.[0]?.text || '')
+  const [value, setValue] = useState(result?.recommendations?.[0]?.title || '')
   const [level, setLevel] = useState(LevelEnum.Warning)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
@@ -44,8 +44,8 @@ export const TicketDrawerFormRecommendation = ({ ticket, result }: TicketDrawerF
           edit: {
             [result?.recommendations?.[0]?.id?.toString() ?? '0']: {
               level,
-              text: value,
-              title: '',
+              title: value,
+              text: '',
             },
           },
         },

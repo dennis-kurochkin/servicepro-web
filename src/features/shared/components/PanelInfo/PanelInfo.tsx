@@ -21,7 +21,7 @@ export const PanelInfo = ({ info, icon, labelWidth = 150, sx, isFetching }: Pane
         borderRadius: '8px',
         border: '1px solid',
         borderColor: (theme) => theme.palette.grey['300'],
-        background: (theme) => theme.palette.grey['100'],
+        background: (theme) => theme.palette.grey['200'],
         ...(sx ?? {}),
       }}
     >

@@ -1,3 +1,4 @@
+
 export type IfEquals<X, Y, A = X, B = never> =
   (<T>() => T extends X ? 1 : 2) extends (<T>() => T extends Y ? 1 : 2) ? A : B
 
@@ -12,3 +13,5 @@ export type ReadonlyKeys<T> = {
 }[keyof T]
 
 export const rr = <T, K, R>(fn: (data: T, ...args: K[]) => R) => fn as (data: Writable<T>, ...args: K[]) => R
+
+export const rr2 = <T, K, R, M, N>(fn: (first: M, second: N, data: T, ...args: K[]) => R) => fn as (first: M, second: N, data: Writable<T>, ...args: K[]) => R

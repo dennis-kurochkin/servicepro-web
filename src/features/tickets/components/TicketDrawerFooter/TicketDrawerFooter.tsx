@@ -10,6 +10,8 @@ export const TicketDrawerFooter = ({ children }: TicketDrawerFooterProps) => {
         position: 'relative',
         boxShadow: 2,
         zIndex: 10,
+        display: 'flex',
+        gap: '8px',
         padding: '16px 16px 24px',
       }}
     >

@@ -1,29 +1,29 @@
 import { PropsWithChildren, ReactNode } from 'react'
 import { DrawerHeader } from '@components/DrawerHeader'
 import { TicketDrawerFooter } from '@features/tickets/components/TicketDrawerFooter'
-import { Box, BoxProps, styled, SxProps } from '@mui/material'
-
-const ContentWrapper = styled(Box)<BoxProps>(() => ({
-  flexGrow: 1,
-  display: 'grid',
-  gridTemplateRows: 'min-content 1fr max-content',
-  padding: '0',
-  width: '80vw',
-  maxWidth: '1200px',
-  minWidth: '550px',
-  height: '100vh',
-}))
+import { Box, SxProps } from '@mui/material'
 
 interface TicketDrawerContentProps {
   title: string
   sx?: SxProps
+  innerSx?: SxProps
   renderFooter: ReactNode
   onClose: () => void
 }
 
-export const DrawerContent = ({ title, sx, renderFooter, onClose, children }: PropsWithChildren<TicketDrawerContentProps>) => {
+export const DrawerContent = ({ title, sx, innerSx, renderFooter, onClose, children }: PropsWithChildren<TicketDrawerContentProps>) => {
   return (
-    <ContentWrapper>
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: 'grid',
+        gridTemplateRows: 'min-content 1fr max-content',
+        padding: '0',
+        height: '100vh',
+        minWidth: '550px',
+        ...(sx ?? {}),
+      }}
+    >
       <DrawerHeader
         title={title}
         onClose={onClose}
@@ -32,7 +32,7 @@ export const DrawerContent = ({ title, sx, renderFooter, onClose, children }: Pr
         sx={{
           padding: '20px 16px',
           overflow: 'hidden',
-          ...(sx ?? {}),
+          ...(innerSx ?? {}),
         }}
       >
         {children}
@@ -40,6 +40,6 @@ export const DrawerContent = ({ title, sx, renderFooter, onClose, children }: Pr
       <TicketDrawerFooter>
         {renderFooter}
       </TicketDrawerFooter>
-    </ContentWrapper>
+    </Box>
   )
 }
