@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { FieldLabelValue } from '@components/FieldLabelValue'
 import { PageEntityHeader } from '@components/PageEntityHeader'
 import { EMPTY_VALUE_DASH, PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { PanelInfo } from '@features/shared/components/PanelInfo'
@@ -11,6 +10,7 @@ import { VehicleRecommendationsChips } from '@features/vehicles/components/Vehic
 import { VehicleTabDocumentation } from '@features/vehicles/components/VehicleTabDocumentation'
 import { VehicleTabNotes } from '@features/vehicles/components/VehicleTabNotes'
 import { VehicleTabRecommendations } from '@features/vehicles/components/VehicleTabRecommendations'
+import { VehicleTabRuntime } from '@features/vehicles/components/VehicleTabRuntime'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
@@ -199,12 +199,9 @@ export const VehicleRoute = () => {
           </TabPanel>
           <TabPanel
             value={VehicleTab.OperatingTime}
-            sx={{ paddingX: 0 }}
+            sx={{ paddingX: 0, width: '100%' }}
           >
-            <FieldLabelValue
-              label={'Наработка'}
-              value={data?.summary?.runtime_sum ? `${data?.summary.runtime_sum}мч` : EMPTY_VALUE_DASH}
-            />
+            <VehicleTabRuntime vehicleID={vehicleID} />
           </TabPanel>
         </TabContext>
       </Box>

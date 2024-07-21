@@ -2912,6 +2912,62 @@
                         "description": ""
                     }
                 }
+            },
+            "patch": {
+                "operationId": "org_orgs_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this organization.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "org"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedOrganizationDetailed"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedOrganizationDetailed"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedOrganizationDetailed"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrganizationDetailed"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
             }
         },
         "/api/v1/org/sers/{org_id}/related-orgs/": {
@@ -13601,6 +13657,15 @@
                     "uuid"
                 ]
             },
+            "ExecutorLevelEnum": {
+                "enum": [
+                    "info",
+                    "warning",
+                    "critical"
+                ],
+                "type": "string",
+                "description": "* `info` - info\n* `warning` - warning\n* `critical` - critical"
+            },
             "KeyEnum": {
                 "enum": [
                     "vehicle_catalog"
@@ -14353,6 +14418,14 @@
                         "format": "uri",
                         "title": "Фото"
                     },
+                    "site": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 200
+                    },
+                    "about": {
+                        "type": "string"
+                    },
                     "requisites": {
                         "type": [
                             "integer",
@@ -14422,16 +14495,36 @@
                         "readOnly": true
                     },
                     "requisites": {
-                        "$ref": "#/components/schemas/OrganizationRequisites"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OrganizationRequisites"
+                            }
+                        ],
+                        "readOnly": true
                     },
                     "settings": {
-                        "$ref": "#/components/schemas/OrganizationSettings"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OrganizationSettings"
+                            }
+                        ],
+                        "readOnly": true
                     },
                     "service_center": {
-                        "$ref": "#/components/schemas/ServiceCenter"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ServiceCenter"
+                            }
+                        ],
+                        "readOnly": true
                     },
                     "contact": {
-                        "$ref": "#/components/schemas/Profile"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Profile"
+                            }
+                        ],
+                        "readOnly": true
                     },
                     "photo": {
                         "type": [
@@ -14456,13 +14549,23 @@
                     },
                     "is_active": {
                         "type": "boolean",
+                        "readOnly": true,
                         "title": "Active"
+                    },
+                    "site": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 200
+                    },
+                    "about": {
+                        "type": "string"
                     }
                 },
                 "required": [
                     "contact",
                     "created_at",
                     "id",
+                    "is_active",
                     "is_service_center",
                     "name",
                     "requisites",
@@ -14774,6 +14877,14 @@
                     "is_active": {
                         "type": "boolean",
                         "title": "Active"
+                    },
+                    "site": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 200
+                    },
+                    "about": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -15208,6 +15319,85 @@
                     }
                 }
             },
+            "PatchedOrganizationDetailed": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "is_service_center": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "requisites": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OrganizationRequisites"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "settings": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OrganizationSettings"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "service_center": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ServiceCenter"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "contact": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Profile"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "photo": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 127
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "readOnly": true,
+                        "title": "Active"
+                    },
+                    "site": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 200
+                    },
+                    "about": {
+                        "type": "string"
+                    }
+                }
+            },
             "PatchedOrganizationRequisites": {
                 "type": "object",
                 "properties": {
@@ -15523,10 +15713,7 @@
                         "readOnly": true
                     },
                     "model": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
+                        "type": "integer",
                         "title": "Модель техники"
                     },
                     "organization": {
@@ -15743,6 +15930,14 @@
                     "level": {
                         "$ref": "#/components/schemas/LevelEnum"
                     },
+                    "executor_level": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ExecutorLevelEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
                     "solution": {
                         "$ref": "#/components/schemas/SolutionEnum"
                     },
@@ -15795,6 +15990,10 @@
                     "title": {
                         "type": "string",
                         "maxLength": 120
+                    },
+                    "executor_title": {
+                        "type": "string",
+                        "readOnly": true
                     },
                     "text": {
                         "type": "string",
@@ -16208,6 +16407,16 @@
                 ],
                 "type": "string",
                 "description": "* `server` - server\n* `client` - client\n* `engineer` - engineer\n* `coordinator` - coordinator"
+            },
+            "RuntimeUnitEnum": {
+                "enum": [
+                    "no",
+                    "mh",
+                    "km",
+                    "he"
+                ],
+                "type": "string",
+                "description": "* `no` - no\n* `mh` - mh\n* `km` - km\n* `he` - he"
             },
             "SerVehicle": {
                 "type": "object",
@@ -17557,6 +17766,14 @@
                             "null"
                         ],
                         "readOnly": true
+                    },
+                    "service_center": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "readOnly": true,
+                        "title": "Organization"
                     }
                 },
                 "required": [
@@ -17567,6 +17784,7 @@
                     "is_public",
                     "model",
                     "organization",
+                    "service_center",
                     "updated_at"
                 ]
             },
@@ -17623,10 +17841,7 @@
                         "readOnly": true
                     },
                     "model": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
+                        "type": "integer",
                         "title": "Модель техники"
                     },
                     "organization": {
@@ -17657,11 +17872,15 @@
                     "icon": {
                         "type": "string",
                         "format": "uri"
+                    },
+                    "runtime_unit": {
+                        "$ref": "#/components/schemas/RuntimeUnitEnum"
                     }
                 },
                 "required": [
                     "id",
-                    "name"
+                    "name",
+                    "runtime_unit"
                 ]
             },
             "VehicleModel": {
@@ -17719,10 +17938,7 @@
                         "readOnly": true
                     },
                     "equipment": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
+                        "type": "integer"
                     }
                 },
                 "required": [
@@ -18073,6 +18289,14 @@
                     "level": {
                         "$ref": "#/components/schemas/LevelEnum"
                     },
+                    "executor_level": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ExecutorLevelEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
                     "solution": {
                         "$ref": "#/components/schemas/SolutionEnum"
                     },
@@ -18118,6 +18342,10 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "executor_title": {
+                        "type": "string",
+                        "readOnly": true
+                    },
                     "text": {
                         "type": "string",
                         "maxLength": 510
@@ -18160,6 +18388,8 @@
                     "author",
                     "complete_date",
                     "created_at",
+                    "executor_level",
+                    "executor_title",
                     "id",
                     "is_approved",
                     "is_completed",
@@ -18182,6 +18412,14 @@
                     "level": {
                         "$ref": "#/components/schemas/LevelEnum"
                     },
+                    "executor_level": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ExecutorLevelEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
                     "solution": {
                         "$ref": "#/components/schemas/SolutionEnum"
                     },
@@ -18235,6 +18473,10 @@
                         "type": "string",
                         "maxLength": 120
                     },
+                    "executor_title": {
+                        "type": "string",
+                        "readOnly": true
+                    },
                     "text": {
                         "type": "string",
                         "maxLength": 510
@@ -18270,6 +18512,8 @@
                     "author",
                     "complete_date",
                     "created_at",
+                    "executor_level",
+                    "executor_title",
                     "id",
                     "is_approved",
                     "is_completed",
@@ -18318,9 +18562,23 @@
                     },
                     "level": {
                         "$ref": "#/components/schemas/LevelEnum"
+                    },
+                    "executor_level": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ExecutorLevelEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "executor_title": {
+                        "type": "string",
+                        "readOnly": true
                     }
                 },
                 "required": [
+                    "executor_level",
+                    "executor_title",
                     "level"
                 ]
             },
@@ -18626,6 +18884,14 @@
                     "is_active": {
                         "type": "boolean",
                         "title": "Active"
+                    },
+                    "site": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 200
+                    },
+                    "about": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -18744,6 +19010,14 @@
                     "is_active": {
                         "type": "boolean",
                         "title": "Active"
+                    },
+                    "site": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 200
+                    },
+                    "about": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -19330,6 +19604,11 @@
                         "title": "Executor report",
                         "maxLength": 510
                     },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
                     "check_date": {
                         "type": [
                             "string",
@@ -19362,6 +19641,7 @@
                     }
                 },
                 "required": [
+                    "created_at",
                     "customer_mark",
                     "photos",
                     "recommendations",
