@@ -288,6 +288,7 @@ export const TicketDrawer = () => {
           <Box
             sx={{
               display: 'flex',
+              flexGrow: 1,
               gap: '8px',
             }}
           >

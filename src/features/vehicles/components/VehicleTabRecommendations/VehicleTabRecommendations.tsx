@@ -1,14 +1,18 @@
+import { useState } from 'react'
 import { PanelDataAbsent } from '@components/PanelDataAbsent'
 import { DATE_FORMAT_TIME_BEHIND, EMPTY_VALUE_DASH } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
+import { QueryKey } from '@features/shared/data'
 import { VehicleChipRecommendationLevel } from '@features/vehicles/components/VehicleChipRecommendationLevel'
 import { VehicleChipRecommendationSolution } from '@features/vehicles/components/VehicleChipRecommendationSolution'
 import { useApi } from '@hooks/useApi'
+import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
-import { Box, Card, Chip, Skeleton, Typography } from '@mui/material'
+import { Box, Button, Card, Chip, Skeleton, Typography } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
-import { SolutionEnum } from '~/api/servicepro.generated'
+import { queryClient } from '~/api'
+import { SolutionEnum, VehicleRecommendationDetailed } from '~/api/servicepro.generated'
 
 interface VehicleRecommendationsProps {
   vehicleID: number
@@ -17,8 +21,12 @@ interface VehicleRecommendationsProps {
 export const VehicleTabRecommendations = ({ vehicleID }: VehicleRecommendationsProps) => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
+  const { notify } = useNotify()
+
+  const [loading, setLoading] = useState(false)
+
   const { data, isFetching, isSuccess } = useQuery({
-    queryKey: ['vehicle', 'recommendations', vehicleID, organizationID],
+    queryKey: [QueryKey.VehicleRecommendations, vehicleID, organizationID],
     queryFn: async () => {
       const { data } = await api.vehicleSersVehiclesRecsList({
         orgId: organizationID.toString(),
@@ -28,12 +36,31 @@ export const VehicleTabRecommendations = ({ vehicleID }: VehicleRecommendationsP
       return data
     },
   })
+
+  const handleMarkComplete = async (recommendation: VehicleRecommendationDetailed) => {
+    try {
+      setLoading(true)
+
+      await api.vehicleSersVehiclesRecsPartialUpdate(recommendation.id, organizationID.toString(), vehicleID.toString(), {
+        solution: SolutionEnum.Complete,
+      })
+
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.VehicleRecommendations] })
+    } catch (error) {
+      notify({
+        message: 'Не удалось отметить рекоммендацию выполненной',
+        variant: 'error',
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'flex-start',
         gap: '8px',
       }}
     >
@@ -57,7 +84,7 @@ export const VehicleTabRecommendations = ({ vehicleID }: VehicleRecommendationsP
                   key={rec.id}
                   variant={'outlined'}
                   sx={{
-                    padding: '12px 32px 12px 12px',
+                    padding: '12px',
                     borderRadius: 2,
                     background: (theme) => theme.palette.grey['200'],
                   }}
@@ -88,22 +115,16 @@ export const VehicleTabRecommendations = ({ vehicleID }: VehicleRecommendationsP
                   </Box>
                   <Typography
                     variant={'subtitle1'}
+                    sx={{
+                      fontSize: '17px',
+                    }}
                   >
                     {rec.title || 'Наименование отсутствует'}
                   </Typography>
-                  {!!rec.text && (
-                    <Typography
-                      sx={{
-                        marginTop: '4px',
-                      }}
-                      variant={'body2'}
-                    >
-                      {rec.text}
-                    </Typography>
-                  )}
                   <Box
                     sx={{
                       display: 'flex',
+                      alignItems: 'flex-end',
                       gap: '12px',
                       marginTop: '12px',
                     }}
@@ -130,6 +151,18 @@ export const VehicleTabRecommendations = ({ vehicleID }: VehicleRecommendationsP
                         emptyLabel={'Отсутствует'}
                       />
                     </Box>
+                    {rec.solution !== SolutionEnum.Complete && (
+                      <Button
+                        variant={'contained'}
+                        color={'success'}
+                        sx={{ marginLeft: 'auto' }}
+                        disabled={loading}
+                        disableElevation
+                        onClick={() => handleMarkComplete(rec)}
+                      >
+                        Отметить выполненной
+                      </Button>
+                    )}
                   </Box>
                 </Card>
               ))}

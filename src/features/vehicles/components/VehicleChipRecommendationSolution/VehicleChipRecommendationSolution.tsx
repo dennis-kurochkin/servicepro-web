@@ -7,12 +7,12 @@ interface VehicleChipRecommendationSolutionProps {
 }
 
 export const VehicleChipRecommendationSolution = ({ solution }: VehicleChipRecommendationSolutionProps) => {
-  return (
+  return solution === SolutionEnum.Complete ? (
     <Chip
-      variant={'outlined'}
+      variant={'filled'}
       color={SolutionEnumColor[solution]}
       label={solution ? SolutionEnumLabel[solution] : 'Неизвестно'}
       size={'small'}
     />
-  )
+  ) : null
 }
