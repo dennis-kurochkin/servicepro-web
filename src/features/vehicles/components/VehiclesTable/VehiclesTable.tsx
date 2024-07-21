@@ -86,6 +86,9 @@ export const VehiclesTable = ({ data, isSuccess, sx }: VehiclesTableProps) => {
                 active
               />
             </TableCell>
+            <TableCell
+              size={'small'}
+            />
           </TableRow>
         </TableHead>
         <TableBody>
