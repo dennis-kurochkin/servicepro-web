@@ -4,36 +4,28 @@ import { TableWrapper } from '@components/TableWrapper/TableWrapper'
 import { DATE_FORMAT_TIME_AHEAD, EMPTY_VALUE_DASH } from '@constants/index'
 import { EngineerAvatar } from '@features/engineers/components/EngineerAvatar'
 import { QueryKey } from '@features/shared/data'
-import { VehicleDrawerDocumentationAdd } from '@features/vehicles/components/VehicleDrawerDocumentationAdd'
+import { VehicleDrawerRuntimeAdd } from '@features/vehicles/components/VehicleDrawerRuntimeAdd'
 import { useApi } from '@hooks/useApi'
 import { useOrganizationID } from '@hooks/useOrganizationID'
 import { Add } from '@mui/icons-material'
-import {
-  Box,
-  Button, Link,
-  Skeleton,
-  Table, TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@mui/material'
+import { Box, Button, Skeleton, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 
-interface VehicleTabDocumentationProps {
+interface VehicleTabRuntimeProps {
   vehicleID: number
 }
 
-export const VehicleTabDocumentation = ({ vehicleID }: VehicleTabDocumentationProps) => {
+export const VehicleTabRuntime = ({ vehicleID }: VehicleTabRuntimeProps) => {
   const { organizationID } = useOrganizationID()
   const { api } = useApi()
 
-  const [addDrawerOpen, setAddDrawerOpen] = useState(false)
+  const [runtimeDrawerOpen, setRuntimeDrawerOpen] = useState(false)
 
   const { data, isFetching, isSuccess } = useQuery({
-    queryKey: [QueryKey.VehicleDocuments, vehicleID, organizationID],
+    queryKey: [QueryKey.VehicleRuntime, vehicleID, organizationID],
     queryFn: async () => {
-      const { data } = await api.vehicleSersVehiclesDocsList({
+      const { data } = await api.vehicleSersVehiclesRuntimeList({
         orgId: organizationID.toString(),
         vehicleId: vehicleID.toString(),
       })
@@ -65,9 +57,9 @@ export const VehicleTabDocumentation = ({ vehicleID }: VehicleTabDocumentationPr
           variant={'contained'}
           startIcon={<Add />}
           disableElevation
-          onClick={() => setAddDrawerOpen(true)}
+          onClick={() => setRuntimeDrawerOpen(true)}
         >
-          Добавить документацию
+          Записать наработку
         </Button>
       </Box>
       {isFetching ? (
@@ -101,56 +93,38 @@ export const VehicleTabDocumentation = ({ vehicleID }: VehicleTabDocumentationPr
                       <TableCell
                         size={'small'}
                       >
-                        Наименование
+                        Наработка
                       </TableCell>
                       <TableCell
                         size={'small'}
                       >
-                        Ссылка
-                      </TableCell>
-                      <TableCell
-                        size={'small'}
-                      >
-                        Дата&nbsp;создания
+                        Дата&nbsp;записи
                       </TableCell>
                       <TableCell
                         size={'small'}
                       >
                         Автор
                       </TableCell>
+                      <TableCell
+                        size={'small'}
+                      >
+                        Аудитор
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.map((document) => (
+                    {data.map((record) => (
                       <TableRow
-                        key={document.id}
+                        key={record.id}
                       >
                         <TableCell>
-                          {document.id}
+                          {record.id}
                         </TableCell>
                         <TableCell>
-                          {document.title || 'Текст отсутствует'}
+                          {record.value || EMPTY_VALUE_DASH}
                         </TableCell>
                         <TableCell>
-                          <Box
-                            sx={{
-                              maxWidth: '600px',
-                            }}
-                          >
-                            <Link
-                              href={document.file}
-                              target={'_blank'}
-                              sx={{
-                                wordWrap: 'break-all',
-                                overflowWrap: 'break-word',
-                              }}
-                            >
-                              {document.file}
-                            </Link>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          {document.created_at ? format(new Date(document.created_at), DATE_FORMAT_TIME_AHEAD) : EMPTY_VALUE_DASH}
+                          {record.created_at ? format(new Date(record.created_at), DATE_FORMAT_TIME_AHEAD) : EMPTY_VALUE_DASH}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -158,7 +132,17 @@ export const VehicleTabDocumentation = ({ vehicleID }: VehicleTabDocumentationPr
                           }}
                         >
                           <EngineerAvatar
-                            profile={document.author?.profile ?? null}
+                            profile={record.author?.profile ?? null}
+                            emptyLabel={'Отсутствует'}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            paddingRight: '16px',
+                          }}
+                        >
+                          <EngineerAvatar
+                            profile={record.auditor?.profile ?? null}
                             emptyLabel={'Отсутствует'}
                           />
                         </TableCell>
@@ -171,10 +155,10 @@ export const VehicleTabDocumentation = ({ vehicleID }: VehicleTabDocumentationPr
           ) : <PanelDataAbsent />}
         </>
       )}
-      <VehicleDrawerDocumentationAdd
-        open={addDrawerOpen}
+      <VehicleDrawerRuntimeAdd
+        open={runtimeDrawerOpen}
         vehicleID={vehicleID}
-        onClose={() => setAddDrawerOpen(false)}
+        onClose={() => setRuntimeDrawerOpen(false)}
       />
     </Box>
   )
