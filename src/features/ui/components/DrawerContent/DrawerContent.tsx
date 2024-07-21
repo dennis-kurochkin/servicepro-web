@@ -7,7 +7,7 @@ interface TicketDrawerContentProps {
   title: string
   sx?: SxProps
   innerSx?: SxProps
-  renderFooter: ReactNode
+  renderFooter?: ReactNode
   onClose: () => void
 }
 
@@ -37,9 +37,11 @@ export const DrawerContent = ({ title, sx, innerSx, renderFooter, onClose, child
       >
         {children}
       </Box>
-      <TicketDrawerFooter>
-        {renderFooter}
-      </TicketDrawerFooter>
+      {renderFooter && (
+        <TicketDrawerFooter>
+          {renderFooter}
+        </TicketDrawerFooter>
+      )}
     </Box>
   )
 }
