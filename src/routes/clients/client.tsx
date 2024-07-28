@@ -12,6 +12,7 @@ import { useOrganizationID } from '@hooks/useOrganizationID'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Box, Tab, Typography } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
+import { WorkSersTasksListParams } from '~/api/servicepro.generated'
 
 enum ClientTab {
   Vehicles = 'vehicles',
@@ -45,10 +46,10 @@ export const ClientRoute = () => {
   const ticketsQuery = useQuery({
     queryKey: [QueryKey.ClientTickets, clientID, ticketsPage, organizationID],
     queryFn: async () => {
-      const options = {
+      const options: WorkSersTasksListParams = {
         orgId: organizationID.toString(),
         offset: ticketsPage * PAGINATION_DEFAULT_LIMIT,
-        clientID,
+        customer: [clientID.toString()],
         limit: PAGINATION_DEFAULT_LIMIT,
       }
 

@@ -14,6 +14,9 @@ export const publicClient = new MainApi(settings)
 export const privateClient = new MainApi({
   ...settings,
   withCredentials: true,
+  paramsSerializer: {
+    indexes: null,
+  },
 })
 
 export const chatClient = new ChatApi({
