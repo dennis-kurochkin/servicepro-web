@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ButtonIconSquare } from '@components/ButtonIconSquare'
+import { Dropzone } from '@components/Dropzone'
 import { FieldAutocomplete, FieldInput } from '@components/Field'
 import { getEngineerLabel } from '@features/engineers/helpers'
 import { SearchParamsKey } from '@features/shared/data'
@@ -26,15 +27,24 @@ import { TicketDrawerParticipantsSection } from '@features/tickets/components/Ti
 import { StatusEnumLabel } from '@features/tickets/data'
 import { getAvailableStatusOptions } from '@features/tickets/helpers'
 import { Tooltip } from '@features/ui/components/Tooltip'
+import { rr2 } from '@features/ui/types'
 import { VehicleChipRecommendationLevel } from '@features/vehicles/components/VehicleChipRecommendationLevel'
 import { VehicleChipRecommendationSolution } from '@features/vehicles/components/VehicleChipRecommendationSolution'
+import { toBase64 } from '@helpers/index'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
 import { useOrganizationID } from '@hooks/useOrganizationID'
-import { Send, Update } from '@mui/icons-material'
+import { AttachFile, Delete, Send, Update } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import { Box, BoxProps, Drawer, styled } from '@mui/material'
+import { Box, BoxProps, Drawer, IconButton, styled } from '@mui/material'
+import { v4 } from 'uuid'
 import { StatusEnum } from '~/api/servicepro.generated'
+
+interface FileExtended extends File {
+  id: string
+  src: string
+  blob: File,
+}
 
 const ContentWrapper = styled(Box)<BoxProps>(() => ({
   flexGrow: 1,
@@ -49,7 +59,7 @@ const ContentWrapper = styled(Box)<BoxProps>(() => ({
 
 export const TicketDrawer = () => {
   const { organizationID } = useOrganizationID()
-  const { chatApi } = useApi()
+  const { chatApi, api } = useApi()
   const [searchParams, setSearchParams] = useSearchParams()
   const params = useParams()
   const navigate = useNavigate()
@@ -58,6 +68,7 @@ export const TicketDrawer = () => {
   const open = useMemo(() => !!params.ticketID || !!searchParams.get('ticketID'), [params, searchParams])
   const ticketID = useMemo(() => params.ticketID ? +params.ticketID : searchParams.get('ticketID') ? +searchParams.get('ticketID')! : null, [params, searchParams])
   const [message, setMessage] = useState<string>('')
+  const [files, setFiles] = useState<FileExtended[]>([])
   const [newStatus, setNewStatus] = useState<StatusEnum | null>(null)
   const [showStatusField, setShowStatusField] = useState(false)
   const [sendingMessage, setSendingMessage] = useState(false)
@@ -69,6 +80,23 @@ export const TicketDrawer = () => {
   const statusesQuery = useTicketDrawerQueryStatuses(ticketID, open)
   const chatsQuery = useTicketDrawerQueryChats(ticketID, authorization, readyState)
 
+  const handleAddFiles = (files: File[]) => {
+    setFiles((prev) => [...prev, ...files.map((file) => ({
+      ...file,
+      id: v4(),
+      src: URL.createObjectURL(file),
+      blob: file,
+    }))])
+  }
+
+  const handleRemove = (id: string) => {
+    const index = files.findIndex((file) => file.id === id)
+
+    if (index !== -1) {
+      setFiles((files) => [...files.slice(0, index), ...files.slice(index + 1)])
+    }
+  }
+
   const handleSendMessage = useCallback(async () => {
     if (!newStatus && !message) {
       notify({
@@ -79,6 +107,16 @@ export const TicketDrawer = () => {
       return
     }
 
+    const attachments = await Promise.all(files.map(async (file) => {
+      const { data } = await rr2(api.workSersTasksAttachmentsCreate)(organizationID.toString(), ticketID!.toString(), {
+        file: await toBase64(file.blob),
+        title: file.name,
+        client_uuid: file.id,
+      })
+
+      return data.client_uuid ?? ''
+    }))
+
     try {
       setSendingMessage(true)
 
@@ -88,11 +126,13 @@ export const TicketDrawer = () => {
       }, {
         text: message,
         ...(newStatus ? { status: newStatus } : {}),
+        attachments,
         edits: {},
       })
 
       setNewStatus(null)
       setMessage('')
+      setFiles([])
       setShowStatusField(false)
     } catch (error) {
       notify({
@@ -102,9 +142,12 @@ export const TicketDrawer = () => {
     } finally {
       setSendingMessage(false)
     }
-  }, [newStatus, message, chatApi, ticketID, authorization, notify])
+  }, [newStatus, message, files, notify, api.workSersTasksAttachmentsCreate, organizationID, ticketID, chatApi, authorization])
 
   const handleClose = () => {
+    setShowStatusField(false)
+    setFiles([])
+
     if (params.ticketID) {
       navigate(`/${organizationID}/tickets`)
     } else {
@@ -285,63 +328,132 @@ export const TicketDrawer = () => {
           </TicketDrawerFormsContainer>
         </Box>
         <TicketDrawerFooter>
-          <Box
-            sx={{
-              display: 'flex',
-              flexGrow: 1,
-              gap: '8px',
-            }}
-          >
-            {showStatusField ? (
-              <FieldAutocomplete
-                name={'status'}
-                label={'Статус'}
-                sx={{ minWidth: '200px' }}
-                value={newStatus ? {
-                  value: newStatus,
-                  label: StatusEnumLabel[newStatus],
-                } : null}
-                options={getAvailableStatusOptions(data?.status ?? StatusEnum.Done)}
-                disabled={sendingMessage}
-                labelInside
-                onChange={(data) => setNewStatus(data?.value as StatusEnum ?? null)}
-              />
-            ) : (
-              <Tooltip
-                content={'Изменить статус заявки'}
-                strategy={'fixed'}
-                target={(
-                  <div>
-                    <ButtonIconSquare
-                      color={'info'}
-                      variant={'outlined'}
-                      disabled={sendingMessage || getAvailableStatusOptions(data?.status ?? StatusEnum.Done).length === 0}
-                      onClick={() => setShowStatusField(true)}
-                    >
-                      <Update fontSize={'medium'} />
-                    </ButtonIconSquare>
-                  </div>
+          <Dropzone
+            files={files}
+            touched={false}
+            maxFiles={10}
+            format={'photo'}
+            content={(open) => (
+              <>
+                {files.length > 0 && (
+                  <Box
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, 70px)',
+                      gap: '8px',
+                      padding: '16px 16px 0',
+                    }}
+                  >
+                    {files.map((file) => (
+                      <Box
+                        key={file.id}
+                        sx={{
+                          position: 'relative',
+                          aspectRatio: '1',
+                        }}
+                      >
+                        <img
+                          src={file.src}
+                          alt={file.name}
+                          style={{
+                            display: 'block',
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            borderRadius: '4px',
+                          }}
+                        />
+                        <IconButton
+                          size={'small'}
+                          color={'error'}
+                          sx={{
+                            position: 'absolute',
+                            right: '-12px',
+                            top: '-12px',
+                          }}
+                          onClick={() => handleRemove(file.id)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Box>
+                    ))}
+                  </Box>
                 )}
-              />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexGrow: 1,
+                    gap: '8px',
+                    padding: '16px',
+                  }}
+                >
+                  {showStatusField ? (
+                    <FieldAutocomplete
+                      name={'status'}
+                      label={'Статус'}
+                      sx={{ minWidth: '200px' }}
+                      value={newStatus ? {
+                        value: newStatus,
+                        label: StatusEnumLabel[newStatus],
+                      } : null}
+                      options={getAvailableStatusOptions(data?.status ?? StatusEnum.Done)}
+                      disabled={sendingMessage}
+                      labelInside
+                      onChange={(data) => setNewStatus(data?.value as StatusEnum ?? null)}
+                    />
+                  ) : (
+                    <Tooltip
+                      content={'Изменить статус заявки'}
+                      strategy={'fixed'}
+                      target={(
+                        <div>
+                          <ButtonIconSquare
+                            color={'info'}
+                            variant={'outlined'}
+                            disabled={sendingMessage || getAvailableStatusOptions(data?.status ?? StatusEnum.Done).length === 0}
+                            onClick={() => setShowStatusField(true)}
+                          >
+                            <Update fontSize={'medium'} />
+                          </ButtonIconSquare>
+                        </div>
+                      )}
+                    />
+                  )}
+                  <FieldInput
+                    value={message}
+                    name={'message'}
+                    disabled={sendingMessage}
+                    placeholder={'Введите сообщение'}
+                    sx={{ width: '100%', maxWidth: '100%' }}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
+                  <ButtonIconSquare
+                    color={'info'}
+                    variant={'outlined'}
+                    disabled={sendingMessage}
+                    onClick={open}
+                  >
+                    <AttachFile
+                      fontSize={'medium'}
+                      sx={{
+                        transform: 'rotate(45deg)',
+                      }}
+                    />
+                  </ButtonIconSquare>
+                  <LoadingButton
+                    variant={'contained'}
+                    color={'info'}
+                    loading={sendingMessage}
+                    disableElevation
+                    onClick={handleSendMessage}
+                  >
+                    <Send fontSize={'small'} />
+                  </LoadingButton>
+                </Box>
+              </>
             )}
-            <FieldInput
-              value={message}
-              name={'message'}
-              disabled={sendingMessage}
-              placeholder={'Введите сообщение'}
-              sx={{ width: '100%', maxWidth: '100%' }}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <LoadingButton
-              variant={'contained'}
-              color={'info'}
-              loading={sendingMessage}
-              disableElevation
-              onClick={handleSendMessage}
-            >
-              <Send fontSize={'small'} />
-            </LoadingButton>
-          </Box>
+            onChange={handleAddFiles}
+          />
         </TicketDrawerFooter>
       </ContentWrapper>
     </Drawer>
