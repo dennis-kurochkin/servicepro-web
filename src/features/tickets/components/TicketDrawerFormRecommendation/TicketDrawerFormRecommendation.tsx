@@ -14,9 +14,10 @@ import { LevelEnum, WorkTaskDetailed, WorkTaskResult } from '~/api/servicepro.ge
 interface TicketDrawerFormRecommendationProps {
   ticket: WorkTaskDetailed
   result: WorkTaskResult | null
+  disabled: boolean
 }
 
-export const TicketDrawerFormRecommendation = ({ ticket, result }: TicketDrawerFormRecommendationProps) => {
+export const TicketDrawerFormRecommendation = ({ ticket, result, disabled }: TicketDrawerFormRecommendationProps) => {
   const { api } = useApi()
   const { notify } = useNotify()
   const { organizationID } = useOrganizationID()
@@ -41,6 +42,7 @@ export const TicketDrawerFormRecommendation = ({ ticket, result }: TicketDrawerF
 
       await api.workSersTasksResultEditPartialUpdate(ticket.id, organizationID.toString(), {
         recommendations: {
+          // @ts-expect-error ???
           edit: {
             [result?.recommendations?.[0]?.id?.toString() ?? '0']: {
               level,
@@ -89,6 +91,7 @@ export const TicketDrawerFormRecommendation = ({ ticket, result }: TicketDrawerF
         name={'text'}
         placeholder={'Введите текст'}
         disabled={loading}
+        readOnly={disabled}
         minRows={3}
         maxRows={6}
         error={error}
@@ -114,6 +117,7 @@ export const TicketDrawerFormRecommendation = ({ ticket, result }: TicketDrawerF
           >
             <Radio
               value={value}
+              disabled={disabled}
               size={'small'}
               sx={{
                 padding: '6px',
@@ -128,7 +132,7 @@ export const TicketDrawerFormRecommendation = ({ ticket, result }: TicketDrawerF
         size={'small'}
         endIcon={<Send fontSize={'small'} />}
         sx={{ marginTop: '12px' }}
-        disabled={false}
+        disabled={disabled}
         loading={loading}
         onClick={handleSubmit}
       >

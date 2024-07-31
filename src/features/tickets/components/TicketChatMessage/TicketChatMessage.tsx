@@ -1,77 +1,34 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 import { DialogPhotoSlider } from '@components/DialogPhotoSlider'
 import { useDialogPhotoSliderUtils } from '@components/DialogPhotoSlider/hooks/useDialogPhotoSliderUtils'
-import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_BEHIND, DATE_FORMAT_TIME_DAY } from '@constants/index'
+import { DATE_FORMAT_DEFAULT, DATE_FORMAT_TIME_DAY } from '@constants/index'
 import { theme } from '@data/theme'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
-import { QueryKey, RoleLabel } from '@features/shared/data'
+import { RoleLabel } from '@features/shared/data'
 import { useQueryDrawerEmployee } from '@features/shared/hooks/useQueryDrawerEmployee'
 import { EmployeeProfile } from '@features/shared/types'
 import { TICKET_CHAT_OFFSET_LEFT } from '@features/tickets/constants'
-import { TicketMessageAction, TicketMessageActionLabel } from '@features/tickets/data'
-import { useApi } from '@hooks/useApi'
-import { useNotify } from '@hooks/useNotify'
-import { useOrganizationID } from '@hooks/useOrganizationID'
 import { DisplaySettings, Person } from '@mui/icons-material'
-import { LoadingButton } from '@mui/lab'
-import { Avatar, Box, Button, Card, Typography } from '@mui/material'
+import { Avatar, Box, Card, Typography } from '@mui/material'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import { queryClient } from '~/api'
-import { RoleEnum, StatusEnum, WorkTaskStatusChangeDetailed } from '~/api/servicepro.generated'
+import { RoleEnum, StatusEnum } from '~/api/servicepro.generated'
 
 export interface TicketChatMessageProps {
-  ticketID: number | null
-  authorization: string
-  uuid: string
   author: null | number | EmployeeProfile
   content: ReactNode | string
+  actions?: ReactNode
   pictures?: string[]
   status?: StatusEnum
-  statusData: WorkTaskStatusChangeDetailed | null
   date: string
-  report?: boolean
 }
 
-export const TicketChatMessage = ({ ticketID, authorization, uuid, author, content, pictures, status, date, statusData, report = false }: TicketChatMessageProps) => {
+export const TicketChatMessage = ({ author, content, actions, pictures, status, date }: TicketChatMessageProps) => {
   const { setCurrentPictureIndex } = useDialogPhotoSliderUtils()
-  const { notify } = useNotify()
-  const { api, chatApi } = useApi()
-  const { organizationID } = useOrganizationID()
   const [isDialogPhotoSliderOpen, setDialogPhotoSliderOpen] = useState(false)
-  const [isAcceptLoading, setIsAcceptLoading] = useState(false)
-  const hasStatus = useMemo(() => !!(author && (report || !!status)), [author, report, status])
+  const hasStatus = useMemo(() => !!author && !!status, [author, status])
 
-  const { data: profile } = useQueryDrawerEmployee(typeof author === 'object' ? -1 : author)
-
-  const handlePerformAction = useCallback(async (action: TicketMessageAction) => {
-    await chatApi.useMessageButtonApiChatsTaskIdMessagesMessageUuidButtonsPost({
-      taskId: ticketID!,
-      authorization,
-      messageUuid: uuid,
-    }, {
-      name: action,
-      client_time: new Date().toISOString(),
-    })
-  }, [ticketID, chatApi, uuid, authorization])
-
-  const handleAcceptResult = useCallback(async () => {
-    try {
-      setIsAcceptLoading(true)
-
-      await api.workSersTasksResultApplyPartialUpdate(ticketID!, organizationID.toString())
-
-      await queryClient.invalidateQueries({ queryKey: [QueryKey.Ticket, ticketID] })
-      await queryClient.invalidateQueries({ queryKey: [QueryKey.TicketsGeos] })
-    } catch (error) {
-      notify({
-        message: 'Произошла ошибка при принятии результата',
-        variant: 'error',
-      })
-    } finally {
-      setIsAcceptLoading(false)
-    }
-  }, [api, ticketID, organizationID, notify])
+  const { data: profile } = useQueryDrawerEmployee(typeof author === 'object' ? null : author)
 
   const authorProfile = useMemo(() => typeof author === 'number' ? (profile ?? {
     id: -1,
@@ -125,7 +82,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
             }}
           >
             <TicketChipStatus
-              status={report ? StatusEnum.Done : status}
+              status={status}
               size={300}
               sx={{ width: '100%' }}
               filled
@@ -205,6 +162,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
               />
             )}
             <Typography
+              component={'div'}
               variant={'body2'}
               sx={{ wordBreak: 'break-word' }}
             >
@@ -245,7 +203,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
               ))}
             </Box>
           )}
-          {(statusData?.buttons || report) && (
+          {actions && (
             <Box
               sx={{
                 display: 'grid',
@@ -253,49 +211,7 @@ export const TicketChatMessage = ({ ticketID, authorization, uuid, author, conte
                 gridTemplateColumns: '1fr 1fr',
               }}
             >
-              {report && (
-                <LoadingButton
-                  variant={'contained'}
-                  size={'small'}
-                  color={'success'}
-                  disabled={status === StatusEnum.Done}
-                  loading={isAcceptLoading}
-                  disableElevation
-                  onClick={handleAcceptResult}
-                >
-                  {status === StatusEnum.Done ? 'Принято' : 'Принять'}
-                </LoadingButton>
-              )}
-              {statusData?.buttons.map((action) => (
-                <Button
-                  key={action.name}
-                  variant={'contained'}
-                  size={'small'}
-                  color={[TicketMessageAction.Rejected, TicketMessageAction.Reject].some((value) => value === action.name) ? 'primary' : 'info'}
-                  disabled={action.active}
-                  disableElevation
-                  onClick={() => handlePerformAction(action.name as TicketMessageAction)}
-                >
-                  {TicketMessageActionLabel[action.name as TicketMessageAction]}
-                </Button>
-              ))}
-              {(statusData?.buttons?.length || report) && statusData?.verdict_date && (
-                <Typography
-                  variant={'body2'}
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    paddingRight: statusData?.buttons?.some((button) => button.name === TicketMessageAction.Applied) ? '12px' : 0,
-                    paddingLeft: statusData?.buttons?.some((button) => button.name === TicketMessageAction.Rejected) ? '4px' : 0,
-                    order: statusData?.buttons?.some((button) => button.name === TicketMessageAction.Rejected) ? -1 : undefined,
-                    color: (theme) => theme.palette.grey['700'],
-                    fontSize: '13px',
-                  }}
-                >
-                  {format(new Date(statusData.verdict_date!), DATE_FORMAT_TIME_BEHIND)}
-                </Typography>
-              )}
+              {actions}
             </Box>
           )}
         </Box>

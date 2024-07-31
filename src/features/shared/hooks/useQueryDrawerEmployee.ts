@@ -11,7 +11,7 @@ export const useQueryDrawerEmployee = (id: number | null) => {
   const { api } = useApi()
 
   return useQuery({
-    queryKey: [QueryKey.Employee, typeof id === 'number' ? id : -1],
+    queryKey: [QueryKey.Employee, id],
     queryFn: async (): Promise<EmployeeProfile> => {
       if (typeof id !== 'number') {
         return {

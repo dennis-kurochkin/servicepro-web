@@ -27,7 +27,7 @@ export const useTicketDrawerWebSocket = (ticketID: number | null) => {
     onMessage: async (event) => {
       const data = JSON.parse(event.data) as WSData
 
-      if (data.payload?.task_id) {
+      if (data.payload?.task_id === ticketID) {
         switch (data.payload_model) {
           case WSMessagePayloadModel.NewMessage:
             queryClient.setQueryData([QueryKey.Chats, ticketID, organizationID], (oldData) => [
@@ -55,6 +55,13 @@ export const useTicketDrawerWebSocket = (ticketID: number | null) => {
               queryClient.invalidateQueries({ queryKey: [QueryKey.TicketStatuses, ticketID] }),
               queryClient.invalidateQueries({ queryKey: [QueryKey.TicketResult, ticketID] }),
               queryClient.invalidateQueries({ queryKey: [QueryKey.Chats, ticketID, organizationID] }),
+            ])
+            break
+          case WSMessagePayloadModel.ArchiveTask:
+            await Promise.all([
+              queryClient.invalidateQueries({ queryKey: [QueryKey.Ticket, ticketID, organizationID] }),
+              queryClient.invalidateQueries({ queryKey: [QueryKey.TicketResult, ticketID] }),
+              queryClient.invalidateQueries({ queryKey: [QueryKey.TicketReviews, ticketID, organizationID] }),
             ])
             break
           case WSMessagePayloadModel.RemoveTask:
@@ -133,6 +140,31 @@ export const useTicketDrawerQueryResult = (ticketID: number | null, open: boolea
     queryFn: async () => {
       try {
         const { data } = await api.workSersTasksResultRetrieve(ticketID!, organizationID.toString())
+        return data
+      } catch (error) {
+        if ((error as AxiosError)?.response?.status === 404) {
+          return null
+        }
+
+        throw error
+      }
+    },
+    enabled: open && !!ticketID,
+  })
+}
+
+export const useTicketDrawerQueryReviews = (ticketID: number | null, open: boolean) => {
+  const { organizationID } = useOrganizationID()
+  const { api } = useApi()
+
+  return useQuery({
+    queryKey: [QueryKey.TicketReviews, ticketID, organizationID],
+    queryFn: async () => {
+      try {
+        const { data } = await api.workSersTasksReviewsList({
+          orgId: organizationID.toString(),
+          taskId: ticketID!.toString(),
+        })
         return data
       } catch (error) {
         if ((error as AxiosError)?.response?.status === 404) {
