@@ -16034,15 +16034,12 @@
                         "readOnly": true
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
-                    },
-                    "is_rejected": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "is_completed": {
-                        "type": "boolean",
-                        "readOnly": true
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/VehicleAdditionVerdict"
+                            }
+                        ],
+                        "default": "posted"
                     },
                     "author": {
                         "allOf": [
@@ -16103,7 +16100,7 @@
                     "value": {
                         "type": "integer",
                         "maximum": 5,
-                        "minimum": 1
+                        "minimum": 0
                     },
                     "created_at": {
                         "type": "string",
@@ -18590,15 +18587,12 @@
                         "readOnly": true
                     },
                     "verdict": {
-                        "$ref": "#/components/schemas/VehicleAdditionVerdict"
-                    },
-                    "is_rejected": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "is_completed": {
-                        "type": "boolean",
-                        "readOnly": true
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/VehicleAdditionVerdict"
+                            }
+                        ],
+                        "default": "posted"
                     },
                     "author": {
                         "allOf": [
@@ -18653,13 +18647,10 @@
                     "author",
                     "created_at",
                     "id",
-                    "is_completed",
-                    "is_rejected",
                     "service_center",
                     "updated_at",
                     "value",
-                    "vehicle",
-                    "verdict"
+                    "vehicle"
                 ]
             },
             "VehicleRuntimeEditResult": {
@@ -18916,7 +18907,7 @@
                     "value": {
                         "type": "integer",
                         "maximum": 5,
-                        "minimum": 1
+                        "minimum": 0
                     },
                     "created_at": {
                         "type": "string",

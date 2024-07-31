@@ -257,6 +257,17 @@ export interface EmployeeGeolocation {
   readonly created_at: string;
 }
 
+/**
+ * * `info` - info
+ * * `warning` - warning
+ * * `critical` - critical
+ */
+export enum ExecutorLevelEnum {
+  Info = "info",
+  Warning = "warning",
+  Critical = "critical",
+}
+
 /** * `vehicle_catalog` - vehicle_catalog */
 export enum KeyEnum {
   VehicleCatalog = "vehicle_catalog",
@@ -556,6 +567,12 @@ export interface Organization {
    * @format uri
    */
   photo?: string;
+  /**
+   * @format uri
+   * @maxLength 200
+   */
+  site?: string;
+  about?: string;
   /** Organization requisites */
   requisites?: number | null;
   /** Organization contact */
@@ -577,10 +594,10 @@ export interface OrganizationCacheFile {
 export interface OrganizationDetailed {
   readonly id: number;
   readonly is_service_center: boolean;
-  requisites: OrganizationRequisites;
-  settings: OrganizationSettings;
-  service_center: ServiceCenter;
-  contact: Profile;
+  readonly requisites: OrganizationRequisites;
+  readonly settings: OrganizationSettings;
+  readonly service_center: ServiceCenter;
+  readonly contact: Profile;
   /** @format uri */
   photo?: string | null;
   /** @format date-time */
@@ -590,7 +607,13 @@ export interface OrganizationDetailed {
   /** @maxLength 127 */
   name: string;
   /** Active */
-  is_active?: boolean;
+  readonly is_active: boolean;
+  /**
+   * @format uri
+   * @maxLength 200
+   */
+  site?: string;
+  about?: string;
 }
 
 export interface OrganizationInn {
@@ -674,6 +697,12 @@ export interface OrganizationPublic {
   name: string;
   /** Active */
   is_active?: boolean;
+  /**
+   * @format uri
+   * @maxLength 200
+   */
+  site?: string;
+  about?: string;
 }
 
 export interface OrganizationRequisites {
@@ -827,6 +856,31 @@ export interface PatchedOrgWorkTaskEdit {
   parent?: number | null;
 }
 
+export interface PatchedOrganizationDetailed {
+  readonly id?: number;
+  readonly is_service_center?: boolean;
+  readonly requisites?: OrganizationRequisites;
+  readonly settings?: OrganizationSettings;
+  readonly service_center?: ServiceCenter;
+  readonly contact?: Profile;
+  /** @format uri */
+  photo?: string | null;
+  /** @format date-time */
+  readonly created_at?: string;
+  /** @format date-time */
+  readonly updated_at?: string;
+  /** @maxLength 127 */
+  name?: string;
+  /** Active */
+  readonly is_active?: boolean;
+  /**
+   * @format uri
+   * @maxLength 200
+   */
+  site?: string;
+  about?: string;
+}
+
 export interface PatchedOrganizationRequisites {
   readonly id?: number;
   physical_address?: Address;
@@ -961,7 +1015,7 @@ export interface PatchedVehicleEdit {
   /** @format date-time */
   readonly hide_date?: string | null;
   /** Модель техники */
-  model?: number | null;
+  model?: number;
   readonly organization?: number;
 }
 
@@ -1044,6 +1098,7 @@ export interface PatchedVehicleRecommendationDetailed {
    * * `critical` - critical
    */
   level?: LevelEnum;
+  readonly executor_level?: ExecutorLevelEnum;
   /**
    * * `no` - no
    * * `complete` - complete
@@ -1068,6 +1123,7 @@ export interface PatchedVehicleRecommendationDetailed {
   readonly updated_at?: string;
   /** @maxLength 120 */
   title?: string;
+  readonly executor_title?: string;
   /** @maxLength 510 */
   text?: string;
   /** @format date-time */
@@ -1080,14 +1136,8 @@ export interface PatchedVehicleRecommendationDetailed {
 
 export interface PatchedVehicleRuntime {
   readonly id?: number;
-  /**
-   * * `no` - no
-   * * `posted` - posted
-   * * `rejected` - rejected
-   */
+  /** @default "posted" */
   verdict?: VehicleAdditionVerdict;
-  readonly is_rejected?: boolean;
-  readonly is_completed?: boolean;
   readonly author?: EmployeeDetailed;
   readonly auditor?: EmployeeDetailed;
   /** @format date-time */
@@ -1104,7 +1154,7 @@ export interface PatchedVehicleRuntime {
 export interface PatchedWorkReview {
   readonly id?: number;
   /**
-   * @min 1
+   * @min 0
    * @max 5
    */
   value?: number;
@@ -1257,6 +1307,19 @@ export enum RoleEnum {
   Client = "client",
   Engineer = "engineer",
   Coordinator = "coordinator",
+}
+
+/**
+ * * `no` - no
+ * * `mh` - mh
+ * * `km` - km
+ * * `he` - he
+ */
+export enum RuntimeUnitEnum {
+  No = "no",
+  Mh = "mh",
+  Km = "km",
+  He = "he",
 }
 
 export interface SerVehicle {
@@ -1766,6 +1829,8 @@ export interface VehicleDocumentationDetailed {
   title?: string;
   readonly model: number;
   readonly organization: number | null;
+  /** Organization */
+  readonly service_center: number | null;
 }
 
 export interface VehicleEdit {
@@ -1790,7 +1855,7 @@ export interface VehicleEdit {
   /** @format date-time */
   readonly hide_date: string | null;
   /** Модель техники */
-  model?: number | null;
+  model?: number;
   readonly organization: number;
 }
 
@@ -1800,6 +1865,13 @@ export interface VehicleEquipment {
   name: string;
   /** @format uri */
   icon?: string;
+  /**
+   * * `no` - no
+   * * `mh` - mh
+   * * `km` - km
+   * * `he` - he
+   */
+  runtime_unit: RuntimeUnitEnum;
 }
 
 export interface VehicleModel {
@@ -1821,7 +1893,7 @@ export interface VehicleModel {
   order?: number;
   brand: number;
   readonly organization: number | null;
-  equipment?: number | null;
+  equipment?: number;
 }
 
 export interface VehicleModelDetailed {
@@ -1937,6 +2009,7 @@ export interface VehicleRecommendation {
    * * `critical` - critical
    */
   level: LevelEnum;
+  readonly executor_level: ExecutorLevelEnum;
   /**
    * * `no` - no
    * * `complete` - complete
@@ -1960,6 +2033,7 @@ export interface VehicleRecommendation {
   readonly updated_at: string;
   /** @maxLength 120 */
   title?: string;
+  readonly executor_title: string;
   /** @maxLength 510 */
   text?: string;
   /** @format date-time */
@@ -1979,6 +2053,7 @@ export interface VehicleRecommendationDetailed {
    * * `critical` - critical
    */
   level: LevelEnum;
+  readonly executor_level: ExecutorLevelEnum;
   /**
    * * `no` - no
    * * `complete` - complete
@@ -2003,6 +2078,7 @@ export interface VehicleRecommendationDetailed {
   readonly updated_at: string;
   /** @maxLength 120 */
   title?: string;
+  readonly executor_title: string;
   /** @maxLength 510 */
   text?: string;
   /** @format date-time */
@@ -2030,18 +2106,14 @@ export interface VehicleRecommendationResult {
    * * `critical` - critical
    */
   level: LevelEnum;
+  readonly executor_level: ExecutorLevelEnum;
+  readonly executor_title: string;
 }
 
 export interface VehicleRuntime {
   readonly id: number;
-  /**
-   * * `no` - no
-   * * `posted` - posted
-   * * `rejected` - rejected
-   */
-  verdict: VehicleAdditionVerdict;
-  readonly is_rejected: boolean;
-  readonly is_completed: boolean;
+  /** @default "posted" */
+  verdict?: VehicleAdditionVerdict;
   readonly author: EmployeeDetailed;
   readonly auditor: EmployeeDetailed;
   /** @format date-time */
@@ -2135,12 +2207,18 @@ export interface WorkOrganization {
   name: string;
   /** Active */
   is_active?: boolean;
+  /**
+   * @format uri
+   * @maxLength 200
+   */
+  site?: string;
+  about?: string;
 }
 
 export interface WorkReview {
   readonly id: number;
   /**
-   * @min 1
+   * @min 0
    * @max 5
    */
   value: number;
@@ -2171,6 +2249,12 @@ export interface WorkServiceCenter {
   name: string;
   /** Active */
   is_active?: boolean;
+  /**
+   * @format uri
+   * @maxLength 200
+   */
+  site?: string;
+  about?: string;
 }
 
 export interface WorkServiceCenterSearch {
@@ -2372,6 +2456,8 @@ export interface WorkTaskResult {
    * @maxLength 510
    */
   coordinator_report?: string;
+  /** @format date-time */
+  readonly created_at: string;
   /** @format date-time */
   check_date?: string | null;
   /** @format date-time */
@@ -2891,6 +2977,8 @@ export type OrgOrgsUserInvitesDestroyData = any;
 export type OrgOrgsUserInvitesAcceptCreateData = UserAcceptInvite;
 
 export type OrgOrgsRetrieveData = OrganizationDetailed;
+
+export type OrgOrgsPartialUpdateData = OrganizationDetailed;
 
 export interface OrgSersRelatedOrgsListParams {
   /** Number of results to return per page. */
@@ -5401,6 +5489,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/v1/org/orgs/${id}/`,
         method: "GET",
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags org
+     * @name OrgOrgsPartialUpdate
+     * @request PATCH:/api/v1/org/orgs/{id}/
+     * @secure
+     */
+    orgOrgsPartialUpdate: (id: number, data: PatchedOrganizationDetailed, params: RequestParams = {}) =>
+      this.request<OrgOrgsPartialUpdateData, any>({
+        path: `/api/v1/org/orgs/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
 

@@ -7,11 +7,15 @@ import { getEngineerLabel } from '@features/engineers/helpers'
 import { SearchParamsKey } from '@features/shared/data'
 import { TicketChatContainer } from '@features/tickets/components/TicketChatContainer'
 import { TicketChatMessage } from '@features/tickets/components/TicketChatMessage'
+import { TicketChatMessageActions } from '@features/tickets/components/TicketChatMessageActions'
+import { TicketChatReportActions } from '@features/tickets/components/TicketChatReportActions'
+import { TicketChatResultContent } from '@features/tickets/components/TicketChatResultContent'
+import { TicketChatReview } from '@features/tickets/components/TicketChatReview'
 import {
   useTicketDrawerQuery,
   useTicketDrawerQueryAttachments,
   useTicketDrawerQueryChats,
-  useTicketDrawerQueryResult,
+  useTicketDrawerQueryResult, useTicketDrawerQueryReviews,
   useTicketDrawerQueryStatuses,
   useTicketDrawerWebSocket,
 } from '@features/tickets/components/TicketDrawer/hooks'
@@ -28,8 +32,6 @@ import { StatusEnumLabel } from '@features/tickets/data'
 import { getAvailableStatusOptions } from '@features/tickets/helpers'
 import { Tooltip } from '@features/ui/components/Tooltip'
 import { rr2 } from '@features/ui/types'
-import { VehicleChipRecommendationLevel } from '@features/vehicles/components/VehicleChipRecommendationLevel'
-import { VehicleChipRecommendationSolution } from '@features/vehicles/components/VehicleChipRecommendationSolution'
 import { toBase64 } from '@helpers/index'
 import { useApi } from '@hooks/useApi'
 import { useNotify } from '@hooks/useNotify'
@@ -77,8 +79,11 @@ export const TicketDrawer = () => {
   const { data, isFetching, isPending, isSuccess, members } = useTicketDrawerQuery(ticketID, open)
   const attachmentsQuery = useTicketDrawerQueryAttachments(ticketID, open)
   const resultQuery = useTicketDrawerQueryResult(ticketID, open)
+  const reviewsQuery = useTicketDrawerQueryReviews(ticketID, open)
   const statusesQuery = useTicketDrawerQueryStatuses(ticketID, open)
   const chatsQuery = useTicketDrawerQueryChats(ticketID, authorization, readyState)
+
+  const resultPictures = resultQuery.data?.photos?.map((media) => attachmentsQuery.data?.find(({ client_uuid }) => media.client_uuid === client_uuid)?.file ?? '') ?? []
 
   const handleAddFiles = (files: File[]) => {
     setFiles((prev) => [...prev, ...files.map((file) => ({
@@ -205,92 +210,89 @@ export const TicketDrawer = () => {
           }}
         >
           <TicketChatContainer>
-            {resultQuery.data && (
-              <TicketChatMessage
-                ticketID={ticketID!}
-                authorization={authorization}
-                uuid={''}
-                author={data?.executor?.id ?? data?.coordinator?.id ?? null}
-                pictures={resultQuery.data?.photos?.map((media) => attachmentsQuery.data?.find(({ client_uuid }) => media.client_uuid === client_uuid)?.file ?? '')}
-                content={(
-                  <Box
-                    sx={{
-                      display: 'grid',
-                      gap: '6px',
-                    }}
-                  >
-                    <Box
-                      fontWeight={500}
-                    >
-                      Отчет
-                    </Box>
-                    <Box>
-                      {resultQuery.data.coordinator_report || resultQuery.data.executor_report || 'Нет данных'}
-                    </Box>
-                    <Box
-                      fontWeight={500}
-                      sx={{ marginTop: '6px' }}
-                    >
-                      Рекомендация
-                    </Box>
-                    {resultQuery.data.recommendations?.[0] ? (
-                      <Box>
-                        <Box>
-                          {resultQuery.data.recommendations[0].title}
-                        </Box>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            gap: '4px',
-                            marginTop: '8px',
-                          }}
-                        >
-                          <VehicleChipRecommendationLevel level={resultQuery.data.recommendations[0].level} />
-                          <VehicleChipRecommendationSolution solution={resultQuery.data.recommendations[0].solution} />
-                        </Box>
-                      </Box>
-                    ) : 'Нет данных'}
-                  </Box>
-                )}
-                status={data?.status ?? StatusEnum.Done}
-                statusData={null}
-                date={resultQuery.data?.posted_date ?? resultQuery.data?.check_date ?? resultQuery.data?.updated_at}
-                report
+            {reviewsQuery.data?.[0] && (
+              <TicketChatReview
+                value={reviewsQuery.data[0].value}
+                text={reviewsQuery.data[0].text}
               />
+            )}
+            {resultQuery.data && (
+              <>
+                {resultQuery?.data.coordinator_report && (
+                  <TicketChatMessage
+                    author={data?.coordinator?.id ?? null}
+                    pictures={resultPictures}
+                    status={data?.status ?? StatusEnum.Done}
+                    date={resultQuery.data?.posted_date ?? resultQuery.data?.check_date ?? resultQuery.data?.updated_at}
+                    content={(
+                      <TicketChatResultContent
+                        report={resultQuery.data.coordinator_report ?? null}
+                        recommendation={resultQuery.data.recommendations?.[0] || {}}
+                      />
+                    )}
+                    actions={(
+                      <TicketChatReportActions
+                        ticketID={ticketID!}
+                        status={data?.status ?? StatusEnum.Done}
+                        verdictDate={resultQuery.data?.customer_mark_date ?? null}
+                        customerMark={resultQuery.data?.customer_mark}
+                      />
+                    )}
+                  />
+                )}
+                <TicketChatMessage
+                  author={data?.executor?.id ?? null}
+                  pictures={resultQuery?.data.coordinator_report ? undefined : resultPictures}
+                  status={StatusEnum.Done}
+                  date={resultQuery.data?.posted_date ?? resultQuery.data?.check_date ?? resultQuery.data?.updated_at}
+                  content={(
+                    <TicketChatResultContent
+                      report={resultQuery.data.executor_report ?? null}
+                      recommendation={{
+                        ...(resultQuery.data.recommendations?.[0] ?? {}),
+                        title: resultQuery.data.recommendations?.[0].executor_title,
+                      }}
+                    />
+                  )}
+                  actions={resultQuery?.data.coordinator_report ? undefined : (
+                    <TicketChatReportActions
+                      ticketID={ticketID!}
+                      status={data?.status ?? StatusEnum.Done}
+                      verdictDate={resultQuery.data?.check_date ?? null}
+                      customerMark={resultQuery.data?.customer_mark}
+                      report={resultQuery.data.executor_report}
+                    />
+                  )}
+                />
+              </>
             )}
             {chatsQuery.data?.map((message) => (
               <TicketChatMessage
                 key={message.uuid}
-                ticketID={ticketID!}
-                authorization={authorization}
-                uuid={message.uuid}
                 author={members[message.employee_id] ? {
                   id: message.employee_id,
                   name: getEngineerLabel(members[message.employee_id].profile),
                   photo: members[message.employee_id].profile.photo ?? undefined,
                   role: members[message.employee_id].role,
                 } : message.employee_id}
-                pictures={message.media_files?.map((media) => {
-                  if (media.path.includes('http')) {
-                    return media.path
-                  }
-
-                  return attachmentsQuery.data?.find(({ client_uuid }) => media.path === client_uuid)?.file ?? media.path
-                })}
-                content={message.text}
+                pictures={message.media_files?.map((media) => attachmentsQuery.data?.find(({ client_uuid }) => media.path === client_uuid)?.file ?? media.path)}
                 status={message.status as StatusEnum}
-                statusData={statusesQuery.data?.find((status) => status.message_uuid === message.uuid) ?? null}
                 date={message.server_time}
+                content={message.text}
+                actions={(
+                  <TicketChatMessageActions
+                    ticketID={ticketID!}
+                    uuid={message.uuid}
+                    authorization={authorization}
+                    statusData={statusesQuery.data?.find((status) => status.message_uuid === message.uuid) ?? null}
+                  />
+                )}
               />
             ))}
             {isSuccess && (
               <TicketChatMessage
-                ticketID={null}
-                authorization={authorization}
-                uuid={''}
                 author={null}
                 content={data.approval?.customer_description}
-                statusData={null}
                 date={data.created_at ?? ''}
               />
             )}
@@ -316,6 +318,7 @@ export const TicketDrawer = () => {
                     <TicketDrawerFormRecommendation
                       ticket={data}
                       result={resultQuery.data}
+                      disabled={!!resultQuery.data?.customer_mark_date && data?.status === StatusEnum.Done}
                     />
                     <TicketDrawerFormResult
                       ticket={data}

@@ -9,7 +9,7 @@ export const useQueryEmployee = (id: number | null) => {
   const { api } = useApi()
 
   return useQuery({
-    queryKey: [QueryKey.Employee, typeof id === 'number' ? id : -1],
+    queryKey: [QueryKey.Employee, id],
     queryFn: async (): Promise<Profile> => {
       const { data } = await api.workSersEmployeesRetrieve(id!, organizationID.toString())
 

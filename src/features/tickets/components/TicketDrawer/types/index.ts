@@ -7,6 +7,7 @@ export enum WSMessagePayloadModel {
   RefreshTask = 'RefreshTask',
   NewTask = 'NewTask',
   RemoveTask = 'RemoveTask',
+  ArchiveTask = 'ArchiveTask',
   Other = 'Other',
 }
 
@@ -50,9 +51,14 @@ export interface WSDataRemoveTask {
   payload: WSDataPayloadTaskId
 }
 
+export interface WSDataArchiveTask {
+  payload_model: WSMessagePayloadModel.ArchiveTask
+  payload: WSDataPayloadMessage
+}
+
 export interface WSDataOther {
   payload_model: WSMessagePayloadModel.Other
   payload: undefined
 }
 
-export type WSData = WSDataNewMessage | WSDataNewTask | WSDataUsedButton | WSDataRefreshTask | WSDataRemoveTask | WSDataOther
+export type WSData = WSDataNewMessage | WSDataNewTask | WSDataUsedButton | WSDataRefreshTask | WSDataRemoveTask | WSDataArchiveTask | WSDataOther
