@@ -42,6 +42,7 @@ export const TicketDrawerFormRecommendation = ({ ticket, result, disabled }: Tic
 
       await api.workSersTasksResultEditPartialUpdate(ticket.id, organizationID.toString(), {
         recommendations: {
+          // @ts-expect-error ???
           edit: {
             [result?.recommendations?.[0]?.id?.toString() ?? '0']: {
               level,
