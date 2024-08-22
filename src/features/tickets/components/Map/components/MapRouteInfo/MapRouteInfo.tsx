@@ -97,7 +97,7 @@ export const MapRouteInfo = ({ geo, selected, selectedTaskClient }: MapRouteInfo
                           variant={'uncontained'}
                           size={400}
                           profile={engineer.profile}
-                          rating={getEmployeeRating(engineer.rating.value)}
+                          rating={getEmployeeRating(engineer.rating?.value)}
                         />
                       </>
                     ) : 'Инженер'}
