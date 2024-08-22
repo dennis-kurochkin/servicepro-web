@@ -3,7 +3,7 @@ import { stringify } from 'qs'
 import { Api as ChatApi } from '~/api/servicepro-chat.generated'
 import { Api as MainApi, ApiConfig } from '~/api/servicepro.generated'
 
-const timeout = 10000
+const timeout = 60000
 
 const settings: ApiConfig = {
   baseURL: 'https://servicepro-api.humanagro.ru/',
