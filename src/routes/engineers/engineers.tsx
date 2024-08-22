@@ -19,7 +19,7 @@ export const EngineersRoute = () => {
   const { data, isFetching } = useEngineersTasksList(queryDebounced)
 
   return (
-    <>
+    <div>
       <TableHeader
         sx={{ marginTop: '8px' }}
         renderSearch={(
@@ -86,6 +86,6 @@ export const EngineersRoute = () => {
           </Table>
         </TableWrapper>
       )}
-    </>
+    </div>
   )
 }

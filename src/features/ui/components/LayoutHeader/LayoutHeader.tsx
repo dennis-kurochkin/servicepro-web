@@ -4,14 +4,12 @@ import { Box } from '@mui/material'
 
 export const LayoutHeader = () => {
   return (
-    <>
-      <Box
-        sx={{
-          paddingTop: `${headerHeight}px`,
-        }}
-      >
-        <Outlet />
-      </Box>
-    </>
+    <Box
+      sx={{
+        paddingTop: `${headerHeight}px`,
+      }}
+    >
+      <Outlet />
+    </Box>
   )
 }

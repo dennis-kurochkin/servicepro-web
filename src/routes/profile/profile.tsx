@@ -92,7 +92,7 @@ export const ProfileRoute = () => {
   }, [api, avatar, notify, organizationID, phone, telegram, whatsapp])
 
   return (
-    <>
+    <div>
       <Typography
         variant={'h5'}
       >
@@ -224,6 +224,6 @@ export const ProfileRoute = () => {
         )}
         onChange={handleChangeAvatar}
       />
-    </>
+    </div>
   )
 }

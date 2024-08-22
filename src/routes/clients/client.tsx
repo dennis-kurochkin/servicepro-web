@@ -193,7 +193,7 @@ export const ClientRoute = () => {
   }, [data])
 
   return (
-    <>
+    <div>
       <Box
         sx={{
           display: 'flex',
@@ -289,6 +289,6 @@ export const ClientRoute = () => {
           </TabPanel>
         </TabContext>
       </Box>
-    </>
+    </div>
   )
 }

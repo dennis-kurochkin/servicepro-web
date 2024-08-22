@@ -32,9 +32,5 @@ export const PersistentLogin = () => {
     }
   }, [])
 
-  return (
-    <>
-      {!persist ? <Outlet /> : isLoading ? <LoaderFullScreen /> : <Outlet />}
-    </>
-  )
+  return !persist ? <Outlet /> : isLoading ? <LoaderFullScreen /> : <Outlet />
 }

@@ -95,7 +95,7 @@ export const TicketsRoute = () => {
   }, [data, mapRef])
 
   return (
-    <>
+    <div>
       <Map
         ref={mapRef}
         geos={data?.map(({ geo }) => geo).filter((geo): geo is WorkTaskGeo => !!geo) ?? []}
@@ -179,6 +179,6 @@ export const TicketsRoute = () => {
           onClose={() => setFiltersOpen(false)}
         />
       </Container>
-    </>
+    </div>
   )
 }

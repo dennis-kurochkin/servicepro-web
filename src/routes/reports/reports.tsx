@@ -73,7 +73,7 @@ export const ReportsRoute = () => {
   }, [api.exportSersReportsCreate, from, notify, organizationID, to])
 
   return (
-    <>
+    <div>
       <Typography
         variant={'h5'}
       >
@@ -149,6 +149,6 @@ export const ReportsRoute = () => {
           Сформировать
         </LoadingButton>
       </Box>
-    </>
+    </div>
   )
 }

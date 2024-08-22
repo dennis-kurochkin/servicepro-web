@@ -104,115 +104,113 @@ export const VehicleRoute = () => {
   })
 
   return (
-    <>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        width: '100%',
+      }}
+    >
+      <PageEntityHeader
+        title={'Данные техники'}
+        isFetching={false}
+      />
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          width: '100%',
+          position: 'relative',
+          marginTop: '24px',
         }}
       >
-        <PageEntityHeader
-          title={'Данные техники'}
-          isFetching={false}
+        <PanelInfo
+          info={info}
+          isFetching={isFetching}
+          icon={data?.model.equipment?.icon ?? ''}
         />
-        <Box
-          sx={{
-            position: 'relative',
-            marginTop: '24px',
-          }}
-        >
-          <PanelInfo
-            info={info}
-            isFetching={isFetching}
-            icon={data?.model.equipment?.icon ?? ''}
-          />
-          {data?.summary && (
-            <Box
-              sx={{
-                position: 'absolute',
-                left: 'calc(100% - 32px)',
-                bottom: 'calc(100% - 32px)',
-                padding: '8px',
-                borderRadius: '16px',
-                border: '1px solid',
-                borderColor: (theme) => theme.palette.grey['300'],
-                background: (theme) => theme.palette.common.white,
+        {data?.summary && (
+          <Box
+            sx={{
+              position: 'absolute',
+              left: 'calc(100% - 32px)',
+              bottom: 'calc(100% - 32px)',
+              padding: '8px',
+              borderRadius: '16px',
+              border: '1px solid',
+              borderColor: (theme) => theme.palette.grey['300'],
+              background: (theme) => theme.palette.common.white,
+            }}
+          >
+            <VehicleRecommendationsChips
+              count={{
+                warning: data.summary.r_warning_count ?? 0,
+                critical: data.summary.r_critical_count ?? 0,
+                info: data.summary.r_info_count ?? 0,
               }}
-            >
-              <VehicleRecommendationsChips
-                count={{
-                  warning: data.summary.r_warning_count ?? 0,
-                  critical: data.summary.r_critical_count ?? 0,
-                  info: data.summary.r_info_count ?? 0,
-                }}
-              />
-            </Box>
-          )}
-        </Box>
-        <TabContext value={tab}>
-          <Box sx={{
-            width: '100%',
-            marginTop: '24px',
-            borderBottom: 1,
-            borderColor: 'divider',
-          }}
-          >
-            <TabList
-              onChange={(_, value) => setTab(value)}
-            >
-              {Object.values(VehicleTab).map((value) => (
-                <Tab
-                  key={value}
-                  label={VehicleTabLabel[value]}
-                  value={value}
-                />
-              ))}
-            </TabList>
+            />
           </Box>
-          <TabPanel
-            value={VehicleTab.Recommendations}
-            sx={{ paddingX: 0, width: '100%' }}
-          >
-            <VehicleTabRecommendations vehicleID={vehicleID} />
-          </TabPanel>
-          <TabPanel
-            value={VehicleTab.Tickets}
-            sx={{ paddingX: 0, width: '100%' }}
-          >
-            <TicketsTable
-              page={ticketsPage}
-              count={ticketsCount}
-              isSuccess={ticketsQuery.isSuccess}
-              data={ticketsQuery.data ?? []}
-              sx={{ margin: 0 }}
-              onPageChange={setTicketsPage}
-            />
-          </TabPanel>
-          <TabPanel
-            value={VehicleTab.Documents}
-            sx={{ paddingX: 0, width: '100%' }}
-          >
-            <VehicleTabDocumentation vehicleID={vehicleID} />
-          </TabPanel>
-          <TabPanel
-            value={VehicleTab.Notes}
-            sx={{ paddingX: 0, width: '100%' }}
-          >
-            <VehicleTabNotes vehicleID={vehicleID} />
-          </TabPanel>
-          <TabPanel
-            value={VehicleTab.OperatingTime}
-            sx={{ paddingX: 0, width: '100%' }}
-          >
-            <VehicleTabRuntime
-              vehicleID={vehicleID}
-              vehicle={data ?? null}
-            />
-          </TabPanel>
-        </TabContext>
+        )}
       </Box>
-    </>
+      <TabContext value={tab}>
+        <Box sx={{
+          width: '100%',
+          marginTop: '24px',
+          borderBottom: 1,
+          borderColor: 'divider',
+        }}
+        >
+          <TabList
+            onChange={(_, value) => setTab(value)}
+          >
+            {Object.values(VehicleTab).map((value) => (
+              <Tab
+                key={value}
+                label={VehicleTabLabel[value]}
+                value={value}
+              />
+            ))}
+          </TabList>
+        </Box>
+        <TabPanel
+          value={VehicleTab.Recommendations}
+          sx={{ paddingX: 0, width: '100%' }}
+        >
+          <VehicleTabRecommendations vehicleID={vehicleID} />
+        </TabPanel>
+        <TabPanel
+          value={VehicleTab.Tickets}
+          sx={{ paddingX: 0, width: '100%' }}
+        >
+          <TicketsTable
+            page={ticketsPage}
+            count={ticketsCount}
+            isSuccess={ticketsQuery.isSuccess}
+            data={ticketsQuery.data ?? []}
+            sx={{ margin: 0 }}
+            onPageChange={setTicketsPage}
+          />
+        </TabPanel>
+        <TabPanel
+          value={VehicleTab.Documents}
+          sx={{ paddingX: 0, width: '100%' }}
+        >
+          <VehicleTabDocumentation vehicleID={vehicleID} />
+        </TabPanel>
+        <TabPanel
+          value={VehicleTab.Notes}
+          sx={{ paddingX: 0, width: '100%' }}
+        >
+          <VehicleTabNotes vehicleID={vehicleID} />
+        </TabPanel>
+        <TabPanel
+          value={VehicleTab.OperatingTime}
+          sx={{ paddingX: 0, width: '100%' }}
+        >
+          <VehicleTabRuntime
+            vehicleID={vehicleID}
+            vehicle={data ?? null}
+          />
+        </TabPanel>
+      </TabContext>
+    </Box>
   )
 }

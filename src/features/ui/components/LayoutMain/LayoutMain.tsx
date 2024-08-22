@@ -7,11 +7,11 @@ export const LayoutMain = () => {
   const params = useParams()
 
   return (
-    <>
+    <div>
       <Header />
       <Outlet />
       {!params.ticketId && <FooterCopyright />}
       <TicketDrawer />
-    </>
+    </div>
   )
 }

@@ -54,7 +54,7 @@ export const VehiclesRoute = () => {
   })
 
   return (
-    <>
+    <div>
       <TableHeader
         sx={{ marginTop: '8px' }}
         renderSearch={(
@@ -135,6 +135,6 @@ export const VehiclesRoute = () => {
         onChange={changeFilters}
         onClose={() => setFiltersOpen(false)}
       />
-    </>
+    </div>
   )
 }

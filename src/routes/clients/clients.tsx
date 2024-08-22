@@ -65,7 +65,7 @@ export const ClientsRoute = () => {
   })
 
   return (
-    <>
+    <div>
       <TableHeader
         sx={{ marginTop: '8px' }}
         renderSearch={(
@@ -180,6 +180,6 @@ export const ClientsRoute = () => {
         onChange={changeFilters}
         onClose={() => setFiltersOpen(false)}
       />
-    </>
+    </div>
   )
 }

@@ -4,20 +4,18 @@ import { Container } from '@mui/material'
 
 export const LayoutHeaderContained = () => {
   return (
-    <>
-      <Container
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          paddingTop: `${headerHeight + 24}px`,
-          flexGrow: 1,
-          alignItems: 'flex-start',
-        }}
-        id={'layoutContainer'}
-        maxWidth="xl"
-      >
-        <Outlet />
-      </Container>
-    </>
+    <Container
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        paddingTop: `${headerHeight + 24}px`,
+        flexGrow: 1,
+        alignItems: 'flex-start',
+      }}
+      id={'layoutContainer'}
+      maxWidth="xl"
+    >
+      <Outlet />
+    </Container>
   )
 }
