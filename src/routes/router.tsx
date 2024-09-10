@@ -7,6 +7,7 @@ import { PersistentLogin } from '@components/PersistentLogin'
 import { RequireAuth } from '@components/RequireAuth/RequireAuth'
 import { NotFoundRoute } from '@routes/404'
 import { AuthRoute } from '@routes/auth'
+import { AuthRecoverRoute } from '@routes/auth/recover'
 import { ClientRoute } from '@routes/clients/client'
 import { ClientsRoute } from '@routes/clients/clients'
 import { EngineersRoute } from '@routes/engineers/engineers'
@@ -32,6 +33,10 @@ export const getConfiguredRoutes = (routes: RouteObject[]): RouteObject[] => ([
           {
             path: '/auth',
             element: <AuthRoute />,
+          },
+          {
+            path: '/auth/recover',
+            element: <AuthRecoverRoute />,
           },
         ],
       },

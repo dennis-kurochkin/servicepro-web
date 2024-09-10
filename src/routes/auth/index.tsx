@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import logoVertical from '@assets/logo-vertical.png'
 import { FieldInputControlled } from '@components/Field'
-import { theme } from '@data/theme'
+import { AuthFormWrapper } from '@features/auth/components/AuthFormWrapper'
 import { rr } from '@features/ui/types'
 import { useAuth } from '@hooks/useAuth'
 import { useNotify } from '@hooks/useNotify'
@@ -69,127 +68,93 @@ export const AuthRoute = () => {
   }
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        paddingTop: '24px',
-        paddingBottom: '150px',
-      }}
-    >
+    <AuthFormWrapper>
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
+        component={'form'}
+        onSubmit={handleSubmit(handleAuth)}
       >
-        <img
-          src={logoVertical}
-          alt="СЕРВИСПРО"
-          style={{ display: 'block' }}
-          width={165}
-          height={192}
+        <FieldInputControlled
+          name={'username'}
+          control={control}
+          disabled={authMutation.isPending}
+          label={'Логин'}
+          rules={{ required: true }}
+          placeholder={'Введите логин'}
+          autoFocus
+        />
+        <FieldInputControlled
+          name={'password'}
+          control={control}
+          disabled={authMutation.isPending}
+          type={passwordVisible ? 'text' : 'password'}
+          label={'Пароль'}
+          rules={{ required: true }}
+          placeholder={'Введите пароль'}
+          sx={{ mt: '16px' }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment
+                position={'end'}
+                sx={{ cursor: 'pointer' }}
+                onClick={() => setPasswordVisible((value) => !value)}
+              >
+                {passwordVisible ? <VisibilityOff /> : <Visibility />}
+              </InputAdornment>
+            ),
+          }}
         />
         <Box
-          component={'form'}
           sx={{
-            display: 'grid',
-            width: '400px',
-            borderRadius: 3,
-            border: '1px solid',
-            padding: '28px 28px 28px',
-            mt: '32px',
-            borderColor: theme.palette.grey['200'],
-            background: theme.palette.common.white,
+            display: 'flex',
           }}
-          onSubmit={handleSubmit(handleAuth)}
         >
-          <FieldInputControlled
-            name={'username'}
-            control={control}
+          <FormControlLabel
+            checked={persist}
             disabled={authMutation.isPending}
-            label={'Логин'}
-            rules={{ required: true }}
-            placeholder={'Введите логин'}
-            autoFocus
-          />
-          <FieldInputControlled
-            name={'password'}
-            control={control}
-            disabled={authMutation.isPending}
-            type={passwordVisible ? 'text' : 'password'}
-            label={'Пароль'}
-            rules={{ required: true }}
-            placeholder={'Введите пароль'}
-            sx={{ mt: '16px' }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment
-                  position={'end'}
-                  sx={{ cursor: 'pointer' }}
-                  onClick={() => setPasswordVisible((value) => !value)}
-                >
-                  {passwordVisible ? <VisibilityOff /> : <Visibility />}
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Box
+            label="Запомнить меня"
             sx={{
-              display: 'flex',
+              mt: '8px',
+              mb: '-8px',
+              marginLeft: '-7px',
             }}
-          >
-            <FormControlLabel
-              checked={persist}
-              disabled={authMutation.isPending}
-              label="Запомнить меня"
-              sx={{
-                mt: '8px',
-                mb: '-8px',
-                marginLeft: '-7px',
-              }}
-              componentsProps={{
-                typography: {
-                  fontSize: '14px',
-                  paddingTop: '1px',
-                },
-              }}
-              control={(
-                <Checkbox
-                  size={'small'}
-                  sx={{
-                    padding: '6px',
-                  }}
-                />
-              )}
-              onChange={() => setPersist(!persist)}
-            />
-          </Box>
-          <LoadingButton
-            type={'submit'}
-            size={'large'}
-            sx={{
-              mt: '24px',
-              width: '100%',
+            componentsProps={{
+              typography: {
+                fontSize: '14px',
+                paddingTop: '1px',
+              },
             }}
-            variant={'contained'}
-            loading={authMutation.isPending}
-          >
-            Войти в аккаунт
-          </LoadingButton>
-          <Link
-            component={'button'}
-            underline="hover"
-            sx={{ mt: '16px', fontSize: '15px' }}
-            onClick={() => navigate('/auth/recover')}
-          >
-            Восстановить пароль
-          </Link>
+            control={(
+              <Checkbox
+                size={'small'}
+                sx={{
+                  padding: '6px',
+                }}
+              />
+            )}
+            onChange={() => setPersist(!persist)}
+          />
         </Box>
+        <LoadingButton
+          type={'submit'}
+          size={'large'}
+          sx={{
+            mt: '24px',
+            width: '100%',
+          }}
+          variant={'contained'}
+          loading={authMutation.isPending}
+        >
+          Войти в аккаунт
+        </LoadingButton>
       </Box>
-    </Box>
+      <Link
+        component={'button'}
+        underline="hover"
+        sx={{ mt: '16px', mx: 'auto', fontSize: '15px' }}
+        onClick={() => navigate('/auth/recover')}
+      >
+        Восстановить пароль
+      </Link>
+    </AuthFormWrapper>
   )
 }
