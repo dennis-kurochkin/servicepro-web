@@ -56,6 +56,9 @@ export const TicketRow = ({ ticket, onSelect }: TicketRowProps) => {
         onClick={() => handleClick()}
       >
         <TableCell>
+          {ticket.id}
+        </TableCell>
+        <TableCell>
           <Box>
             {ticket.organization?.name ?? EMPTY_VALUE_DASH}
           </Box>
