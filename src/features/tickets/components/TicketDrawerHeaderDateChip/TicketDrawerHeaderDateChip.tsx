@@ -80,7 +80,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
     }
   }, [newDate, authorization, handleClose, chatApi, notify, ticketID])
 
-  return status === StatusEnum.Approval ? (
+  return status !== StatusEnum.Done ? (
     <Tooltip
       visible={dateChangeTooltipOpen}
       placement={'bottom'}
@@ -148,7 +148,7 @@ export const TicketDrawerHeaderDateChip = ({ ticketID, status, authorization, pl
     />
   ) : (
     <Tooltip
-      content={`Изменить дату начала планирования можно только на статусе ${SYMBOL_QUOTATION_LEFT}${StatusEnumLabel[StatusEnum.Approval]}${SYMBOL_QUOTATION_RIGHT}`}
+      content={`Изменить дату начала планирования нельзя на статусе ${SYMBOL_QUOTATION_LEFT}${StatusEnumLabel[StatusEnum.Done]}${SYMBOL_QUOTATION_RIGHT}`}
       target={(
         <TicketDrawerHeaderChip
           label={`Дата планируемого начала: ${planStartDate ? format(new Date(planStartDate), DATE_FORMAT_TIME_BEHIND) : EMPTY_VALUE_LABEL}`}

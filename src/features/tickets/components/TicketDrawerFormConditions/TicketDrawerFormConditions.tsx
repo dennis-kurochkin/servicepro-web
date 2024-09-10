@@ -61,7 +61,7 @@ export const TicketDrawerFormConditions = ({ ticket, statuses, authorization }: 
       title={'Условия для выполнения заявки'}
       alert={showAlert ? 'Уже есть текст условий для выполнения заявки на согласовании' : undefined}
       actionLabel={'Отправить на согласование'}
-      disabled={!ticketStatusesConditionsChange.some((status) => ticket?.status === status)}
+      disabled={ticket.status === StatusEnum.Done}
       loading={loading}
       onChange={setValue}
       onSubmit={handleSubmit}
