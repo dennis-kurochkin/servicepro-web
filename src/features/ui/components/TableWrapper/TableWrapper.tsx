@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 import { PAGINATION_DEFAULT_LIMIT } from '@constants/index'
 import { theme } from '@data/theme'
-import { Paper, SxProps, TableContainer, TablePagination } from '@mui/material'
+import { Box, Paper, SxProps, TableContainer, TablePagination } from '@mui/material'
 
 interface TableWrapperProps extends PropsWithChildren {
   sx?: SxProps
@@ -15,12 +15,10 @@ interface TableWrapperProps extends PropsWithChildren {
 
 export const TableWrapper = ({ pagination, children, sx }: TableWrapperProps) => {
   return (
-    <TableContainer
-      component={Paper}
-      elevation={0}
+    <Box
       sx={{
+        width: '100%',
         marginTop: '20px',
-        background: 'none',
         border: `1px solid ${theme.palette.grey['300']}`,
         ...(sx ?? {}),
       }}
@@ -38,7 +36,15 @@ export const TableWrapper = ({ pagination, children, sx }: TableWrapperProps) =>
           onPageChange={(_, page) => pagination.onPageChange(page)}
         />
       )}
-      {children}
+      <TableContainer
+        component={Paper}
+        elevation={0}
+        sx={{
+          background: 'none',
+        }}
+      >
+        {children}
+      </TableContainer>
       {pagination && (
         <TablePagination
           component="div"
@@ -52,6 +58,6 @@ export const TableWrapper = ({ pagination, children, sx }: TableWrapperProps) =>
           onPageChange={(_, page) => pagination.onPageChange(page)}
         />
       )}
-    </TableContainer>
+    </Box>
   )
 }

@@ -8,6 +8,7 @@ import { getEmployeeLabel } from '@features/engineers/helpers'
 import { DialogEngineerAssign } from '@features/shared/components/DialogEngineerAssign'
 import { TicketChipStatus } from '@features/shared/components/TicketChipStatus/TicketChipStatus'
 import { useEmployeeRating } from '@features/shared/hooks/useEmployeeRating'
+import { useEmployeesList } from '@features/shared/hooks/useEmployeesList'
 import { ticketStatusesEngineerEditable } from '@features/tickets/data'
 import { Tooltip } from '@features/ui/components/Tooltip'
 import { useOrganizationID } from '@hooks/useOrganizationID'
@@ -31,6 +32,7 @@ export const TicketRow = ({ ticket, onSelect }: TicketRowProps) => {
   const navigate = useNavigate()
   const { organizationID } = useOrganizationID()
   const { rating } = useEmployeeRating(ticket.executor?.id)
+  const { data: employees } = useEmployeesList()
 
   const [open, setOpen] = useState(false)
   const requisites = useMemo(() => ticket.organization?.requisites ?? null, [ticket.organization?.requisites])
@@ -113,6 +115,12 @@ export const TicketRow = ({ ticket, onSelect }: TicketRowProps) => {
           <EngineerAvatar
             profile={ticket.executor?.profile ?? null}
             rating={rating}
+          />
+        </TableCell>
+        <TableCell>
+          <EngineerAvatar
+            profile={employees?.find(({ id }) => id === ticket.coordinator)?.profile ?? null}
+            rating={null}
           />
         </TableCell>
         <TableCellActions>

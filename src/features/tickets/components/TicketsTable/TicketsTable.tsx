@@ -60,6 +60,9 @@ export const TicketsTable = ({ page, count, isSuccess, data, sx, onPageChange, o
             <TableCellHeadFilter>
               Инженер
             </TableCellHeadFilter>
+            <TableCellHeadFilter>
+              Координатор
+            </TableCellHeadFilter>
             <TableCell
               size={'small'}
               sx={{ width: TABLE_CONTEXT_BUTTON_CELL_WIDTH, paddingRight: TABLE_CELL_DENSE_PADDING }}
