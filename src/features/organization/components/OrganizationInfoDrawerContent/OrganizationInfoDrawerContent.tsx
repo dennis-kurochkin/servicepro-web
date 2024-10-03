@@ -68,23 +68,23 @@ export const OrganizationInfoDrawerContent = ({ onClose }: OrganizationInfoDrawe
         />
         <FieldLabelValue
           label={'Адрес для корреспонденции'}
-          value={query.data?.requisites.postal_address?.value ?? EMPTY_VALUE_DASH}
+          value={query.data?.requisites?.postal_address?.value ?? EMPTY_VALUE_DASH}
         />
         <FieldLabelValue
           label={'Полное наименование'}
-          value={query.data?.requisites.full_name ?? EMPTY_VALUE_DASH}
+          value={query.data?.requisites?.full_name ?? EMPTY_VALUE_DASH}
         />
         <FieldLabelValue
           label={'КПП'}
-          value={query.data?.requisites.kpp ?? EMPTY_VALUE_DASH}
+          value={query.data?.requisites?.kpp ?? EMPTY_VALUE_DASH}
         />
         <FieldLabelValue
           label={'ИНН'}
-          value={query.data?.requisites.inn ?? EMPTY_VALUE_DASH}
+          value={query.data?.requisites?.inn ?? EMPTY_VALUE_DASH}
         />
         <FieldLabelValue
           label={'ОГРН'}
-          value={query.data?.requisites.ogrn ?? EMPTY_VALUE_DASH}
+          value={query.data?.requisites?.ogrn ?? EMPTY_VALUE_DASH}
         />
       </Box>
     </DrawerContent>

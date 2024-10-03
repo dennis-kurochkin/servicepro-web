@@ -182,7 +182,7 @@ export const TicketDrawer = () => {
           loading={isFetching || isPending}
           renderChips={(
             <>
-              {data?.service_center.requisites.full_name && (
+              {data?.service_center.requisites?.full_name && (
                 <TicketDrawerHeaderChip
                   label={data.organization.name}
                   color={'info'}
